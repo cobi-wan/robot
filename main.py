@@ -12,24 +12,29 @@ max_duty = 1023
 frequency = 15000
 
 #PIN ASSIGNMENT
-frontLeftPin1 = Pin(26, Pin.OUT)
-frontLeftPin2 = Pin(25, Pin.OUT)
-frontLeftEnable = PWM(Pin(27), frequency)
+frontLeftPin1 = Pin(26, Pin.OUT)            #26 C
+frontLeftPin2 = Pin(25, Pin.OUT)            #25 C
+frontLeftEnable = PWM(Pin(27), frequency)   #27 C
 
-frontRightPin1 = Pin(14, Pin.OUT)
-frontRightPin2 = Pin(12, Pin.OUT)
-frontRightEnable = PWM(Pin(16), frequency)
+frontRightPin1 = Pin(5, Pin.OUT)            #14 C
+frontRightPin2 = Pin(17, Pin.OUT)           #12 C
+frontRightEnable = PWM(Pin(16), frequency)  #16 C
 
-backRightPin1 = Pin(2, Pin.OUT)
-backRightPin2 = Pin(4, Pin.OUT)
-backRightEnable = PWM(Pin(15), frequency)
+backRightPin1 = Pin(2, Pin.OUT)             #2  C
+backRightPin2 = Pin(4, Pin.OUT)             #4  C
+backRightEnable = PWM(Pin(15), frequency)   #15 C
 
-backLeftPin1 = Pin(5, Pin.OUT)
-backLeftPin2 = Pin(17, Pin.OUT)
-backLeftEnable = PWM(Pin(13), frequency)
+backLeftPin1 = Pin(14, Pin.OUT)             #5  C
+backLeftPin2 = Pin(12, Pin.OUT)             #17 C
+backLeftEnable = PWM(Pin(13), frequency)    #13 C
 
 #ULTRASONIC SENSOR OBJECT
 ultrasonic = HCSR04(22,23,30000)
+
+#IR SENSOR OBJECT
+IRLeft = Pin(18, Pin.IN, Pin.PULL_UP)
+IRRight = Pin(19, Pin.IN, Pin.PULL_UP)
+IRCenter = Pin(21, Pin.IN, Pin.PULL_UP)
 
 #MOTOR OBJECTS
 frontLeftMotor = DCMotor(frontLeftPin1, frontLeftPin2, frontLeftEnable, min_duty, max_duty, speed=0)
@@ -42,13 +47,22 @@ robot = Robot(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor)
 
 #TEST CODE
 
+delayVal = 0.005
+speed = 15
 while True:
-    distance = ultrasonic.distance_cm()
-    if distance < 10:
-        robot.stop()
-        tStart = time.time()
-        while (time.time() - tStart) <= 2:
-            robot.crawlRight(50)
-            print(time.time() - tStart)
+    if IRLeft.value() == 0 and IRRight.value() == 0:
+        robot.forward(speed)
+        print("^")
+        time.sleep(delayVal)
+    elif IRLeft.value() == 1:
+        robot.turnLeft(speed/2)
+        print("<")
+        time.sleep(delayVal)
+    elif IRRight.value() == 1:
+        robot.turnRight(speed/2)
+        print(">")
+        time.sleep(delayVal)
     else:
-        robot.forward(50)
+        robot.stop()
+        print(".")
+        time.sleep(delayVal)
