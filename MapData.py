@@ -20,6 +20,7 @@ def startUp():
             node(2500, 3240),
             node(2500, 500),
             node(5760, 500)]
+
     edges = [edge(nodes[0], nodes[1]),
             edge(nodes[0], nodes[8]),
             edge(nodes[0], nodes[10]),
@@ -33,6 +34,7 @@ def startUp():
             edge(nodes[7], nodes[8]),
             edge(nodes[8], nodes[9]),
             edge(nodes[9], nodes[10])]
+
     g = graph(nodes, edges)
 
     b1 = partRunner(nodes[0].x, nodes[0].y, 0)
@@ -45,12 +47,19 @@ if __name__ == '__main__':
     cv.destroyAllWindows()
     bList, g = startUp()
     env = environment("ImageFiles\BlankMap.png", bList, g)
-    #defineMap([(p1, p2), (p2, p3)])
-    env.updateBotPos()
-    env.drawNodes() 
+    env.updateBotPos() 
     env.drawPaths()
+    env.drawNodes()
+    env.botList[0].add(env.network.edges[0])
+    env.botList[0].add(env.network.edges[4])
+    env.botList[0].add(env.network.edges[6])
+    # for i in env.botList:
+    #     print(i.botIndex)
+    # for i in env.network.edges:
+    #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
     try:
         while True:
+            env.botList[0].xCord += 10
             env.updateBotPos()
             cv.imshow("Map", env.UI)
             cv.waitKey(100)
@@ -58,5 +67,4 @@ if __name__ == '__main__':
         cv.destroyAllWindows
         print("Aww, you stopped it. Whats wrong with you?")
 
-    # for i in Map.network.edges:
-    #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
+    

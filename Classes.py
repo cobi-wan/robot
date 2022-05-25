@@ -10,7 +10,6 @@ import numpy as np
 class partRunner:
     numBots = 0
     path = []
-    path.append(1) # Assume the bot always has to go to the first node first
     length = 14 # Dimensions of bot in inches
     width = 11
     maxSpeed = 1
@@ -24,6 +23,7 @@ class partRunner:
 
     def add(self, point):
         self.path.append(point)
+
 
 class cart:
     numBots = 0
@@ -95,9 +95,11 @@ class environment:
 
 
     def updateBotPos(self):
+        tempMap = self.UI.copy()
         for i in self.botList:
             pts = self.robotPoints(i.botIndex)
-            cv.drawContours(self.UI, [pts], 0, (255, 0, 0), 1)
+            cv.drawContours(tempMap, [pts], 0, (255, 0, 0), 1)
+        self.UI = tempMap
         cv.imshow('Map', self.UI)
 
     def drawNodes(self):
@@ -107,7 +109,8 @@ class environment:
 
     def drawPaths(self):
         for i in self.network.edges:
-            cv.line(self.UI, (int(i.n1.x*self.mapScale), int(i.n1.y*self.mapScale)), (int(i.n2.x*self.mapScale), int(i.n2.y*self.mapScale)), (0, 0, 0), 2)
+            cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (230, 230, 230), 3)
+            cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (0, 0, 0), 1)
         cv.imshow('Map', self.UI)
 
 
@@ -124,13 +127,15 @@ class edge:
     count = 0
 
     def length(self):
-        return np.sqrt((self.n1.x - self.n2.x)**2 + (self.n1.y - self.n2.y)**2)
+        return np.sqrt((self.n1x - self.n2x)**2 + (self.n1y - self.n2y)**2)
 
     def __init__(self, node1, node2):
         self.label = self.count
         edge.count += 1
-        self.n1 = node1
-        self.n2 = node2
+        self.n1x = node1.x
+        self.n1y = node1.y
+        self.n2x = node2.x
+        self.n2y = node2.y
         self.len = self.length()
 
 class node:
@@ -156,30 +161,4 @@ class graph:
         self.nodes.append(node)
 
     def addEdge(self, node1, node2):
-        pass
-# class paths:
-#     def __init__(self, gdict=None):
-#         if gdict is None:
-#             gdict = {}
-#         self.gdict = gdict
-
-#     def edges(self):
-#         return self.findEdges()
-    
-#     def addEdge(self, edge):
-#         edge = set(edge)
-#         (vrtx1, vrtx2) = tuple(edge)
-#         if vrtx1 in self.gdict:
-#             self.gdict[vrtx1].append(vrtx2)
-#         else: 
-#             self.gdict[vrtx1] = [vrtx2]
-
-#     def findEdges(self):
-#         edgeName = []
-#         for vrtx in self.gdict:
-#             for nxtvrtx in self.gdict[vrtx]:
-#                 if {nxtvrtx, vrtx} not in edgeName:
-#                     edgeName.append({vrtx, nxtvrtx})
-#         return edgeName
-
-
+        self.edges.append(edge(node1, node2))
