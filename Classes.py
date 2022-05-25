@@ -1,3 +1,4 @@
+from itertools import count
 from re import X
 import cv2 as cv
 import time
@@ -12,7 +13,7 @@ class partRunner:
     path.append(1) # Assume the bot always has to go to the first node first
     length = 14 # Dimensions of bot in inches
     width = 11
-
+    maxSpeed = 1
     
     def __init__(self, x, y, t):
         self.botIndex = self.numBots
@@ -30,6 +31,7 @@ class cart:
     path.append(1) # Assume the bot always has to go to the first node first
     length = 36 # Dimensions of bot in inches
     width = 24
+    maxSpeed = 0.75
 
     
     def __init__(self, x, y, t):
@@ -52,8 +54,8 @@ class cart:
 
 
 ## MAP Class Definition ## 
-class MAP:
-    mapScale = 0.1 # 1 px = 1 mm
+class environment:
+    mapScale = 0.1 
     worldScale = 10
     width = int(1152*worldScale*mapScale)
     height = int(648*worldScale*mapScale)
@@ -108,7 +110,6 @@ class MAP:
         for i in self.network.edges:
             cv.line(self.UI, (int(i.n1.x*self.mapScale), int(i.n1.y*self.mapScale)), (int(i.n2.x*self.mapScale), int(i.n2.y*self.mapScale)), (0, 0, 0), 2)
         cv.imshow('Map', self.UI)
-        cv.waitKey()
 
 
 
@@ -121,19 +122,25 @@ class MAP:
 
 ## Graph Definitions ## 
 class edge:
+    count = 0
 
     def length(self):
         return np.sqrt((self.n1.x - self.n2.x)**2 + (self.n1.y - self.n2.y)**2)
 
     def __init__(self, node1, node2):
+        self.label = self.count
+        edge.count += 1
         self.n1 = node1
         self.n2 = node2
         self.len = self.length()
 
 class node:
     edges = []
+    count = 0
 
     def __init__(self, x, y):
+        self.label = self.count
+        node.count += 1
         self.x = x
         self.y = y
 

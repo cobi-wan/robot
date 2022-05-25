@@ -3,50 +3,41 @@ import time
 import numpy as np
 from Classes import partRunner
 from Classes import cart
-from Classes import MAP
+from Classes import environment
 from Classes import edge
 from Classes import node
 from Classes import graph
 
-# Robot path points
-p1 = (int(1), int(1))
-p2 = (int(100), int(100))
-p3 = (int(100), int(400))
-
-# Initial Robot Position 
-posRobx = 1000
-posRoby = 1000
-posRobt = 0
-
 def startUp():
+    nodes = [node(5760, 3240), 
+            node(7000, 3240), 
+            node(11000, 3240), 
+            node(7000, 4500), 
+            node(11000, 4500), 
+            node(9000, 4500), 
+            node(9000, 5500), 
+            node(2500, 5500), 
+            node(2500, 3240),
+            node(2500, 500),
+            node(5760, 500)]
+    edges = [edge(nodes[0], nodes[1]),
+            edge(nodes[0], nodes[8]),
+            edge(nodes[0], nodes[10]),
+            edge(nodes[1], nodes[2]), 
+            edge(nodes[1], nodes[3]),
+            edge(nodes[2], nodes[4]),
+            edge(nodes[3], nodes[5]),
+            edge(nodes[4], nodes[5]),
+            edge(nodes[5], nodes[6]),
+            edge(nodes[6], nodes[7]),
+            edge(nodes[7], nodes[8]),
+            edge(nodes[8], nodes[9]),
+            edge(nodes[9], nodes[10])]
+    g = graph(nodes, edges)
+
     b1 = partRunner(1000, 600, 0)
     b2 = partRunner(1000, 2000, np.pi/2)
     bList = np.array([b1, b2])
-    
-    # n1 = np.array([5760, 3240])
-    # n2 = np.array([7000, 3240])
-    # n3 = np.array([11000, 3240])
-    # n4 = np.array([7000, 4500])
-    # n5 = np.array([11000, 4500])
-    # n6 = np.array([9000, 4500])
-    # n7 = np.array([9000, 5500])
-    # n8 = np.array([2500, 5500])
-    # n9 = np.array([2500, 3240])
-    # n10 = np.array([2500, 500])
-    # n11 = np.array([5760, 500])
-    # nodes = np.array([n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11])
-    # p1 = np.array([1, 2])
-    # p2 = np.array([1, 11, 10])
-    # p3 = np.array([1, 11])
-    # p4 = np.array([2, 3])
-    # p5 = np.array([2, 4, 6])
-    # p6 = np.array([3, 5, 6])
-    # p7 = np.array([6, 7, 8, 9])
-    # p8 = np.array([9, 10])
-    # paths = np.array([p1, p2, p3, p4, p5, p6, p7, p8])
-    nodes = [node(5760, 3240), node(7000, 3240), node(11000, 3240), node(7000, 4500)]
-    edges = [edge(nodes[0], nodes[1]), edge(nodes[1], nodes[2]), edge(nodes[1], nodes[3])]
-    g = graph(nodes, edges)
 
     return bList, g
 
@@ -60,11 +51,21 @@ def drawPaths(paths):
 if __name__ == '__main__':
     cv.destroyAllWindows()
     bList, g = startUp()
-    Map = MAP("lib\BlankMap.png", bList, g)
+    env = environment("ImageFiles\BlankMap.png", bList, g)
     #defineMap([(p1, p2), (p2, p3)])
-    Map.updateBotPos()
-    Map.drawNodes()
-    Map.drawPaths()
+    env.updateBotPos()
+    env.drawNodes() 
+    env.drawPaths()
+    try:
+        while True:
+            cv.imshow("Map", env.UI)
+            cv.waitKey(100)
+    except KeyboardInterrupt: # If you want to stop the program press crtl + c
+        cv.destroyAllWindows
+        print("Aww, you stopped it. Whats wrong with you?")
+
+    # for i in Map.network.edges:
+    #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
     # try: 
     #     for i in range(100):
     #         updateMap(Map)
