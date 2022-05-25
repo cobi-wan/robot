@@ -95,11 +95,10 @@ class environment:
 
 
     def updateBotPos(self):
-        tempMap = self.UI.copy() 
         for i in self.botList:
             pts = self.robotPoints(i.botIndex)
-            cv.drawContours(tempMap, [pts], 0, (255, 0, 0), 1)
-        cv.imshow('Map', tempMap)
+            cv.drawContours(self.UI, [pts], 0, (255, 0, 0), 1)
+        cv.imshow('Map', self.UI)
 
     def drawNodes(self):
         for i in self.network.nodes:

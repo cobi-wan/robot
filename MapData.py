@@ -35,18 +35,11 @@ def startUp():
             edge(nodes[9], nodes[10])]
     g = graph(nodes, edges)
 
-    b1 = partRunner(1000, 600, 0)
-    b2 = partRunner(1000, 2000, np.pi/2)
+    b1 = partRunner(nodes[0].x, nodes[0].y, 0)
+    b2 = partRunner(nodes[0].x, nodes[0].y, np.pi/2)
     bList = np.array([b1, b2])
 
     return bList, g
-
-def drawPaths(paths):
-    map = MAP.copy()                   
-    cv.drawContours(map, [paths], 0, (255, 255, 255), 2)
-    cv.imshow('Map', map)
-    cv.waitKey(33)
-    pass
 
 if __name__ == '__main__':
     cv.destroyAllWindows()
@@ -58,6 +51,7 @@ if __name__ == '__main__':
     env.drawPaths()
     try:
         while True:
+            env.updateBotPos()
             cv.imshow("Map", env.UI)
             cv.waitKey(100)
     except KeyboardInterrupt: # If you want to stop the program press crtl + c
@@ -66,10 +60,3 @@ if __name__ == '__main__':
 
     # for i in Map.network.edges:
     #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
-    # try: 
-    #     for i in range(100):
-    #         updateMap(Map)
-    #         posRobx += 10
-    #         posRoby += 10
-    # except KeyboardInterrupt:
-    #     print("Darn")
