@@ -61,10 +61,12 @@ class environment:
     height = int(648*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
+    timeStep = 0.1
 
     def __init__(self, img, bots, graph):
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
+        self.UIwBots = self.UI.copy()
         self.botList = bots
         self.network = graph
 
@@ -95,23 +97,19 @@ class environment:
 
 
     def updateBotPos(self):
-        tempMap = self.UI.copy()
+        self.UIwBots = self.UI.copy()
         for i in self.botList:
             pts = self.robotPoints(i.botIndex)
-            cv.drawContours(tempMap, [pts], 0, (255, 0, 0), 1)
-        self.UI = tempMap
-        cv.imshow('Map', self.UI)
+            cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
 
     def drawNodes(self):
         for i in self.network.nodes:
             cv.drawMarker(self.UI, (int(i.x*self.mapScale), int(i.y*self.mapScale)), (255, 0, 0), MARKER_SQUARE, 6)
-        cv.imshow('Map', self.UI)
 
     def drawPaths(self):
         for i in self.network.edges:
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (230, 230, 230), 3)
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (0, 0, 0), 1)
-        cv.imshow('Map', self.UI)
 
 
 

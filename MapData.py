@@ -1,3 +1,4 @@
+from turtle import update
 import cv2 as cv
 import time
 import numpy as np
@@ -43,6 +44,18 @@ def startUp():
 
     return bList, g
 
+def updateRobPrediction(botNum, Env):
+    while Env.botList[botNum].path != []:
+        while Env.botList[botNum].xCord != Env.botList[botNum].path[0].x and Env.botList[botNum].yCord != Env.botList[botNum].path[0].y:
+            if Env.botList[botNum].xCord - Env.botList[botNum].path[0].x > 0:
+                Env.botList[botNum].tCord = np.arcsin((Env.botList[botNum].yCord - Env.botList[botNum].path[0].y)/(Env.botList[botNum].xCord - Env.botList[botNum].path[0].x)) - np.pi/2
+            xSpd = np.sin(Env.botList[botNum].tCord)*Env.botList[botNum].maxSpeed
+            ySpd = np.cos(Env.botList[botNum].tCord)*Env.botList[botNum].maxSpeed
+            Env.botList[botNum].xCord += xSpd/env.timeStep
+            Env.botList[botNum].yCord += ySpd/env.timeStep
+            print(xSpd, ySpd)
+        del(Env.botList[botNum].path[0])
+
 if __name__ == '__main__':
     cv.destroyAllWindows()
     bList, g = startUp()
@@ -50,9 +63,9 @@ if __name__ == '__main__':
     env.updateBotPos() 
     env.drawPaths()
     env.drawNodes()
-    env.botList[0].add(env.network.edges[0])
-    env.botList[0].add(env.network.edges[4])
-    env.botList[0].add(env.network.edges[6])
+    env.botList[0].add(env.network.nodes[0])
+    env.botList[0].add(env.network.nodes[1])
+    env.botList[0].add(env.network.nodes[3])
     # for i in env.botList:
     #     print(i.botIndex)
     # for i in env.network.edges:
@@ -60,9 +73,11 @@ if __name__ == '__main__':
     try:
         while True:
             env.botList[0].xCord += 10
+            env.botList[1].yCord += 10
+            # updateRobPrediction(0, env)
             env.updateBotPos()
-            cv.imshow("Map", env.UI)
-            cv.waitKey(100)
+            cv.imshow("Map", env.UIwBots)
+            cv.waitKey(int(env.timeStep*1000))
     except KeyboardInterrupt: # If you want to stop the program press crtl + c
         cv.destroyAllWindows
         print("Aww, you stopped it. Whats wrong with you?")
