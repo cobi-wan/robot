@@ -1,5 +1,6 @@
 from turtle import update
 import cv2 as cv
+from cv2 import MARKER_SQUARE
 import time
 import numpy as np
 from Classes import partRunner
@@ -40,44 +41,59 @@ def startUp():
 
     b1 = partRunner(nodes[0].x, nodes[0].y, 0)
     b2 = partRunner(nodes[0].x, nodes[0].y, np.pi/2)
-    bList = np.array([b1, b2])
+    b3 = partRunner(nodes[0].x, nodes[0].y, np.pi)
+    bList = np.array([b1, b2, b3])
 
     return bList, g
 
-def updateRobPrediction(botNum, Env):
-    while Env.botList[botNum].path != []:
-        while Env.botList[botNum].xCord != Env.botList[botNum].path[0].x and Env.botList[botNum].yCord != Env.botList[botNum].path[0].y:
-            if Env.botList[botNum].xCord - Env.botList[botNum].path[0].x > 0:
-                Env.botList[botNum].tCord = np.arcsin((Env.botList[botNum].yCord - Env.botList[botNum].path[0].y)/(Env.botList[botNum].xCord - Env.botList[botNum].path[0].x)) - np.pi/2
-            xSpd = np.sin(Env.botList[botNum].tCord)*Env.botList[botNum].maxSpeed
-            ySpd = np.cos(Env.botList[botNum].tCord)*Env.botList[botNum].maxSpeed
-            Env.botList[botNum].xCord += xSpd/env.timeStep
-            Env.botList[botNum].yCord += ySpd/env.timeStep
-            print(xSpd, ySpd)
-        del(Env.botList[botNum].path[0])
-
 if __name__ == '__main__':
+
+    # Initial running stuff
     cv.destroyAllWindows()
     bList, g = startUp()
     env = environment("ImageFiles\BlankMap.png", bList, g)
-    env.updateBotPos() 
+    env.updateBotMarker() 
     env.drawPaths()
     env.drawNodes()
-    env.botList[0].add(env.network.nodes[0])
+    
+    # Temporary setup stuff. Delete Later 
     env.botList[0].add(env.network.nodes[1])
     env.botList[0].add(env.network.nodes[3])
+    env.botList[1].add(env.network.nodes[10])
+    
+    # Nice little printy guys
     # for i in env.botList:
     #     print(i.botIndex)
     # for i in env.network.edges:
     #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
+    
     try:
+        tS = time.monotonic_ns()
         while True:
-            env.botList[0].xCord += 10
-            env.botList[1].yCord += 10
-            # updateRobPrediction(0, env)
-            env.updateBotPos()
-            cv.imshow("Map", env.UIwBots)
-            cv.waitKey(int(env.timeStep*1000))
+            if time.monotonic_ns() - tS > 1000000 * env.timeStep:
+                env.updateBotMarker()
+                cv.imshow("Map", env.UIwBots)
+                cv.waitKey(int(env.timeStep*1000))
+                for i in env.botList:
+                    if i.path == []:                        # If its at the goal dont move
+                        continue
+
+                    if (i.xCord - i.path[0].x) != 0:        # Set the angle of movement
+                        i.tCord = np.arcsin((i.yCord - i.path[0].y)/(i.xCord - i.path[0].x))
+                    else:
+                        if (i.yCord - i.path[0].y) > 0:
+                            i.tCord = -np.pi/2
+                        else:
+                            i.tCord = np.pi/2
+                    # print("Bot #:", i.botIndex, "is should be moving at an angle", i.tCord*180/np.pi)
+                    # print("Its goal point is at (", i.path[0].x, ",", i.path[0].y, ")")
+                    # if abs(i.xCord - i.path[0].x) > 5: 
+                    #     i.xCord += i.maxSpeed / env.timeStep
+
+                        
+                tS = time.monotonic_ns()
+
+
     except KeyboardInterrupt: # If you want to stop the program press crtl + c
         cv.destroyAllWindows
         print("Aww, you stopped it. Whats wrong with you?")

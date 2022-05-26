@@ -1,3 +1,4 @@
+from codecs import BOM_UTF16_BE
 from itertools import count
 from re import X
 import cv2 as cv
@@ -9,10 +10,6 @@ import numpy as np
 ## Robot Class Definitions ##
 class partRunner:
     numBots = 0
-    path = []
-    length = 14 # Dimensions of bot in inches
-    width = 11
-    maxSpeed = 1
     
     def __init__(self, x, y, t):
         self.botIndex = self.numBots
@@ -20,6 +17,11 @@ class partRunner:
         self.xCord = x
         self.yCord = y
         self.tCord = t
+        self.path = []
+        self.length = 14 # Dimensions of bot in inches
+        self.width = 11
+        self.maxSpeed = 1
+        
 
     def add(self, point):
         self.path.append(point)
@@ -27,12 +29,6 @@ class partRunner:
 
 class cart:
     numBots = 0
-    path = []
-    path.append(1) # Assume the bot always has to go to the first node first
-    length = 36 # Dimensions of bot in inches
-    width = 24
-    maxSpeed = 0.75
-
     
     def __init__(self, x, y, t):
         self.botIndex = self.numBots
@@ -40,6 +36,10 @@ class cart:
         self.xCord = x
         self.yCord = y
         self.tCord = t
+        self.path = []
+        self.length = 36 # Dimensions of bot in inches
+        self.width = 24
+        self.maxSpeed = 0.75
 
     def add(self, point):
         self.path.append(point)
@@ -61,7 +61,7 @@ class environment:
     height = int(648*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
-    timeStep = 0.1
+    timeStep = 0.5
 
     def __init__(self, img, bots, graph):
         self.UI = cv.imread(img)
@@ -96,11 +96,30 @@ class environment:
         return pts
 
 
-    def updateBotPos(self):
+    def updateBotMarker(self):
         self.UIwBots = self.UI.copy()
         for i in self.botList:
             pts = self.robotPoints(i.botIndex)
             cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
+
+    # def updateRobPos(self):
+    #     while self.botList[botNum].path != []:
+    #         while abs(self.botList[botNum].xCord - self.botList[botNum].path[0].x) < 10 or self.botList[botNum].yCord != self.botList[botNum].path[0].y:
+    #             if self.botList[botNum].xCord - self.botList[botNum].path[0].x > 0:
+    #                 self.botList[botNum].tCord = np.arcsin((self.botList[botNum].yCord - self.botList[botNum].path[0].y)/(self.botList[botNum].xCord + self.botList[botNum].path[0].x)) - np.pi/2
+    #             xSpd = np.sin(self.botList[botNum].tCord)*self.botList[botNum].maxSpeed
+    #             ySpd = np.cos(self.botList[botNum].tCord)*self.botList[botNum].maxSpeed
+    #             self.botList[botNum].xCord += xSpd/self.timeStep
+    #             self.botList[botNum].yCord += ySpd/self.timeStep
+    #             print(xSpd, ySpd)
+    #             print(self.botList[botNum].xCord, self.botList[botNum].yCord)
+    #         del(self.botList[botNum].path[0])  
+
+    # def updateRobPos(self):
+    #     while self.botList[botNum].path != []:
+    #         xDist = self.botList[botNum].xCord - self.botList[botNum].path[0].x
+    #         yDist = self.botList[botNum].yCord - self.botList[botNum].path[0].y
+
 
     def drawNodes(self):
         for i in self.network.nodes:
