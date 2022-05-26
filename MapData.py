@@ -3,6 +3,8 @@ import cv2 as cv
 from cv2 import MARKER_SQUARE
 import time
 import numpy as np
+import platform
+import sys
 from Classes import partRunner
 from Classes import cart
 from Classes import environment
@@ -46,12 +48,46 @@ def startUp():
 
     return bList, g
 
+def calcSpeed(xDist, yDist, max, min):
+        dist = np.sqrt(xDist**2 + yDist**2)
+        xComp = xDist/dist
+        yComp = yDist/dist
+        if dist > max:
+            return [xComp*max, yComp*max]
+        else: 
+            spd = [xComp*dist*1.2, yComp*dist*1.2]
+            if np.sqrt(spd[0]**2 + spd[1]**2) < min:
+                return [xComp*min, yComp*min]
+            return spd
+
+def path(g, n1, n2):
+    unvisited = g.nodes.copy()
+    shortestPath = {}
+    previous = {}
+    maxVal = sys.maxsize
+    for i in unvisited:
+        shortestPath[i] = maxVal
+    shortestPath[n1] = 0
+
+    while unvisited:
+        currentMin = None
+        for i in unvisited:
+            if currentMin == None:
+                currentMin = i
+            elif shortestPath[i] < shortestPath[currentMin]:
+                currentMin = i
+        
+
 if __name__ == '__main__':
 
     # Initial running stuff
     cv.destroyAllWindows()
     bList, g = startUp()
-    env = environment("ImageFiles\BlankMap.png", bList, g)
+    if platform.system() == 'Windows':
+        file = "ImageFiles\BlankMap.png"
+    else: 
+        file = "ImageFiles/BlankMap.png"
+    env = environment(file, bList, g)
     env.updateBotMarker() 
     env.drawPaths()
     env.drawNodes()
@@ -59,14 +95,22 @@ if __name__ == '__main__':
     # Temporary setup stuff. Delete Later 
     env.botList[0].add(env.network.nodes[1])
     env.botList[0].add(env.network.nodes[3])
+    env.botList[0].add(env.network.nodes[5])
+
     env.botList[1].add(env.network.nodes[10])
-    
+    env.botList[1].add(env.network.nodes[9])
+    env.botList[1].add(env.network.nodes[8])
+
+    env.botList[2].add(env.network.nodes[8])
+    env.botList[2].add(env.network.nodes[7])
+    env.botList[2].add(env.network.nodes[8])
+
     # Nice little printy guys
     # for i in env.botList:
     #     print(i.botIndex)
     # for i in env.network.edges:
     #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
-    
+
     try:
         tS = time.monotonic_ns()
         while True:
@@ -79,23 +123,29 @@ if __name__ == '__main__':
                         continue
 
                     if (i.xCord - i.path[0].x) != 0:        # Set the angle of movement
-                        i.tCord = np.arcsin((i.yCord - i.path[0].y)/(i.xCord - i.path[0].x))
+                        i.tCord = np.arctan((i.yCord - i.path[0].y)/(i.xCord - i.path[0].x)) # - np.pi/2
+                    elif (i.yCord - i.path[0].y) > 0:
+                        i.tCord = -np.pi/2 
                     else:
-                        if (i.yCord - i.path[0].y) > 0:
-                            i.tCord = -np.pi/2
-                        else:
-                            i.tCord = np.pi/2
+                        i.tCord = np.pi/2
                     # print("Bot #:", i.botIndex, "is should be moving at an angle", i.tCord*180/np.pi)
                     # print("Its goal point is at (", i.path[0].x, ",", i.path[0].y, ")")
-                    # if abs(i.xCord - i.path[0].x) > 5: 
-                    #     i.xCord += i.maxSpeed / env.timeStep
-
+                    xDist = i.path[0].x - i.xCord
+                    yDist = i.path[0].y - i.yCord
+                    if abs(xDist) > 15 or abs(yDist) > 15: 
+                        speeds = calcSpeed(xDist, yDist, i.maxSpeed, i.minSpeed)
+                        i.xCord += speeds[0]*env.timeStep
+                        i.yCord += speeds[1]*env.timeStep
+                    else:
+                        del(i.path[0]) 
                         
                 tS = time.monotonic_ns()
 
 
     except KeyboardInterrupt: # If you want to stop the program press crtl + c
-        cv.destroyAllWindows
+        #cv.destroyAllWindows
+        # cv.imshow("Map", env.UIwBots)
+        # cv.waitKey(0)
         print("Aww, you stopped it. Whats wrong with you?")
 
     

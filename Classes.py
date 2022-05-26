@@ -4,6 +4,7 @@ from re import X
 import cv2 as cv
 import time
 from cv2 import MARKER_SQUARE
+from cv2 import MARKER_TRIANGLE_DOWN
 import numpy as np
 
 
@@ -20,7 +21,8 @@ class partRunner:
         self.path = []
         self.length = 14 # Dimensions of bot in inches
         self.width = 11
-        self.maxSpeed = 1
+        self.maxSpeed = 1000 # Speed in inches per second
+        self.minSpeed = 500
         
 
     def add(self, point):
@@ -39,7 +41,8 @@ class cart:
         self.path = []
         self.length = 36 # Dimensions of bot in inches
         self.width = 24
-        self.maxSpeed = 0.75
+        self.maxSpeed = 100
+        self.minSpeed = 50
 
     def add(self, point):
         self.path.append(point)
@@ -61,7 +64,7 @@ class environment:
     height = int(648*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
-    timeStep = 0.5
+    timeStep = 0.05
 
     def __init__(self, img, bots, graph):
         self.UI = cv.imread(img)
@@ -72,6 +75,7 @@ class environment:
 
     def robot2World(self, cords, botNum): 
         t = self.botList[botNum].tCord
+        # print(t)
         x = self.botList[botNum].xCord + cords[0]*np.cos(t) - cords[1]*np.sin(t)
         y = self.botList[botNum].yCord + cords[0]*np.sin(t) - cords[1]*np.cos(t)
 
@@ -80,17 +84,17 @@ class environment:
     def robotPoints(self, botNum):
         bot = self.botList[botNum]
         L = bot.length * 2.54 * 2 # Parameters to be adjusted for robot size and camera resolution
-        W = bot.width *2.54 * 2
+        W = bot.width * 2.54 * 2
 
-        w1 = self.robot2World((-W/2, L/2), botNum)
-        w2 = self.robot2World((W/2, L/2), botNum)
-        w3 = self.robot2World((W/2, -L/2), botNum)
-        w4 = self.robot2World((-W/2, -L/2), botNum)
+        w1 = self.robot2World((L/2, -W/2), botNum)
+        w2 = self.robot2World((L/2, W/2), botNum)
+        w3 = self.robot2World((-L/2, W/2), botNum)
+        w4 = self.robot2World((-L/2, -W/2), botNum)
     
-        p1 = (int(w1[0]*self.mapScale), self.height - int(w1[1]*self.mapScale))
-        p2 = (int(w2[0]*self.mapScale), self.height - int(w2[1]*self.mapScale))
-        p3 = (int(w3[0]*self.mapScale), self.height - int(w3[1]*self.mapScale))
-        p4 = (int(w4[0]*self.mapScale), self.height - int(w4[1]*self.mapScale))
+        p1 = (int(w1[0]*self.mapScale), int(w1[1]*self.mapScale))
+        p2 = (int(w2[0]*self.mapScale), int(w2[1]*self.mapScale))
+        p3 = (int(w3[0]*self.mapScale), int(w3[1]*self.mapScale))
+        p4 = (int(w4[0]*self.mapScale), int(w4[1]*self.mapScale))
 
         pts = np.array([p1, p2, p3, p4])
         return pts
@@ -101,25 +105,9 @@ class environment:
         for i in self.botList:
             pts = self.robotPoints(i.botIndex)
             cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
-
-    # def updateRobPos(self):
-    #     while self.botList[botNum].path != []:
-    #         while abs(self.botList[botNum].xCord - self.botList[botNum].path[0].x) < 10 or self.botList[botNum].yCord != self.botList[botNum].path[0].y:
-    #             if self.botList[botNum].xCord - self.botList[botNum].path[0].x > 0:
-    #                 self.botList[botNum].tCord = np.arcsin((self.botList[botNum].yCord - self.botList[botNum].path[0].y)/(self.botList[botNum].xCord + self.botList[botNum].path[0].x)) - np.pi/2
-    #             xSpd = np.sin(self.botList[botNum].tCord)*self.botList[botNum].maxSpeed
-    #             ySpd = np.cos(self.botList[botNum].tCord)*self.botList[botNum].maxSpeed
-    #             self.botList[botNum].xCord += xSpd/self.timeStep
-    #             self.botList[botNum].yCord += ySpd/self.timeStep
-    #             print(xSpd, ySpd)
-    #             print(self.botList[botNum].xCord, self.botList[botNum].yCord)
-    #         del(self.botList[botNum].path[0])  
-
-    # def updateRobPos(self):
-    #     while self.botList[botNum].path != []:
-    #         xDist = self.botList[botNum].xCord - self.botList[botNum].path[0].x
-    #         yDist = self.botList[botNum].yCord - self.botList[botNum].path[0].y
-
+            front = self.robot2World((100, 0), i.botIndex)
+            cv.drawMarker(self.UIwBots, (int(front[0]*self.mapScale), int(front[1]*self.mapScale)), (0, 0, 255), MARKER_TRIANGLE_DOWN, 5)
+            cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
     def drawNodes(self):
         for i in self.network.nodes:
