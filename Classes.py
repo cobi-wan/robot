@@ -137,6 +137,8 @@ class edge:
     def __init__(self, node1, node2):
         self.label = self.count
         edge.count += 1
+        self.n1 = node1
+        self.n2 = node2
         self.n1x = node1.x
         self.n1y = node1.y
         self.n2x = node2.x
@@ -153,6 +155,7 @@ class node:
         self.x = x
         self.y = y
 
+
 class graph:
     def __init__(self, nodes = None, edges = None):
         if nodes is None:
@@ -167,3 +170,14 @@ class graph:
 
     def addEdge(self, node1, node2):
         self.edges.append(edge(node1, node2))
+    
+    def getOutEdges(self, node):
+        outEdges = []
+        for i in self.edges:
+            if i.n1.label is node:
+                outEdges.append((i.n2, i.len))
+            if i.n2.label is node:
+                outEdges.append((i.n1, i.len))
+        return outEdges
+
+    

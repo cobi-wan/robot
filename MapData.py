@@ -60,7 +60,7 @@ def calcSpeed(xDist, yDist, max, min):
                 return [xComp*min, yComp*min]
             return spd
 
-def path(g, n1, n2):
+def paths(g, n1):
     unvisited = g.nodes.copy()
     shortestPath = {}
     previous = {}
@@ -69,15 +69,34 @@ def path(g, n1, n2):
         shortestPath[i] = maxVal
     shortestPath[n1] = 0
 
-    while unvisited:
+    while unvisited: 
         currentMin = None
-        for i in unvisited:
+        for i in unvisited: 
             if currentMin == None:
                 currentMin = i
-            elif shortestPath[i] < shortestPath[currentMin]:
+            elif shortestPath[i] < shortestPath[currentMin]:                
                 currentMin = i
-        
 
+        neighbors = g.getOutEdges(currentMin.label)
+        
+        for i in neighbors:
+            temp = shortestPath[currentMin] + i[1]
+            if temp < shortestPath[i[0]]:
+                shortestPath[i[0]] = temp
+                previous[i[0]] = currentMin
+        unvisited.remove(currentMin)
+    return previous, shortestPath
+
+def getResult(previous, shortest, start, target):
+    path = []
+    node = target
+
+    while node != start:
+        path.append(node)
+        node = previous[node]
+    path.append(start)
+    return reversed(path), shortest[target]
+        
 if __name__ == '__main__':
 
     # Initial running stuff
@@ -96,6 +115,7 @@ if __name__ == '__main__':
     env.botList[0].add(env.network.nodes[1])
     env.botList[0].add(env.network.nodes[3])
     env.botList[0].add(env.network.nodes[5])
+    env.botList[0].add(env.network.nodes[6])
 
     env.botList[1].add(env.network.nodes[10])
     env.botList[1].add(env.network.nodes[9])
@@ -103,7 +123,7 @@ if __name__ == '__main__':
 
     env.botList[2].add(env.network.nodes[8])
     env.botList[2].add(env.network.nodes[7])
-    env.botList[2].add(env.network.nodes[8])
+    env.botList[2].add(env.network.nodes[6])
 
     # Nice little printy guys
     # for i in env.botList:
