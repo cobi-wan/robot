@@ -72,6 +72,7 @@ class environment:
         self.UIwBots = self.UI.copy()
         self.botList = bots
         self.network = graph
+        self.activeNetwork = graph
 
     def robot2World(self, cords, botNum): 
         t = self.botList[botNum].tCord
@@ -179,5 +180,13 @@ class graph:
             if i.n2.label is node:
                 outEdges.append((i.n1, i.len))
         return outEdges
+
+    def removeEdges(self, rem):
+        print(rem)
+        t = slice(len(rem))
+        print(type(rem[t]))
+        for i in reversed(rem):
+            pass
+            # del(self.)
 
     

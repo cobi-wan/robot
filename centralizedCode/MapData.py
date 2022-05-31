@@ -60,7 +60,7 @@ def calcSpeed(xDist, yDist, max, min):
                 return [xComp*min, yComp*min]
             return spd
 
-def paths(g, n1):
+def path(g, n1):
     unvisited = g.nodes.copy()
     shortestPath = {}
     previous = {}
@@ -97,6 +97,10 @@ def getResult(previous, shortest, start, target):
     path.append(start)
     return reversed(path), shortest[target]
         
+def runDijkstras(environ, calledNodes):
+    pass
+
+
 if __name__ == '__main__':
 
     # Initial running stuff
@@ -110,20 +114,12 @@ if __name__ == '__main__':
     env.updateBotMarker() 
     env.drawPaths()
     env.drawNodes()
-    
-    # Temporary setup stuff. Delete Later 
-    env.botList[0].add(env.network.nodes[1])
-    env.botList[0].add(env.network.nodes[3])
-    env.botList[0].add(env.network.nodes[5])
-    env.botList[0].add(env.network.nodes[6])
 
-    env.botList[1].add(env.network.nodes[10])
-    env.botList[1].add(env.network.nodes[9])
-    env.botList[1].add(env.network.nodes[8])
-
-    env.botList[2].add(env.network.nodes[8])
-    env.botList[2].add(env.network.nodes[7])
-    env.botList[2].add(env.network.nodes[6])
+    previous, shortestPath = path(env.network, env.network.nodes[0])
+    for i in range(2, 5):
+        path1, length = getResult(previous, shortestPath, env.network.nodes[0], env.network.nodes[i])
+        for j in path1:
+            env.botList[i - 2].add(env.network.nodes[j.label])
 
     # Nice little printy guys
     # for i in env.botList:
@@ -160,10 +156,10 @@ if __name__ == '__main__':
                         del(i.path[0]) 
                         
                 tS = time.monotonic_ns()
-
+            
 
     except KeyboardInterrupt: # If you want to stop the program press crtl + c
-        #cv.destroyAllWindows
+        # cv.destroyAllWindows
         # cv.imshow("Map", env.UIwBots)
         # cv.waitKey(0)
         print("Aww, you stopped it. Whats wrong with you?")

@@ -2,7 +2,7 @@ import time
 from machine import Pin, PWM
 from dcmotor import DCMotor
 from robot import Robot
-from hcsr04 import HCSR04
+# from hcsr04 import HCSR04
 
 #FOUR MOTOR TEST CODE
 
@@ -29,7 +29,7 @@ backLeftPin2 = Pin(12, Pin.OUT)             #17 C
 backLeftEnable = PWM(Pin(13), frequency)    #13 C
 
 #ULTRASONIC SENSOR OBJECT
-ultrasonic = HCSR04(22,23,30000)
+# ultrasonic = HCSR04(22,23,30000)
 
 #IR SENSOR OBJECT
 IRLeft = Pin(18, Pin.IN, Pin.PULL_UP)
@@ -47,22 +47,41 @@ robot = Robot(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor)
 
 #TEST CODE
 
-delayVal = 0.005
+delayVal = 2
 speed = 15
-while True:
-    if IRLeft.value() == 0 and IRRight.value() == 0:
-        robot.forward(speed)
-        print("^")
+if __name__ == '__main__':
+    while True:
+        robot.frontLeftMotor.forward(speed)
+        print("Left Forward")
         time.sleep(delayVal)
-    elif IRLeft.value() == 1:
-        robot.turnLeft(speed/2)
-        print("<")
+
+        robot.frontRightMotor.forward(speed)
+        print("Right Forward")
         time.sleep(delayVal)
-    elif IRRight.value() == 1:
-        robot.turnRight(speed/2)
-        print(">")
+
+        robot.frontLeftMotor.backwards(speed)
+        print("Left Backward")
         time.sleep(delayVal)
-    else:
-        robot.stop()
-        print(".")
+
+        robot.frontRightMotor.forward(speed)
+        print("Right Backward")
         time.sleep(delayVal)
+# delayVal = 0.005
+# speed = 15
+# while True:
+#     if IRLeft.value() == 0 and IRRight.value() == 0:
+#         robot.forward(speed)
+#         print("^")
+#         time.sleep(delayVal)
+#     elif IRLeft.value() == 1:
+#         robot.turnLeft(speed/2)
+#         print("<")
+#         time.sleep(delayVal)
+#     elif IRRight.value() == 1:
+#         robot.turnRight(speed/2)
+#         print(">")
+#         time.sleep(delayVal)
+#     else:
+#         robot.stop()
+#         print(".")
+#         time.sleep(delayVal)
