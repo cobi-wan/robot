@@ -113,6 +113,7 @@ class environment:
     def drawNodes(self):
         for i in self.network.nodes:
             cv.drawMarker(self.UI, (int(i.x*self.mapScale), int(i.y*self.mapScale)), (255, 0, 0), MARKER_SQUARE, 6)
+            cv.putText(self.UI, str(i.label), (int(i.x*self.mapScale) + 10, int(i.y*self.mapScale) + 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
 
     def drawPaths(self):
         for i in self.network.edges:
@@ -182,11 +183,9 @@ class graph:
         return outEdges
 
     def removeEdges(self, rem):
-        print(rem)
         t = slice(len(rem))
-        print(type(rem[t]))
         for i in reversed(rem):
-            pass
-            # del(self.)
+            del(self.edges[i])
+            
 
     
