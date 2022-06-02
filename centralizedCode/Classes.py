@@ -13,16 +13,25 @@ class partRunner:
     numBots = 0
     
     def __init__(self, x, y, t):
+        # Bot Number 
         self.botIndex = self.numBots
         partRunner.numBots += 1
+
+        # Self coordinates. Updated in main loop. 
         self.xCord = x
         self.yCord = y
         self.tCord = t
+
+        # Path updating variables
+        self.currGoal = None
+        self.arrived = False
         self.path = []
+
+        # Dimensions and speed values
         self.length = 14 # Dimensions of bot in inches
         self.width = 11
-        self.maxSpeed = 1000 # Speed in inches per second
-        self.minSpeed = 500
+        self.maxSpeed = 1000 # Speed in inches per second. To be calibrated later
+        self.minSpeed = 100
         
 
     def add(self, point):
@@ -33,16 +42,25 @@ class cart:
     numBots = 0
     
     def __init__(self, x, y, t):
+        # Bot number
         self.botIndex = self.numBots
         cart.numBots += 1
+
+        # Self coordinates. Updated in main loop.
         self.xCord = x
         self.yCord = y
         self.tCord = t
+
+        # Path updating variables
+        self.currGol = None
+        self.arrived = False
         self.path = []
+
+        # Dimensions and speed values
         self.length = 36 # Dimensions of bot in inches
         self.width = 24
-        self.maxSpeed = 100
-        self.minSpeed = 50
+        self.maxSpeed = 1000 # Speed in inches per second. To be calibrated later
+        self.minSpeed = 800
 
     def add(self, point):
         self.path.append(point)
@@ -59,24 +77,30 @@ class cart:
 ## MAP Class Definition ## 
 class environment:
     mapScale = 0.1 
-    worldScale = 10
-    width = int(1152*worldScale*mapScale)
-    height = int(648*worldScale*mapScale)
+    worldScale = 5
+    width = int(8192*worldScale*mapScale)
+    height = int(4608*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
     timeStep = 0.05
+    accuracy = 15
+    calcRate = 5
+    RFID_Dist2Node = 50
 
-    def __init__(self, img, bots, graph):
+    def __init__(self, img, bots, graph, stopList):
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
         self.UIwBots = self.UI.copy()
         self.botList = bots
         self.network = graph
         self.activeNetwork = graph
-
+        self.stops = {}
+        for i in stopList:
+            stopList[i].insert(0, 0)
+            self.stops[self.botList[i]] = stopList[i]
+        
     def robot2World(self, cords, botNum): 
         t = self.botList[botNum].tCord
-        # print(t)
         x = self.botList[botNum].xCord + cords[0]*np.cos(t) - cords[1]*np.sin(t)
         y = self.botList[botNum].yCord + cords[0]*np.sin(t) - cords[1]*np.cos(t)
 
@@ -100,7 +124,6 @@ class environment:
         pts = np.array([p1, p2, p3, p4])
         return pts
 
-
     def updateBotMarker(self):
         self.UIwBots = self.UI.copy()
         for i in self.botList:
@@ -108,7 +131,11 @@ class environment:
             cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
             front = self.robot2World((100, 0), i.botIndex)
             cv.drawMarker(self.UIwBots, (int(front[0]*self.mapScale), int(front[1]*self.mapScale)), (0, 0, 255), MARKER_TRIANGLE_DOWN, 5)
-            cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+            cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 1)
+            if i.arrived == True:
+                cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + " Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+            else: 
+                cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + ', '.join(str(i) for i in self.stops[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
     def drawNodes(self):
         for i in self.network.nodes:

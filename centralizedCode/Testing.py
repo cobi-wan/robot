@@ -10,103 +10,76 @@ from Classes import node
 from Classes import graph
 
 def startUp():
-    fileName = "nodeLocations.csv"
+    fileName = "testingNodeLocations.csv"
     nodes = []
     edges = []
-    rows = []
+    # Read in nodes and edges from filename
     with open(fileName, 'r') as csvfile:
         csvreader = csv.reader(csvfile)
-        next(csvreader)
+        next(csvreader) # Skip the first line
         for row in csvreader:
             nodes.append(node(int(row[1]), int(row[2])))
             for i in row[3:]:
                 if i != '':
                     edges.append(edge(nodes[int(i)], nodes[int(row[0])]))
-            print()
-        print("Total no of rows: %d"%(csvreader.line_num))
-    
-    for i in edges:
-        print("Node 1: ", i.n1.label, "Node 2: ", i.n2.label)
-    # for i in nodes:
-    #     print("Node: ", i.label, "X: ", i.x, "Y: ", i.y)
-    
+            # print()
+        # print("Total no of rows: %d"%(csvreader.line_num))
 
-    
+    g = graph(nodes, edges)
+    b1 = partRunner(nodes[1].x, nodes[0].y, 0)
+    b2 = partRunner(nodes[1].x, nodes[0].y, np.pi/2)
+    b3 = partRunner(nodes[1].x, nodes[0].y, np.pi)
+    bList = np.array([b1, b2, b3])
 
-    # g = graph(nodes, edges)
+    return bList, g
 
-    # b1 = partRunner(nodes[0].x, nodes[0].y, 0)
-    # b2 = partRunner(nodes[0].x, nodes[0].y, np.pi/2)
-    # b3 = partRunner(nodes[0].x, nodes[0].y, np.pi)
-    # bList = np.array([b1, b2, b3])
+def path(g, n1):
+    unvisited = g.nodes.copy() # Set all nodes to unvisited
+    shortestPath = {}
+    previous = {}
+    maxVal = sys.maxsize
+    for i in unvisited: # Set the shortestPath to all nodes to the max system size
+        shortestPath[i] = maxVal
+    shortestPath[n1] = 0 # Shortest path to the current node is 0
 
-    # return bList, g
+    # While 
+    while unvisited: 
+        currentMin = None
+        for i in unvisited: 
+            # print("Node:", i.label, "Shortestpath:", shortestPath[i])
+            if currentMin == None: # Start at first node in unvisited
+                currentMin = i
+            elif shortestPath[i] < shortestPath[currentMin]:                
+                currentMin = i
+        # print(currentMin.label)
+        # print()
+        neighbors = g.getOutEdges(currentMin.label)
+        print(currentMin.label, shortestPath[currentMin])
+        for i in neighbors:
+            temp = shortestPath[currentMin] + i[1]
+            print(temp)
+            if temp < shortestPath[i[0]]:
+                shortestPath[i[0]] = temp
+                previous[i[0]] = currentMin
+        print()
+        unvisited.remove(currentMin)
+    return previous, shortestPath
 
 
-# def paths(g, n1):
-#     unvisited = g.nodes.copy()
-#     shortestPath = {}
-#     previous = {}
-#     maxVal = sys.maxsize
-#     for i in unvisited:
-#         shortestPath[i] = maxVal
-#     shortestPath[n1] = 0
+if __name__ == '__main__':
 
-#     while unvisited:                                                        # While there are still unvisited nodes
-#         currentMin = None
-#         for i in unvisited:                                                 # Loop through all unvisited nodes
-#             if currentMin == None:
-#                 currentMin = i                                              # Set the current minimum node to the first in unvisited
-#             elif shortestPath[i] < shortestPath[currentMin]:                
-#                 currentMin = i
+    # Initial running stuff
+    cv.destroyAllWindows()
 
-#         neighbors = g.getOutEdges(currentMin.label)
-        
-#         for i in neighbors:
-#             temp = shortestPath[currentMin] + i[1]
-#             if temp < shortestPath[i[0]]:
-#                 shortestPath[i[0]] = temp
-#                 previous[i[0]] = currentMin
-#         unvisited.remove(currentMin)
-#     return previous, shortestPath
+    bList, g = startUp()
+    file = "ImageFiles\BlankMap.png"
+    # Create environment and draw items given in setup
+    env = environment(file, bList, g)
+    env.updateBotMarker() 
+    env.drawPaths()
+    env.drawNodes()
+    prev, shortest = path(env.network, env.network.nodes[0])
 
-# def getResult(previous, shortest, start, target):
-#     path = []
-#     node = target
-
-#     while node != start:
-#         path.append(node)
-#         node = previous[node]
-#     path.append(start)
-#     return reversed(path), shortest[target]
-
-# [bList, g] = startUp()
-# previous, p = paths(g, g.nodes[8])
-# path1, length = getResult(previous, p, g.nodes[8], g.nodes[5])
-
-# for i in path1:
-#     print(i.label)
-# print(length)
-# for i in p:
-#     print(p[i])
-#     print()
-
-# print(type(previous))
-# for i in previous:
-#     print(previous[i].label)
-
-# [bList, g] = startUp()
-# for i in g.edges:
-#     print(i.label)
-# print()
-# print(len(g.edges))
-# print()
-# g.removeEdges([0, 1, 2, 3, 4, 5, 6, 7])
-# print()
-# for i in g.edges:
-#     print(i.label)
-# print()
-# print(len(g.edges))
-# print()
-
-startUp()
+    env.updateBotMarker()
+    cv.imshow("Map", env.UIwBots)
+    cv.waitKey()
