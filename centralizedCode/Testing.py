@@ -65,21 +65,19 @@ def path(g, n1):
         unvisited.remove(currentMin)
     return previous, shortestPath
 
+def test():
+        # Initial running stuff
+        cv.destroyAllWindows()
 
-if __name__ == '__main__':
+        bList, g = startUp()
+        file = "ImageFiles\BlankMap.png"
+        # Create environment and draw items given in setup
+        env = environment(file, bList, g)
+        env.updateBotMarker() 
+        env.drawPaths()
+        env.drawNodes()
+        prev, shortest = path(env.network, env.network.nodes[0])
 
-    # Initial running stuff
-    cv.destroyAllWindows()
-
-    bList, g = startUp()
-    file = "ImageFiles\BlankMap.png"
-    # Create environment and draw items given in setup
-    env = environment(file, bList, g)
-    env.updateBotMarker() 
-    env.drawPaths()
-    env.drawNodes()
-    prev, shortest = path(env.network, env.network.nodes[0])
-
-    env.updateBotMarker()
-    cv.imshow("Map", env.UIwBots)
-    cv.waitKey()
+        env.updateBotMarker()
+        cv.imshow("Map", env.UIwBots)
+        cv.waitKey()

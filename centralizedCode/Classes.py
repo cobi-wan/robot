@@ -82,7 +82,7 @@ class environment:
     height = int(4608*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
-    timeStep = 0.05
+    timeStep = 0.5
     accuracy = 15
     calcRate = 5
     RFID_Dist2Node = 50

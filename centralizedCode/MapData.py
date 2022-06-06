@@ -9,6 +9,7 @@ import numpy as np
 import platform
 import sys
 import csv
+import threading
 from Classes import partRunner
 from Classes import cart
 from Classes import environment
@@ -87,7 +88,7 @@ def path(g, n1):
 
 
 # Evaluate the result of Dijkstras and return the node ordered path
-def getResult(previous, shortest, start, target):
+def getResult(previous, shortest, start, target, env):
     path = []
     if len(previous) != len(env.network.nodes) - 2:
         raise Exception("Invalid path length")
@@ -115,7 +116,7 @@ def runDijkstras(environ, calledNodes):
     # Calcualte the shortest path from the current node to all others
     previous, shortestPath = path(environ.network, environ.network.nodes[curr])
     # Calculate the path from the current node to the destination. If you want the time taken return the length variable below
-    path1, length = getResult(previous, shortestPath, environ.network.nodes[curr], environ.network.nodes[dest])
+    path1, length = getResult(previous, shortestPath, environ.network.nodes[curr], environ.network.nodes[dest], environ)
     # Add nodes needed to reach path to the robots path
     for i in path1:
         environ.botList[botNum].add(environ.network.nodes[i.label])
@@ -125,7 +126,7 @@ def runDijkstras(environ, calledNodes):
 # Guesses node 0 if not at a node
 def getCurrLocation(environ, botNum):
     for i in environ.network.nodes:
-        if abs(environ.botList[botNum].xCord - i.x) < env.accuracy and abs(environ.botList[botNum].yCord - i.y) < env.accuracy:
+        if abs(environ.botList[botNum].xCord - i.x) < environ.accuracy and abs(environ.botList[botNum].yCord - i.y) < environ.accuracy:
             return i
     print("Help me Im lost")
     return environ.network.nodes[0]
@@ -145,8 +146,8 @@ def calcBotPos(environ):
             i.tCord = np.pi/2
         xDist = i.path[0].x - i.xCord
         yDist = i.path[0].y - i.yCord
-        if abs(xDist) > env.accuracy or abs(yDist) > env.accuracy: 
-            speeds = calcSpeed(xDist, yDist, i.maxSpeed, i.minSpeed, env.RFID_Dist2Node)
+        if abs(xDist) > environ.accuracy or abs(yDist) > environ.accuracy: 
+            speeds = calcSpeed(xDist, yDist, i.maxSpeed, i.minSpeed, environ.RFID_Dist2Node)
             i.xCord += speeds[0]*environ.timeStep
             i.yCord += speeds[1]*environ.timeStep
         else:
@@ -155,7 +156,7 @@ def calcBotPos(environ):
                 i.arrived = True
 
 
-if __name__ == '__main__':
+def mapping():
 
     # Initial running stuff
     cv.destroyAllWindows()
@@ -186,27 +187,25 @@ if __name__ == '__main__':
     # for i in env.network.edges:
     #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
 
-    try:
-        tS = time.monotonic_ns()
-        while True:
-            if time.monotonic_ns() - tS > 1000000 * env.timeStep:
-                env.updateBotMarker()                   # Update map
-                cv.imshow("Map", env.UIwBots)           # Show map
-                cv.waitKey(int(env.timeStep*1000))      # Hold frame for one timestep
-                calcBotPos(env)                         # Update each bots location
-                tS = time.monotonic_ns()                # Wait till the next frame is ready. 
-            
-            # Once the bots reach their destination send them back to the origin
-            for i in env.botList:
-                if i.path == [] and len(env.stops[i]) != 1:
-                    del(env.stops[i][0])
-                    # Find where they are and calculate shortest route back to origin
-                    t = getCurrLocation(env, i.botIndex)
-                    runDijkstras(env, [i.botIndex, [t.label, env.stops[i][0]]])
+    
+    env.updateBotMarker()                   # Update map
+    cv.imshow("Map", env.UIwBots)           # Show map
+    cv.waitKey(int(env.timeStep*1000))      # Hold frame for one timestep
+    calcBotPos(env)                         # Update each bots location
+    tS = time.monotonic_ns()                # Wait till the next frame is ready. 
+        
+        # Once the bots reach their destination send them back to the origin
+    for i in env.botList:
+        if i.path == [] and len(env.stops[i]) != 1:
+            del(env.stops[i][0])
+            # Find where they are and calculate shortest route back to origin
+            t = getCurrLocation(env, i.botIndex)
+            runDijkstras(env, [i.botIndex, [t.label, env.stops[i][0]]])
 
-    except KeyboardInterrupt: # If you want to stop the program press crtl + c
-        # cv.imshow("Map", env.UIwBots)
-        # cv.waitKey()
-        print("Aww, you stopped it. Whats wrong with you?")
+    return env
+    # except KeyboardInterrupt: # If you want to stop the program press crtl + c
+    #     # cv.imshow("Map", env.UIwBots)
+    #     # cv.waitKey()
+    #     print("Aww, you stopped it. Whats wrong with you?")
 
     
