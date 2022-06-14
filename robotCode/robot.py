@@ -3,22 +3,22 @@ class Robot():
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
 
-    def forward(self, speed):
-        self.leftMotor.forward(speed)
-        self.rightMotor.forward(speed)
-
-    def reverse(self, speed):
-        self.leftMotor.backwards(speed)
-        self.rightMotor.backwards(speed)
-
     def left(self, speed):
-        self.leftMotor.backwards(speed)
-        self.rightMotor.forward(speed)
+        self.leftMotor.off()
+        self.rightMotor.high(speed)
 
     def right(self, speed):
-        self.leftMotor.forward(speed)
-        self.rightMotor.backwards(speed)
+        self.leftMotor.high(speed)
+        self.rightMotor.off()
+        
+    def forward(self, speed):
+        self.leftMotor.high(speed)
+        self.rightMotor.high(speed)
+
+    def reverse(self, speed):
+        self.leftMotor.low(speed)
+        self.rightMotor.low(speed)
 
     def stop(self):
-        self.leftMotor.stop()
-        self.rightMotor.stop()
+        self.leftMotor.off()
+        self.rightMotor.off()
