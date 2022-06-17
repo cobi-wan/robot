@@ -1,7 +1,9 @@
 class Robot():
-    def __init__(self, leftMotor, rightMotor):
+    def __init__(self, leftMotor, rightMotor, client):
+        self.nodeList = []
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
+        self.client = client
 
     def left(self, speed):
         self.leftMotor.off()
@@ -22,3 +24,11 @@ class Robot():
     def stop(self):
         self.leftMotor.off()
         self.rightMotor.off()
+
+    def addStop(self, node):
+        self.nodeList.append(node)
+
+    def removeStop(self, node):
+        # RFID tag nonsense
+        self.nodeList.pop(node)
+        # msg sendback nonsense
