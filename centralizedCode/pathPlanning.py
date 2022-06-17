@@ -1,49 +1,7 @@
-from cProfile import run
-from logging import exception
-from re import M
-from turtle import update
 import cv2 as cv
-from cv2 import MARKER_SQUARE
 import time
 import numpy as np
-import platform
 import sys
-import csv
-import threading
-from Classes import partRunner
-from Classes import cart
-from Classes import environment
-from Classes import edge
-from Classes import node
-from Classes import graph
-
-
-# Reads in mapping file that specifies node locations and paths
-def startUp():
-    fileName = "nodeLocations.csv"
-    nodes = []
-    edges = []
-    # Read in nodes and edges from filename
-    with open(fileName, 'r') as csvfile:
-        csvreader = csv.reader(csvfile)
-        next(csvreader) # Skip the first line. When saving the CSV it always has weird charaters at the first index. 
-        # Iterate through each row in the file. Each row has a node location and a list of nodes it is connected to 
-        # Each connection must be to a node that is already created 
-        for row in csvreader: 
-            nodes.append(node(int(row[1]), int(row[2])))
-            for i in row[3:]:
-                if i != '':
-                    edges.append(edge(nodes[int(i)], nodes[int(row[0])]))
-
-    g = graph(nodes, edges)
-
-    b1 = partRunner(nodes[1].x, nodes[1].y, 0)
-    b2 = partRunner(nodes[1].x, nodes[1].y, np.pi/2)
-    # b3 = partRunner(nodes[1].x, nodes[1].y, np.pi)
-    bList = np.array([b1, b2])
-
-    return bList, g
-
 
 # Calculate the speed the robot should be moving
 def calcSpeed(xDist, yDist, max, min, RFID_Dist):
@@ -156,56 +114,19 @@ def calcBotPos(environ):
                 i.arrived = True
 
 
-def mapping():
-
-    # Initial running stuff
-    cv.destroyAllWindows()
-
-    # Run startup procedure to read in nodes and create network 
-    bList, g = startUp()
-
-    # Load in blank image in given folder. Allow for Windows and Mac OS
-    if platform.system() == 'Windows':
-        file = "ImageFiles\BlankMap.png"
-    else: 
-        file = "ImageFiles/BlankMap.png"
+def mapping(environ):
+ 
+    environ.updateBotMarker()                   # Update map
+    cv.imshow("Map", environ.UIwBots)           # Show map
+    cv.waitKey(int(environ.timeStep*1000))      # Hold frame for one timestep
+    calcBotPos(environ)                         # Update each bots location
+    tS = time.monotonic_ns()                    # Wait till the next frame is ready. 
     
-    # Create environment and draw items given in setup
-    stop = {0: [23, 21, 1], 1: [21, 23, 1]}
-    
-    env = environment(file, bList, g, stop)
-    env.updateBotMarker() 
-    env.drawPaths()
-    env.drawNodes()
-    print("*******************")
-    print("Network Initialized")
-    print("*******************")
-    
-    # Nice little printy guys
-    # for i in env.botList:
-    #     print(i.botIndex)
-    # for i in env.network.edges:
-    #     print(i.label, ": (", i.n1.x, ", ", i.n1.y, "), (", i.n2.x, ", ", i.n2.y, ")")
-
-    
-    env.updateBotMarker()                   # Update map
-    cv.imshow("Map", env.UIwBots)           # Show map
-    cv.waitKey(int(env.timeStep*1000))      # Hold frame for one timestep
-    calcBotPos(env)                         # Update each bots location
-    tS = time.monotonic_ns()                # Wait till the next frame is ready. 
-        
-        # Once the bots reach their destination send them back to the origin
-    for i in env.botList:
-        if i.path == [] and len(env.stops[i]) != 1:
-            del(env.stops[i][0])
+    for i in environ.botList:
+        if i.path == [] and len(environ.stops[i]) != 1:
+            del(environ.stops[i][0])
             # Find where they are and calculate shortest route back to origin
-            t = getCurrLocation(env, i.botIndex)
-            runDijkstras(env, [i.botIndex, [t.label, env.stops[i][0]]])
+            currNode = getCurrLocation(environ, i.botIndex)
+            runDijkstras(environ, [i.botIndex, [currNode.label, environ.stops[i][0]]])
 
-    return env
-    # except KeyboardInterrupt: # If you want to stop the program press crtl + c
-    #     # cv.imshow("Map", env.UIwBots)
-    #     # cv.waitKey()
-    #     print("Aww, you stopped it. Whats wrong with you?")
-
-    
+    return environ

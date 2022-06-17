@@ -1,4 +1,5 @@
 import time
+from micropython-mqtt/mqtt_as import MQTTClient, config
 from machine import Pin, PWM
 from dcmotor import DCMotor
 from robot import Robot
@@ -38,8 +39,6 @@ ultrasonic = Ultrasonic(22,23,30000)
 #TEST CODE
 
 if __name__ == '__main__':
-    while True:
-        print(IRLeft.value())
         # distance = ultrasonic.distance_cm()
         # while distance < 10:
         #     robot.stop()
