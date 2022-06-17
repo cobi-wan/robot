@@ -83,6 +83,7 @@ robot = Robot(leftMotor, rightMotor, client=init_client())
 ########################################################################
 
 if __name__ == '__main__':
+<<<<<<< HEAD
 
     subscribe(robot.client,'Test')
     
@@ -103,3 +104,43 @@ if __name__ == '__main__':
                     robot.right(1)
                     print('right')
                     print(IRLeft.value(),IRRight.value())
+=======
+<<<<<<< HEAD
+        # distance = ultrasonic.distance_cm()
+        # while distance < 10:
+        #     robot.stop()
+        #     distance = ultrasonic.distance_cm()
+        #     time.sleep(0.1)
+        #     if distance > 10:
+        #         break
+        #     print('obstacle detected')
+        # robot.forward(5)
+        # print('straight')
+        # if not IRLeft.value():
+        #     robot.right(5)
+        #     print('right')
+        #     time.sleep(.2)
+        # if not IRRight.value():
+        #     print('left')
+        #     robot.left(5)
+        #     time.sleep(.2)
+=======
+    while True:
+        robot.left(1)
+        # print(IRLeft.value(),IRRight.value())
+        # if IRLeft.value() == 0 and IRRight.value() == 0:
+        #     robot.forward(1)
+        #     print('forward')
+        # else:
+        #     if IRLeft.value():
+        #         while IRLeft.value():
+        #             robot.left(1)
+        #             print('left')
+        #             print(IRLeft.value(),IRRight.value())
+        #     if IRRight.value():
+        #         while IRRight.value():
+        #             robot.right(1)
+        #             print('right')
+        #             print(IRLeft.value(),IRRight.value())
+>>>>>>> b107dc6c33e60fe8b9862f559ddba64d1b03deb7
+>>>>>>> ae51f847c5bd7f6631bc3484d703665fc071cb07

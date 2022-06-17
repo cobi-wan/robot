@@ -1,8 +1,5 @@
-from codecs import BOM_UTF16_BE
 from itertools import count
-from re import X
 import cv2 as cv
-import time
 from cv2 import MARKER_SQUARE
 from cv2 import MARKER_TRIANGLE_DOWN
 import numpy as np
@@ -82,7 +79,7 @@ class environment:
     height = int(4608*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
-    timeStep = 0.5
+    timeStep = 0.02
     accuracy = 15
     calcRate = 5
     RFID_Dist2Node = 50
@@ -93,7 +90,7 @@ class environment:
         self.UIwBots = self.UI.copy()
         self.botList = bots
         self.network = graph
-        self.activeNetwork = graph
+        # self.activeNetwork = graph
         self.stops = {}
         for i in stopList:
             stopList[i].insert(0, 0)
