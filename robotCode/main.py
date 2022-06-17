@@ -39,7 +39,6 @@ ultrasonic = Ultrasonic(22,23,30000)
 #TEST CODE
 
 if __name__ == '__main__':
-<<<<<<< HEAD
         # distance = ultrasonic.distance_cm()
         # while distance < 10:
         #     robot.stop()
@@ -58,7 +57,6 @@ if __name__ == '__main__':
         #     print('left')
         #     robot.left(5)
         #     time.sleep(.2)
-=======
     while True:
         robot.left(1)
         # print(IRLeft.value(),IRRight.value())
@@ -76,4 +74,3 @@ if __name__ == '__main__':
         #             robot.right(1)
         #             print('right')
         #             print(IRLeft.value(),IRRight.value())
->>>>>>> b107dc6c33e60fe8b9862f559ddba64d1b03deb7

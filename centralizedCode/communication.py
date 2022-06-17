@@ -1,3 +1,4 @@
+from base64 import decode
 import paho.mqtt.client as mqtt
 import time
 
@@ -6,15 +7,18 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("#")
 
 def on_message(client, userdata, msg):
-    if msg.topic == "Remote/enter":
-        nodeNum = input(msg.payload)
-    if str(msg.payload) == "b'server connection initialized...'":
-        time.sleep(2)
-        client.publish("Test", "Send back")
+    if msg.topic == "Remote/verify":
+        if int(msg.payload) < userdata.network.nodeNum:
+            client.publish("Remote/"+msg.payload.decode(), payload="Valid")
+        else:
+            client.publish("Remote/"+msg.payload.decode(), payload="Invalid")
+
+    if msg.topic == "BotReq":
+        pass # On monday add a way to discern the first free bot and send it to the requested node
     print(msg.topic+" "+str(msg.payload))
 
-def connect():
-    client = mqtt.Client("Paho")
+def connect(env):
+    client = mqtt.Client("Server", userdata=env)
     client.on_connect = on_connect
     client.on_message = on_message
 

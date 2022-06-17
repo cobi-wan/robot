@@ -190,6 +190,10 @@ class graph:
         if edges is None:
             edges = []
         self.edges = edges
+        self.nodeNum = 0
+        for i in nodes:
+            if i.label > self.nodeNum:
+                self.nodeNum = i.label
     
     def addNode(self, node):
         self.nodes.append(node)

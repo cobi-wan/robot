@@ -69,14 +69,16 @@ if __name__ == "__main__":
     print("Network Initialized")
     print("*******************")
     ts = time.monotonic_ns()
-    mqtt = connect()
+    mqtt = connect(env)
     mqtt.loop_start()
 
     try: 
         while True:
-            # pass
-            if time.monotonic_ns() >= ts + env.timeStep:
-                mapping(env)
+            # mqtt.publish("Test", payload="AAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHH")
+            # time.sleep(2)
+            pass
+            # if time.monotonic_ns() >= ts + env.timeStep:
+            #     mapping(env)
     except KeyboardInterrupt:
         print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
