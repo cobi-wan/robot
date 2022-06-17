@@ -7,19 +7,19 @@ class DCMotor:
         self.min_duty = min_duty
         self.max_duty = max_duty
 
-    def forward(self, speed):
+    def high(self, speed):
         self.speed = speed
         self.enable_pin.duty(self.duty_cycle(self.speed))
         self.pin1.value(0)
         self.pin2.value(1)
 
-    def backwards(self, speed):
+    def low(self, speed):
         self.speed = speed
         self.enable_pin.duty(self.duty_cycle(self.speed))
         self.pin1.value(1)
         self.pin2.value(0)
 
-    def stop(self):
+    def off(self):
         self.enable_pin.duty(0)
         self.pin1.value(0)
         self.pin2.value(1)

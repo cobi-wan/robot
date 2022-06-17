@@ -5,8 +5,8 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code :"+str(rc))
 
 def on_message(client, userdata, msg):
-    if msg.topic == "SysInfo/nodeNum":
-        
+    if msg.topic == "Remote/verify/"+nodeNum:
+        nodeNum = input(str(msg.payload))
     if str(msg.payload) == "b'server connection initialized...'":
         time.sleep(2)
         client.publish("Test", "Send back")
@@ -23,8 +23,7 @@ def connect():
 
 if __name__ == "__main__":
     client = connect()
-    client.subscribe("SysInfo/nodeNum")
-    while
     nodeNum = input("Please enter the node number that this process is running at: ")
+    client.publish("")
     while len(nodeNum) != 1:
         nodeNum = input("Enter a number in the node range")
