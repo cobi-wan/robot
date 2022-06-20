@@ -75,8 +75,8 @@ class cart:
 class environment:
     mapScale = 0.1 
     worldScale = 5
-    width = int(8192*worldScale*mapScale)
-    height = int(4608*worldScale*mapScale)
+    width = int(2873*worldScale*mapScale)
+    height = int(1615*worldScale*mapScale)
     dimensions = (width, height)
     botList = np.array([])
     timeStep = 0.02

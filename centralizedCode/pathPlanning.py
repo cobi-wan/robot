@@ -120,7 +120,6 @@ def mapping(environ):
     cv.imshow("Map", environ.UIwBots)           # Show map
     cv.waitKey(int(environ.timeStep*1000))      # Hold frame for one timestep
     calcBotPos(environ)                         # Update each bots location
-    tS = time.monotonic_ns()                    # Wait till the next frame is ready. 
     
     for i in environ.botList:
         if i.path == [] and len(environ.stops[i]) != 1:

@@ -1,4 +1,5 @@
 from cProfile import run
+from concurrent.futures import process
 from logging import exception
 from re import M
 from turtle import update
@@ -16,7 +17,27 @@ from Classes import node
 from Classes import graph
 from pathPlanning import mapping
 from communication import connect
+from flask import Flask, render_template, request, Response
+from multiprocessing import Process
 
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+
+    return render_template('index.html')
+
+def updateMap(env):
+        try: 
+            ts = time.monotonic_ns()
+            while True:
+                print('running')
+                # pass
+                if time.monotonic_ns() >= ts + env.timeStep:
+                    ts = time.monotonic_ns()
+                    mapping(env)
+        except KeyboardInterrupt:
+            print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
 # Reads in mapping file that specifies node locations and paths
 def startUp():
@@ -60,7 +81,7 @@ if __name__ == "__main__":
     
     # Create environment and draw items given in setup
     stop = {0: [23, 21, 1], 1: [21, 23, 1]}
-    
+
     env = environment(file, bList, g, stop)
     env.updateBotMarker() 
     env.drawPaths()
@@ -72,12 +93,9 @@ if __name__ == "__main__":
     mqtt = connect()
     mqtt.loop_start()
 
-    try: 
-        while True:
-            # pass
-            if time.monotonic_ns() >= ts + env.timeStep:
-                mapping(env)
-    except KeyboardInterrupt:
-        print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
+    p = Process(target=updateMap, args=(env,))
+    p.start()
+    app.run(debug=True, use_reloader=False)
+    p.join()
     
