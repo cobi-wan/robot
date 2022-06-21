@@ -30,14 +30,14 @@ def index():
 def UI():
     return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
 
-def updateMap(env):
+def updateMap(environ, client):
         try: 
             ts = time.monotonic_ns()
             while True:
-                if time.monotonic_ns() >= ts + env.timeStep:
+                if time.monotonic_ns() >= ts + environ.timeStep:
                     ts = time.monotonic_ns()
-                    mapping(env)
-                    img = env.UIwBots
+                    mapping(environ, client)
+                    img = environ.UIwBots
                     _, img_encoded = cv.imencode('.jpg', img)
                     frame = img_encoded.tobytes()
                     yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -99,7 +99,8 @@ if __name__ == "__main__":
     mqtt.loop_start()
     ts = time.monotonic_ns()
 
-    p = Process(target=updateMap, args=(env,))
+    arg_1 = (env, mqtt)
+    p = Process(target=updateMap, args=(env, mqtt, ))
     p.start()
     app.run(debug=True, use_reloader=False)
     p.join()
