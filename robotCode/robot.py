@@ -1,17 +1,17 @@
 class Robot():
-    def __init__(self, leftMotor, rightMotor, client):
+    def __init__(self, leftMotor, rightMotor): #client):
         self.nodeList = []
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
-        self.client = client
+        #self.client = client
 
     def left(self, speed):
-        self.leftMotor.off()
+        self.leftMotor.low(speed)
         self.rightMotor.high(speed)
 
     def right(self, speed):
         self.leftMotor.high(speed)
-        self.rightMotor.off()
+        self.rightMotor.low(speed)
         
     def forward(self, speed):
         self.leftMotor.high(speed)

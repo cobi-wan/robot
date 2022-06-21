@@ -73,7 +73,7 @@ leftMotor = DCMotor(leftPin1, leftPin2, leftPWM, MIN_DUTY, MAX_DUTY, speed=0)
 rightMotor = DCMotor(rightPin1, rightPin2, rightPWM, MIN_DUTY, MAX_DUTY, speed=0)
 
 #ROBOT OBJECT/CLIENT INITIALIZATION
-robot = Robot(leftMotor, rightMotor, client=init_client())
+robot = Robot(leftMotor, rightMotor)# , client=init_client())
 
 
 
@@ -84,22 +84,21 @@ robot = Robot(leftMotor, rightMotor, client=init_client())
 
 if __name__ == '__main__':
 
-    subscribe(robot.client,'Test')
+    #subscribe(robot.client,'Test')
     
     while True:
-        robot.client.check_msg()
-        print('in the loop')
+        # print(IRLeft.value(),IRRight.value())
+        
+        # robot.client.check_msg()
         if IRLeft.value() == 0 and IRRight.value() == 0:
-            robot.forward(1)
+            robot.forward(20)
             print('forward')
         else:
             if IRLeft.value():
                 while IRLeft.value():
-                    robot.left(1)
+                    robot.left(20)
                     print('left')
-                    print(IRLeft.value(),IRRight.value())
             if IRRight.value():
                 while IRRight.value():
-                    robot.right(1)
+                    robot.right(20)
                     print('right')
-                    print(IRLeft.value(),IRRight.value())
