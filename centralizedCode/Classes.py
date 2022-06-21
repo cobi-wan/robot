@@ -3,6 +3,8 @@ import cv2 as cv
 from cv2 import MARKER_SQUARE
 from cv2 import MARKER_TRIANGLE_DOWN
 import numpy as np
+import sys
+from communication import send_update
 
 
 ## Robot Class Definitions ##
@@ -23,6 +25,8 @@ class partRunner:
         self.currGoal = None
         self.arrived = False
         self.path = []
+        self.dist_to_dest = 0
+        self.dist_to_end = 0
 
         # Dimensions and speed values
         self.length = 14 # Dimensions of bot in inches
@@ -52,6 +56,8 @@ class cart:
         self.currGol = None
         self.arrived = False
         self.path = []
+        self.dist_to_dest = 0
+        self.dist_to_end = 0
 
         # Dimensions and speed values
         self.length = 36 # Dimensions of bot in inches
@@ -84,17 +90,21 @@ class environment:
     calcRate = 5
     RFID_Dist2Node = 50
 
-    def __init__(self, img, bots, graph, stopList):
+    def __init__(self, img, bots, graph, destinations):
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
         self.UIwBots = self.UI.copy()
         self.botList = bots
         self.network = graph
         # self.activeNetwork = graph
-        self.stops = {}
-        for i in stopList:
-            stopList[i].insert(0, 0)
-            self.stops[self.botList[i]] = stopList[i]
+        self.destination_list = {}
+        for i in self.botList:
+            self.destination_list[i] = [0]
+        for i in destinations:
+            # destinations[i].insert(0, 0) # Ensure the bot always starts at node 0
+            # for j in destinations[i]:
+            self.addStop(i)
+            # self.destination_list[self.botList[i]] = destinations[i]
         
     def robot2World(self, cords, botNum): 
         t = self.botList[botNum].tCord
@@ -132,7 +142,7 @@ class environment:
             if i.arrived == True:
                 cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + " Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
             else: 
-                cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + ', '.join(str(i) for i in self.stops[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+                cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + ', '.join(str(i) for i in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
     def drawNodes(self):
         for i in self.network.nodes:
@@ -143,6 +153,19 @@ class environment:
         for i in self.network.edges:
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (230, 230, 230), 3)
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (0, 0, 0), 1)
+
+    def addStop(self, nodeNum):
+        # self.get_closest_bot()
+        self.destination_list[self.botList[0]].append(nodeNum)
+        return True 
+
+    def get_closest_bot(self):
+        max_dist = sys.maxsize
+        for i in self.botList:
+            if i.dist_to_end < max_dist:
+                closest_bot = i
+                max_dist = i.dist_to_end
+        return closest_bot
 
 
 
@@ -190,6 +213,10 @@ class graph:
         if edges is None:
             edges = []
         self.edges = edges
+        self.nodeNum = 0
+        for i in nodes:
+            if i.label > self.nodeNum:
+                self.nodeNum = i.label
     
     def addNode(self, node):
         self.nodes.append(node)

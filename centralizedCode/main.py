@@ -64,9 +64,9 @@ def startUp():
     g = graph(nodes, edges)
 
     b1 = partRunner(nodes[1].x, nodes[1].y, 0)
-    b2 = partRunner(nodes[1].x, nodes[1].y, np.pi/2)
+    # b2 = partRunner(nodes[1].x, nodes[1].y, np.pi/2)
     # b3 = partRunner(nodes[1].x, nodes[1].y, np.pi)
-    bList = np.array([b1, b2])
+    bList = np.array([b1])
 
     return bList, g
 
@@ -85,19 +85,19 @@ if __name__ == "__main__":
         file = "ImageFiles/BlankMap.png"
     
     # Create environment and draw items given in setup
-    stop = {0: [23, 21, 1], 1: [21, 23, 1]}
-
-    env = environment(file, bList, g, stop)
+    destinations = [2, 1]
+    # destinations = {0: [23, 1, 5, 10]}
+    # stop = None
+    env = environment(file, bList, g, destinations)
     env.updateBotMarker() 
     env.drawPaths()
     env.drawNodes()
     print("*******************")
     print("Network Initialized")
     print("*******************")
-    ts = time.monotonic_ns()
-    mqtt = connect()
+    mqtt = connect(env)
     mqtt.loop_start()
-
+    ts = time.monotonic_ns()
 
     p = Process(target=updateMap, args=(env,))
     p.start()

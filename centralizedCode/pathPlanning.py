@@ -4,6 +4,7 @@ import time
 from cv2 import imencode
 import numpy as np
 import sys
+from communication import send_update
 
 # Calculate the speed the robot should be moving
 def calcSpeed(xDist, yDist, max, min, RFID_Dist):
@@ -116,7 +117,7 @@ def calcBotPos(environ):
                 i.arrived = True
 
 
-def mapping(environ):
+def mapping(environ, client):
  
     environ.updateBotMarker()                   # Update map
     #cv.imshow("Map", environ.UIwBots)           # Show map
@@ -130,10 +131,11 @@ def mapping(environ):
     # yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     for i in environ.botList:
-        if i.path == [] and len(environ.stops[i]) != 1:
-            del(environ.stops[i][0])
+        if i.path == [] and len(environ.destination_list[i]) != 1:
+            send_update("Arrived", environ.destination_list[i][0], client)
+            del(environ.destination_list[i][0])
             # Find where they are and calculate shortest route back to origin
             currNode = getCurrLocation(environ, i.botIndex)
-            runDijkstras(environ, [i.botIndex, [currNode.label, environ.stops[i][0]]])
+            runDijkstras(environ, [i.botIndex, [currNode.label, environ.destination_list[i][0]]])
 
     return environ
