@@ -24,18 +24,23 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-
     return render_template('index.html')
+
+@app.route('/UI')
+def UI():
+    return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 def updateMap(env):
         try: 
             ts = time.monotonic_ns()
             while True:
-                print('running')
-                # pass
                 if time.monotonic_ns() >= ts + env.timeStep:
                     ts = time.monotonic_ns()
                     mapping(env)
+                    img = env.UIwBots
+                    _, img_encoded = cv.imencode('.jpg', img)
+                    frame = img_encoded.tobytes()
+                    yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         except KeyboardInterrupt:
             print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 

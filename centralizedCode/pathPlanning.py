@@ -1,5 +1,7 @@
+from urllib import response
 import cv2 as cv
 import time
+from cv2 import imencode
 import numpy as np
 import sys
 
@@ -117,10 +119,16 @@ def calcBotPos(environ):
 def mapping(environ):
  
     environ.updateBotMarker()                   # Update map
-    cv.imshow("Map", environ.UIwBots)           # Show map
+    #cv.imshow("Map", environ.UIwBots)           # Show map
     cv.waitKey(int(environ.timeStep*1000))      # Hold frame for one timestep
     calcBotPos(environ)                         # Update each bots location
     
+    # For Flask test code
+    # img = environ.UIwBots
+    # _, img_encoded = cv.imencode('.jpg', img)
+    # frame = img_encoded.tobytes()
+    # yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
     for i in environ.botList:
         if i.path == [] and len(environ.stops[i]) != 1:
             del(environ.stops[i][0])
