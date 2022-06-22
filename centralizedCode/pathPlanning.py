@@ -5,6 +5,8 @@ from cv2 import imencode
 import numpy as np
 import sys
 from communication import send_update
+from communication import connect
+import paho.mqtt.client as mqtt
 
 # Calculate the speed the robot should be moving
 def calcSpeed(xDist, yDist, max, min, RFID_Dist):
@@ -132,6 +134,12 @@ def mapping(environ, client):
 
     for i in environ.botList:
         if i.path == [] and len(environ.destination_list[i]) != 1:
+            # client = mqtt.Client("Mapping")
+            # client.connect("192.168.20.68", 1883)
+            # x = client.publish("Remote/"+str(environ.destination_list[i][0]), payload="Arrived", qos=1)
+            # x.wait_for_publish()
+            # client.wait_for_publish()
+            # client.disconnect()
             send_update("Arrived", environ.destination_list[i][0], client)
             del(environ.destination_list[i][0])
             # Find where they are and calculate shortest route back to origin

@@ -28,19 +28,25 @@ def index():
 
 @app.route('/UI')
 def UI():
-    return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
+    return Response(getFrames(env), mimetype='multipart/x-mixed-replace;boundary=frame')
+
+def getFrames(environ):
+    ts = time.monotonic_ns()
+    while True:
+        if time.monotonic_ns() >= ts + environ.timestep:
+            ts = time.monotonic_ns()
+            img = environ.UIwBots
+            _, img_encoded = cv.imencode('.jpg', img)
+            frame = img_encoded.tobytes()
+            yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 def updateMap(environ, client):
         try: 
-            ts = time.monotonic_ns()
+            # ts = time.monotonic_ns()
             while True:
-                if time.monotonic_ns() >= ts + environ.timeStep:
-                    ts = time.monotonic_ns()
-                    mapping(environ, client)
-                    img = environ.UIwBots
-                    _, img_encoded = cv.imencode('.jpg', img)
-                    frame = img_encoded.tobytes()
-                    yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                # if time.monotonic_ns() >= ts + environ.timeStep:
+                ts = time.monotonic_ns()
+                mapping(environ, client)
         except KeyboardInterrupt:
             print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
@@ -99,7 +105,6 @@ if __name__ == "__main__":
     mqtt.loop_start()
     ts = time.monotonic_ns()
 
-    arg_1 = (env, mqtt)
     p = Process(target=updateMap, args=(env, mqtt, ))
     p.start()
     app.run(debug=True, use_reloader=False)
