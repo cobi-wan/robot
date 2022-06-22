@@ -19,6 +19,7 @@ from pathPlanning import mapping
 from communication import connect
 from flask import Flask, render_template, request, Response
 from multiprocessing import Process
+from communication import send_update
 
 app = Flask(__name__)
 
@@ -40,15 +41,20 @@ def getFrames(environ):
             frame = img_encoded.tobytes()
             yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-def updateMap(environ, client):
-        try: 
-            # ts = time.monotonic_ns()
-            while True:
-                # if time.monotonic_ns() >= ts + environ.timeStep:
+def updateMap(environ):
+    send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
+    try: 
+        ts = time.monotonic_ns()
+        while True:
+            if time.monotonic_ns() >= ts + environ.timeStep:
                 ts = time.monotonic_ns()
-                mapping(environ, client)
-        except KeyboardInterrupt:
-            print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
+                mapping(environ)
+                img = environ.UIwBots
+                _, img_encoded = cv.imencode('.jpg', img)
+                frame = img_encoded.tobytes()
+                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    except KeyboardInterrupt:
+        print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
 # Reads in mapping file that specifies node locations and paths
 def startUp():
@@ -105,8 +111,8 @@ if __name__ == "__main__":
     mqtt.loop_start()
     ts = time.monotonic_ns()
 
-    p = Process(target=updateMap, args=(env, mqtt, ))
+
+    p = Process(target=updateMap, args=(env, ))
     p.start()
     app.run(debug=True, use_reloader=False)
     p.join()
-    

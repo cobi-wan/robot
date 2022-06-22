@@ -6,11 +6,11 @@ class Robot():
         #self.client = client
 
     def left(self, speed):
-        self.leftMotor.low(speed)
+        self.leftMotor.off()
         self.rightMotor.high(speed)
 
     def right(self, speed):
-        self.leftMotor.high(speed)
+        self.leftMotor.off()
         self.rightMotor.low(speed)
         
     def forward(self, speed):

@@ -40,7 +40,7 @@ MIN_DUTY = 200
 MAX_DUTY = 1023
 
 #FREQUENCY CONST
-FREQUENCY = 1000
+FREQUENCY = 4000
 
 
 
@@ -83,60 +83,21 @@ robot = Robot(leftMotor, rightMotor)# , client=init_client())
 ########################################################################
 
 if __name__ == '__main__':
-<<<<<<< HEAD
 
     #subscribe(robot.client,'Test')
     
-=======
-        # distance = ultrasonic.distance_cm()
-        # while distance < 10:
-        #     robot.stop()
-        #     distance = ultrasonic.distance_cm()
-        #     time.sleep(0.1)
-        #     if distance > 10:
-        #         break
-        #     print('obstacle detected')
-        # robot.forward(5)
-        # print('straight')
-        # if not IRLeft.value():
-        #     robot.right(5)
-        #     print('right')
-        #     time.sleep(.2)
-        # if not IRRight.value():
-        #     print('left')
-        #     robot.left(5)
-        #     time.sleep(.2)
->>>>>>> bc62fec454e9a82e3e1997bcde153f278afcd62a
     while True:
-        # print(IRLeft.value(),IRRight.value())
-<<<<<<< HEAD
-        
         # robot.client.check_msg()
         if IRLeft.value() == 0 and IRRight.value() == 0:
-            robot.forward(20)
+            robot.forward(50)
             print('forward')
         else:
+            robot.stop()
             if IRLeft.value():
                 while IRLeft.value():
-                    robot.left(20)
+                    robot.left(75)
                     print('left')
             if IRRight.value():
                 while IRRight.value():
-                    robot.right(20)
+                    robot.right(75)
                     print('right')
-=======
-        # if IRLeft.value() == 0 and IRRight.value() == 0:
-        #     robot.forward(1)
-        #     print('forward')
-        # else:
-        #     if IRLeft.value():
-        #         while IRLeft.value():
-        #             robot.left(1)
-        #             print('left')
-        #             print(IRLeft.value(),IRRight.value())
-        #     if IRRight.value():
-        #         while IRRight.value():
-        #             robot.right(1)
-        #             print('right')
-        #             print(IRLeft.value(),IRRight.value())
->>>>>>> bc62fec454e9a82e3e1997bcde153f278afcd62a

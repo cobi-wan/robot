@@ -119,28 +119,17 @@ def calcBotPos(environ):
                 i.arrived = True
 
 
-def mapping(environ, client):
+def mapping(environ):
  
     environ.updateBotMarker()                   # Update map
-    #cv.imshow("Map", environ.UIwBots)           # Show map
+    # cv.imshow("Map", environ.UIwBots)           # Show map
     cv.waitKey(int(environ.timeStep*1000))      # Hold frame for one timestep
     calcBotPos(environ)                         # Update each bots location
-    
-    # For Flask test code
-    # img = environ.UIwBots
-    # _, img_encoded = cv.imencode('.jpg', img)
-    # frame = img_encoded.tobytes()
-    # yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     for i in environ.botList:
         if i.path == [] and len(environ.destination_list[i]) != 1:
-            # client = mqtt.Client("Mapping")
-            # client.connect("192.168.20.68", 1883)
-            # x = client.publish("Remote/"+str(environ.destination_list[i][0]), payload="Arrived", qos=1)
-            # x.wait_for_publish()
-            # client.wait_for_publish()
-            # client.disconnect()
-            send_update("Arrived", environ.destination_list[i][0], client)
+
+            #send_update("Arrived", environ.destination_list[i][0], client)
             del(environ.destination_list[i][0])
             # Find where they are and calculate shortest route back to origin
             currNode = getCurrLocation(environ, i.botIndex)
