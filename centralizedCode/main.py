@@ -29,7 +29,7 @@ def index():
 
 @app.route('/UI')
 def UI():
-    return Response(getFrames(env), mimetype='multipart/x-mixed-replace;boundary=frame')
+    return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 def getFrames(environ):
     ts = time.monotonic_ns()
