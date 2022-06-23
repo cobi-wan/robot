@@ -30,7 +30,7 @@ def Fram_connect(frame0, frame2, Video_w, Video_h,  Video_w2, Video_h2):
 video_capture_0 = cv2.VideoCapture(0)
 video_capture_1 = cv2.VideoCapture(1)
 
-# The video 1 set the video 1 as the default size and fps
+#seting the video 1 as the default size and fps
 
 fps_c = video_capture_0 .get(cv2.CAP_PROP_FPS)
 Video_h =video_capture_0 .get(cv2.CAP_PROP_FRAME_HEIGHT)
@@ -40,7 +40,7 @@ fps_c2 = video_capture_1.get(cv2.CAP_PROP_FPS)
 Video_h2 = video_capture_1.get(cv2.CAP_PROP_FRAME_HEIGHT)
 Video_w2 = video_capture_1.get(cv2.CAP_PROP_FRAME_WIDTH)
 
-# args for the video output
+#args for the video output
 fps = fps_c
 
 if Window == None:
@@ -55,23 +55,14 @@ while True:
     # Capture frame-by-frame
     ret0, frame0 = video_capture_0.read()
     ret1, frame1 = video_capture_1.read()
-
-    # if (ret0):
-    #     # Display the resulting frame
-    #     cv2.imshow('Cam 0', frame0)
-    #     Motion_det2frame.motion_detec(video_capture_0)
-
-    # if (ret1):
-    #     # Display the resulting frame
-    #     cv2.imshow('Cam 1', frame1)
-    #     Motion_det2frame.motion_detec(video_capture_1)
-
+   # connect the videos into a single frame
     img = Fram_connect(frame0, frame1, Video_w, Video_h,  Video_w2, Video_h2)
     img_1 = cv2.resize(img, size, interpolation = cv2.INTER_AREA)
+   # write and save video as avi fromat
     videowriter.write(img_1)
+    # show both the frames
     cv2.imshow('comb',img_1)
-    Motion_det2frame.motion_detec(frame0)
-    Motion_det2frame.motion_detec(frame1)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

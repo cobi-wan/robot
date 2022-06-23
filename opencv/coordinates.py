@@ -8,12 +8,10 @@ def click_event(event, x, y, flags, params):
 	# checking for left mouse clicks
 	if event == cv2.EVENT_LBUTTONDOWN:
 
-		# displaying the coordinates
-		# on the Shell
+		# displaying the coordinates- shell
 		print(x, ' ', y)
 
-		# displaying the coordinates
-		# on the image window
+		# displaying the coordinates - windows
 		font = cv2.FONT_HERSHEY_SIMPLEX
 		cv2.putText(img, str(x) + ',' +
 					str(y), (x,y), font,
@@ -23,12 +21,10 @@ def click_event(event, x, y, flags, params):
 	# checking for right mouse clicks	
 	if event==cv2.EVENT_RBUTTONDOWN:
 
-		# displaying the coordinates
-		# on the Shell
+		# displaying the coordinates - shell
 		print(x, ' ', y)
 
-		# displaying the coordinates
-		# on the image window
+		# displaying the coordinates - windows
 		font = cv2.FONT_HERSHEY_SIMPLEX
 		b = img[y, x, 0]
 		g = img[y, x, 1]
@@ -42,14 +38,13 @@ def click_event(event, x, y, flags, params):
 # driver function
 if __name__=="__main__":
 
-	# reading the image
+	# read the image
 	img = cv2.imread('base.jpg', 1)
 
-	# displaying the image
+	# display the image
 	cv2.imshow('image', img)
 
-	# setting mouse handler for the image
-	# and calling the click_event() function
+	# setting the mouse and image, call click_event() func
 	cv2.setMouseCallback('image', click_event)
 
 	# wait for a key to be pressed to exit

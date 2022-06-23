@@ -7,7 +7,6 @@ if __name__ == '__main__' :
  
     # Set up tracker.
     # Instead of CSRT, you can also use
- 
     tracker_types = ['BOOSTING', 'MIL','KCF', 'TLD', 'MEDIANFLOW', 'GOTURN', 'MOSSE', 'CSRT']
     tracker_type = tracker_types[7]
  
@@ -32,9 +31,7 @@ if __name__ == '__main__' :
             tracker = cv2.TrackerCSRT_create()
     # Read video
     video = cv2.VideoCapture(1)
-    #video = cv2.VideoCapture(0) # for using CAM
 
-    # Exit if video not opened.
     if not video.isOpened():
         print("Could not open video")
         sys.exit()
