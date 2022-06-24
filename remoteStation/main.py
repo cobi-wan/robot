@@ -45,7 +45,7 @@ def connect():
     client = mqtt.Client("Remote1")
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("192.168.20.68", 1883)
+    client.connect("192.168.8.198", 1883)
     return client
 
 def assign_location(client):
