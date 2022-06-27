@@ -22,7 +22,6 @@ def callback(topic, msg):
     print('in callback')
     msg = str(msg)
     print((topic,msg))
-    #return msg
 
 def subscribe(client, topic):
     print('subscribing')
