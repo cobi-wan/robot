@@ -4,6 +4,7 @@ from umqtt.simple import MQTTClient
 from dcmotor import DCMotor
 from robot import Robot
 from ultrasonic import Ultrasonic
+from rfid import RFID
 
 
 
@@ -19,7 +20,9 @@ def init_client():
   return client
 
 def callback(topic, msg):
-    print('in callback')
+    if topic == b'bot_one':
+        pass
+    # print('in callback')
     msg = str(msg)
     print((topic,msg))
 
@@ -83,20 +86,31 @@ robot = Robot(leftMotor, rightMotor)# , client=init_client())
 
 if __name__ == '__main__':
 
+
+    mqttClient = init_client()
+    subscribe(mqttClient, b'botOne')
+
     #subscribe(robot.client,'Test')
-    
+    print("Hello world!")
     while True:
-        # robot.client.check_msg()
-        if IRLeft.value() == 0 and IRRight.value() == 0:
-            robot.forward(50)
-            print('forward')
-        else:
-            robot.stop()
-            if IRLeft.value():
-                while IRLeft.value():
-                    robot.left(75)
-                    print('left')
-            if IRRight.value():
-                while IRRight.value():
-                    robot.right(75)
-                    print('right')
+        mqttClient.check_msg()
+        tag = RFID.Rfid_tag()
+        if tag[0]:
+            x = tag[1]
+            print("X")
+            mqttClient.publish("botOne", tag[1], qos=0)
+    # while True:
+    #     # robot.client.check_msg()
+    #     if IRLeft.value() == 0 and IRRight.value() == 0:
+    #         robot.forward(50)
+    #         print('forward')
+    #     else:
+    #         robot.stop()
+    #         if IRLeft.value():
+    #             while IRLeft.value():
+    #                 robot.left(75)
+    #                 print('left')
+    #         if IRRight.value():
+    #             while IRRight.value():
+    #                 robot.right(75)
+    #                 print('right')

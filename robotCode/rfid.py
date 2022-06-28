@@ -16,7 +16,7 @@ class RFID:
         # spi = SoftSPI(baudrate=100000, polarity=0, phase=0, sck=sck, mosi=mosi, miso=miso)
         spi.init()
         rdr = MFRC522(spi=spi, gpioRst=4, gpioCs=5)
-        print("Place card")
+        # print("Place card")
 
         while True:
             (stat, tag_type) = rdr.request(rdr.REQIDL)
@@ -25,12 +25,13 @@ class RFID:
                 if stat == rdr.OK:
                     #card_id = "uid: 0x%02x%02x%02x%02x" % (raw_uid[0], raw_uid[1], raw_uid[2], raw_uid[3])
                     #if card_id == "uid: 0xc3e9561c":
-                    print("stop")
-                    return 1
+                    return (True, raw_uid)
                 else:
-                    print("go")
-                    return 0
+                    # print("go")
+                    return (False, None)
             else:
-                return 0
+                # print("Waiting")
+                # pass
+                return (False, None)
 
                     
