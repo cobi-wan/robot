@@ -12,24 +12,7 @@ from rfid import RFID
                     ### FUNCTIONS ###
 ########################################################################
 
-def init_client():
-  client = MQTTClient("bot_one", "192.168.20.68",keepalive=30)
-  client.connect()
-  print("connecting to server...")
-  client.publish("intialize", "server connection initialized...", qos=0)
-  return client
 
-def callback(topic, msg):
-    if topic == b'bot_one':
-        pass
-    # print('in callback')
-    msg = str(msg)
-    print((topic,msg))
-
-def subscribe(client, topic):
-    print('subscribing')
-    client.set_callback(callback)
-    client.subscribe(topic)
 
 
 
@@ -59,6 +42,7 @@ leftPWM = PWM(Pin(25), FREQUENCY)
 rightPin1 = Pin(16, Pin.OUT)
 rightPin2 = Pin(17, Pin.OUT)
 rightPWM = PWM(Pin(5), FREQUENCY)
+
 #ULTRASONIC OBJECT
 ultrasonic = Ultrasonic(22,23,30000)
 
@@ -75,8 +59,10 @@ leftMotor = DCMotor(leftPin1, leftPin2, leftPWM, MIN_DUTY, MAX_DUTY, speed=0)
 rightMotor = DCMotor(rightPin1, rightPin2, rightPWM, MIN_DUTY, MAX_DUTY, speed=0)
 
 #ROBOT OBJECT/CLIENT INITIALIZATION
-robot = Robot(leftMotor, rightMotor)# , client=init_client())
+robot = Robot(leftMotor, rightMotor)
 
+#LED OBJECT FOR TESTING
+led = Pin(2,Pin.OUT)
 
 
 
@@ -86,19 +72,32 @@ robot = Robot(leftMotor, rightMotor)# , client=init_client())
 
 if __name__ == '__main__':
 
+    # robot.check_uart()
 
-    mqttClient = init_client()
-    subscribe(mqttClient, b'botOne')
+    # while True:
 
-    #subscribe(robot.client,'Test')
-    print("Hello world!")
+    #     if robot.uart.RX_ANY == 1:
+    #         print('recieved')
+    print('running main loop')
     while True:
-        mqttClient.check_msg()
-        tag = RFID.Rfid_tag()
-        if tag[0]:
-            x = tag[1]
-            print("X")
-            mqttClient.publish("botOne", tag[1], qos=0)
+        if robot.uart.any() > 0:
+            ch = robot.uart.readline()
+            if ch == b'on':
+                led.on()
+            elif ch == b'off':
+                led.off()
+    # subscribe(robot.client, b'botOne')
+
+    # print("Hello world!")
+    # while True:
+    #     robot.client.check_msg()
+    #     tag = RFID.Rfid_tag()
+    #     if tag[0]:
+    #         x = tag[1]
+    #         print("X")
+    #         robot.client.publish("botOne", tag[1], qos=0)
+
+    
     # while True:
     #     # robot.client.check_msg()
     #     if IRLeft.value() == 0 and IRRight.value() == 0:
