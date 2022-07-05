@@ -72,11 +72,10 @@ if __name__ == '__main__':
 
     while True:
         if robot.uart.any() > 0:
-            ch = robot.uart.readline()
-            if ch == b'on':
-                leftMotor.low(50)
-            elif ch == b'off':
-                leftMotor.high(50)
+            motor, direction, speed = robot.checkUart()
+            print(direction)
+            robot.motorCtrl(motor, direction, speed)
+            print(motor, direction, speed)
 
 
 

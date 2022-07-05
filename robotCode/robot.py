@@ -1,3 +1,4 @@
+from time import sleep
 import machine
 from machine import UART
 from umqtt.simple import MQTTClient
@@ -67,7 +68,25 @@ class Robot():
         self.nodeList.pop(node)
         # msg sendback nonsense
 
-    def check_uart(self):
+    def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
         print(str)
+        motor = str[0]
+        direction = str[1]
+        speed = str[2:]
+        return motor, direction, speed
+
+    def motorCtrl(self, motor, direction, speed):
+        speed = int(speed)
+        direction = int(direction)
+        if motor == 'l':
+            if direction == 0:
+                self.leftMotor.low(speed)
+            elif direction == 1:
+                self.leftMotor.high(speed)
+        elif motor == 'r':
+            if direction == 0:
+                self.rightMotor.low(speed)
+            elif direction == 1:
+                self.rightMotor.high(speed)
