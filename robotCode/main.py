@@ -21,7 +21,7 @@ from rfid import RFID
 ########################################################################
 
 #DUTY CYCLE CONSTS
-MIN_DUTY = 200
+MIN_DUTY = 550
 MAX_DUTY = 1023
 
 #FREQUENCY CONST
@@ -34,29 +34,24 @@ FREQUENCY = 2000
 ########################################################################
 
 #LEFT PIN OBJECTS
-leftPin1 = Pin(26, Pin.OUT)
-leftPin2 = Pin(27, Pin.OUT)
 leftPWM = PWM(Pin(25), FREQUENCY)
+leftDirection = Pin(26, Pin.OUT)
+leftHall = Pin(27, Pin.IN)
 
 #RIGHT PIN OBJECTS
-rightPin1 = Pin(16, Pin.OUT)
-rightPin2 = Pin(17, Pin.OUT)
-rightPWM = PWM(Pin(5), FREQUENCY)
+rightPWM = PWM(Pin(32), FREQUENCY)
+rightDirection = Pin(33, Pin.OUT)
+rightHall = Pin(34, Pin.IN)
 
 #ULTRASONIC OBJECT
-ultrasonic = Ultrasonic(22,23,30000)
+ultsonic = Ultrasonic(22, 36)
 
-#LEFT IR OBJECT
-IRLeft = Pin(18, Pin.IN, Pin.PULL_UP)
-
-#RIGHT IR OBJECT
-IRRight = Pin(19, Pin.IN, Pin.PULL_UP)
 
 #LEFT MOTOR OBJECTS
-leftMotor = DCMotor(leftPin1, leftPin2, leftPWM, MIN_DUTY, MAX_DUTY, speed=0)
+leftMotor = DCMotor(leftPWM, leftDirection, leftHall, MIN_DUTY, MAX_DUTY, speed=0)
 
 #RIGHT MOTOR OBJECTS
-rightMotor = DCMotor(rightPin1, rightPin2, rightPWM, MIN_DUTY, MAX_DUTY, speed=0)
+rightMotor = DCMotor(rightPWM, rightDirection, rightHall, MIN_DUTY, MAX_DUTY, speed=0)
 
 #ROBOT OBJECT/CLIENT INITIALIZATION
 robot = Robot(leftMotor, rightMotor)
@@ -72,21 +67,24 @@ led = Pin(2,Pin.OUT)
 
 if __name__ == '__main__':
 
-    # robot.check_uart()
 
-    # while True:
+    # UART TEST CODE
 
-    #     if robot.uart.RX_ANY == 1:
-    #         print('recieved')
-    print('running main loop')
     while True:
         if robot.uart.any() > 0:
             ch = robot.uart.readline()
             if ch == b'on':
-                led.on()
+                leftMotor.low(50)
             elif ch == b'off':
-                led.off()
+                leftMotor.high(50)
+
+
+
     # subscribe(robot.client, b'botOne')
+
+
+    # RFID TEST CODE
+
 
     # print("Hello world!")
     # while True:
@@ -96,6 +94,9 @@ if __name__ == '__main__':
     #         x = tag[1]
     #         print("X")
     #         robot.client.publish("botOne", tag[1], qos=0)
+
+
+    #  IR LINE FOLLOWING TEST CODE
 
     
     # while True:
@@ -113,3 +114,8 @@ if __name__ == '__main__':
     #             while IRRight.value():
     #                 robot.right(75)
     #                 print('right')
+
+    # MOTOR TEST CODE
+    while True:
+        
+        leftMotor.low(20)
