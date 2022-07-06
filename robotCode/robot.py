@@ -41,12 +41,13 @@ class Robot():
         # self.client = init_client()
 
     def left(self, speed):
-        self.leftMotor.off()
+        self.leftMotor.high(speed-10)
         self.rightMotor.high(speed)
 
     def right(self, speed):
-        self.leftMotor.off()
-        self.rightMotor.low(speed)
+
+        self.leftMotor.high(speed)
+        self.rightMotor.high(speed-10)
         
     def forward(self, speed):
         self.leftMotor.high(speed)
@@ -71,22 +72,17 @@ class Robot():
     def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
-        print(str)
-        motor = str[0]
-        direction = str[1]
-        speed = str[2:]
-        return motor, direction, speed
+        direction = str[0]
+        speed = str[1:]
+        return direction, speed
 
-    def motorCtrl(self, motor, direction, speed):
+    def motorCtrl(self, direction, speed):
         speed = int(speed)
         direction = int(direction)
-        if motor == 'l':
-            if direction == 0:
-                self.leftMotor.low(speed)
-            elif direction == 1:
-                self.leftMotor.high(speed)
-        elif motor == 'r':
-            if direction == 0:
-                self.rightMotor.low(speed)
-            elif direction == 1:
-                self.rightMotor.high(speed)
+
+        if direction == 0:
+            self.left(speed)
+        elif direction == 1:
+            self.right(speed)
+        elif direction == 2:
+            self.forward(speed)

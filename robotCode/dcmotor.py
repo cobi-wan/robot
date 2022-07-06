@@ -11,13 +11,11 @@ class DCMotor:
         self.speed = speed
         self.pwm.duty(self.duty_cycle(self.speed))
         self.direction(1)
-        print(self.pwm)
 
     def low(self, speed):
         self.speed = speed
         self.pwm.duty(self.duty_cycle(self.speed))
         self.direction.value(0)
-        print(self.pwm)
 
     def off(self):
         self.pwm.duty(0)

@@ -25,7 +25,7 @@ MIN_DUTY = 550
 MAX_DUTY = 1023
 
 #FREQUENCY CONST
-FREQUENCY = 2000
+FREQUENCY = 50000
 
 
 
@@ -71,11 +71,11 @@ if __name__ == '__main__':
     # UART TEST CODE
 
     while True:
+
         if robot.uart.any() > 0:
-            motor, direction, speed = robot.checkUart()
-            print(direction)
-            robot.motorCtrl(motor, direction, speed)
-            print(motor, direction, speed)
+            direction, speed = robot.checkUart()
+            print(direction,speed)
+            robot.motorCtrl(direction, speed)
 
 
 
@@ -93,28 +93,3 @@ if __name__ == '__main__':
     #         x = tag[1]
     #         print("X")
     #         robot.client.publish("botOne", tag[1], qos=0)
-
-
-    #  IR LINE FOLLOWING TEST CODE
-
-    
-    # while True:
-    #     # robot.client.check_msg()
-    #     if IRLeft.value() == 0 and IRRight.value() == 0:
-    #         robot.forward(50)
-    #         print('forward')
-    #     else:
-    #         robot.stop()
-    #         if IRLeft.value():
-    #             while IRLeft.value():
-    #                 robot.left(75)
-    #                 print('left')
-    #         if IRRight.value():
-    #             while IRRight.value():
-    #                 robot.right(75)
-    #                 print('right')
-
-    # MOTOR TEST CODE
-    while True:
-        
-        leftMotor.low(20)
