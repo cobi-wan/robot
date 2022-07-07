@@ -20,40 +20,34 @@ from rfid import RFID
                     ### CONSTANTS ###
 ########################################################################
 
-#DUTY CYCLE CONSTS
+#DUTY CYCLE CONSTS (for brushless motors)
 MIN_DUTY = 550
 MAX_DUTY = 1023
 
-#FREQUENCY CONST
+#PWM FREQUENCY CONST (for brushless motors)
 FREQUENCY = 50000
-
 
 
 ########################################################################
                     ### OBJECTS ###
 ########################################################################
 
-#LEFT PIN OBJECTS
+#LEFT MOTOR OBJECTS
 leftPWM = PWM(Pin(25), FREQUENCY)
 leftDirection = Pin(26, Pin.OUT)
 leftHall = Pin(27, Pin.IN)
+leftMotor = DCMotor(leftPWM, leftDirection, leftHall, MIN_DUTY, MAX_DUTY, speed=0)
 
-#RIGHT PIN OBJECTS
+#RIGHT MOTOR OBJECTS
 rightPWM = PWM(Pin(32), FREQUENCY)
 rightDirection = Pin(33, Pin.OUT)
 rightHall = Pin(34, Pin.IN)
+rightMotor = DCMotor(rightPWM, rightDirection, rightHall, MIN_DUTY, MAX_DUTY, speed=0)
 
 #ULTRASONIC OBJECT
 ultsonic = Ultrasonic(22, 36)
 
-
-#LEFT MOTOR OBJECTS
-leftMotor = DCMotor(leftPWM, leftDirection, leftHall, MIN_DUTY, MAX_DUTY, speed=0)
-
-#RIGHT MOTOR OBJECTS
-rightMotor = DCMotor(rightPWM, rightDirection, rightHall, MIN_DUTY, MAX_DUTY, speed=0)
-
-#ROBOT OBJECT/CLIENT INITIALIZATION
+#ROBOT OBJECT
 robot = Robot(leftMotor, rightMotor)
 
 #LED OBJECT FOR TESTING
@@ -71,7 +65,7 @@ if __name__ == '__main__':
     # UART TEST CODE
 
     while True:
-
+        
         if robot.uart.any() > 0:
             direction, speed = robot.checkUart()
             print(direction,speed)

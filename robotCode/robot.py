@@ -36,16 +36,18 @@ class Robot():
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
 
+        # Direction and Speed vectors at any given time
+        self.direction = 0
+        self.speed = 0
+
         # MQTT client
-        
-        # self.client = init_client()
+        #self.client = init_client()
 
     def left(self, speed):
         self.leftMotor.high(speed-10)
         self.rightMotor.high(speed)
 
     def right(self, speed):
-
         self.leftMotor.high(speed)
         self.rightMotor.high(speed-10)
         
@@ -77,12 +79,12 @@ class Robot():
         return direction, speed
 
     def motorCtrl(self, direction, speed):
-        speed = int(speed)
-        direction = int(direction)
+        self.speed = speed
+        self.direction = direction
 
-        if direction == 0:
-            self.left(speed)
-        elif direction == 1:
-            self.right(speed)
-        elif direction == 2:
-            self.forward(speed)
+        if self.direction == 0:
+            self.left(self.speed)
+        elif self.direction == 1:
+            self.right(self.speed)
+        elif self.direction == 2:
+            self.forward(self.speed)
