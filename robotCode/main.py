@@ -12,12 +12,15 @@ import utime as time
 ########################################################################
 
 
+
+
+
 ########################################################################
                     ### CONSTANTS ###
 ########################################################################
 
 #DUTY CYCLE CONSTS
-MIN_DUTY = 200
+MIN_DUTY = 550
 MAX_DUTY = 1023
 
 #FREQUENCY CONST
@@ -81,18 +84,30 @@ if __name__ == '__main__':
             print(id)
                 
         
+
+
+    # UART TEST CODE
+
+    while True:
+
+        if robot.uart.any() > 0:
+            direction, speed = robot.checkUart()
+            print(direction,speed)
+            robot.motorCtrl(direction, speed)
+
+
+
+    # subscribe(robot.client, b'botOne')
+
+
+    # RFID TEST CODE
+
+
+    # print("Hello world!")
     # while True:
-    #     # robot.client.check_msg()
-    #     if IRLeft.value() == 0 and IRRight.value() == 0:
-    #         robot.forward(50)
-    #         print('forward')
-    #     else:
-    #         robot.stop()
-    #         if IRLeft.value():
-    #             while IRLeft.value():
-    #                 robot.left(75)
-    #                 print('left')
-    #         if IRRight.value():
-    #             while IRRight.value():
-    #                 robot.right(75)
-    #                 print('right')
+    #     robot.client.check_msg()
+    #     tag = RFID.Rfid_tag()
+    #     if tag[0]:
+    #         x = tag[1]
+    #         print("X")
+    #         robot.client.publish("botOne", tag[1], qos=0)
