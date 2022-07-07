@@ -8,13 +8,12 @@ from communication import send_update
 
 
 ## Robot Class Definitions ##
-class partRunner:
-    numBots = 0
-    
-    def __init__(self, x, y, t):
+class partRunner:    
+    def __init__(self, bNum, x, y, t, MAC):
         # Bot Number 
-        self.botIndex = self.numBots
-        partRunner.numBots += 1
+        self.botIndex = bNum
+        self.MAC = MAC
+        self.activated = False
 
         # Self coordinates. Updated in main loop. 
         self.xCord = x
@@ -134,15 +133,16 @@ class environment:
     def updateBotMarker(self):
         self.UIwBots = self.UI.copy()
         for i in self.botList:
-            pts = self.robotPoints(i.botIndex)
-            cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
-            front = self.robot2World((100, 0), i.botIndex)
-            cv.drawMarker(self.UIwBots, (int(front[0]*self.mapScale), int(front[1]*self.mapScale)), (0, 0, 255), MARKER_TRIANGLE_DOWN, 5)
-            cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 1)
-            if i.arrived == True:
-                cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + " Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
-            else: 
-                cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + ', '.join(str(i) for i in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+            if i.activated:
+                pts = self.robotPoints(i.botIndex)
+                cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
+                front = self.robot2World((100, 0), i.botIndex)
+                cv.drawMarker(self.UIwBots, (int(front[0]*self.mapScale), int(front[1]*self.mapScale)), (0, 0, 255), MARKER_TRIANGLE_DOWN, 5)
+                cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 1)
+                if i.arrived == True:
+                    cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + " Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+                else: 
+                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + ', '.join(str(i) for i in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
     def drawNodes(self):
         for i in self.network.nodes:
@@ -198,11 +198,12 @@ class node:
     edges = []
     count = 0
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, tag=None):
         self.label = self.count
         node.count += 1
         self.x = x
         self.y = y
+        self.tag = tag
 
 
 class graph:

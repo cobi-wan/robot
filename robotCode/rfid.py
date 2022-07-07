@@ -1,37 +1,39 @@
 class RFID:
-    def Rfid_tag():
+    def __init__(self):
         from mfrc522 import MFRC522
         from machine import SPI, Pin
 
-        spi = SPI(2, baudrate=2500000, polarity=0, phase=0)
+        self.spi = SPI(2, baudrate=2500000, polarity=0, phase=0)
         # Using Hardware SPI pins:
         #     sck=18   # yellow
         #     mosi=23  # orange
         #     miso=19  # blue
         #     rst=4    # white
-        #     cs=5     # green, DS
+        #     cs=21     # green, DS
         # *************************
         # To use SoftSPI,
         # from machine import SOftSPI
         # spi = SoftSPI(baudrate=100000, polarity=0, phase=0, sck=sck, mosi=mosi, miso=miso)
-        spi.init()
-        rdr = MFRC522(spi=spi, gpioRst=4, gpioCs=5)
-        # print("Place card")
+        self.spi.init()
+        self.rdr = MFRC522(spi=self.spi, gpioRst=4, gpioCs=5)
 
-        while True:
-            (stat, tag_type) = rdr.request(rdr.REQIDL)
-            if stat == rdr.OK:
-                (stat, raw_uid) = rdr.anticoll()
-                if stat == rdr.OK:
-                    #card_id = "uid: 0x%02x%02x%02x%02x" % (raw_uid[0], raw_uid[1], raw_uid[2], raw_uid[3])
-                    #if card_id == "uid: 0xc3e9561c":
-                    return (True, raw_uid)
-                else:
-                    # print("go")
-                    return (False, None)
+    def checkTag(self):
+        (stat, tag_type) = self.rdr.request(self.rdr.REQIDL)
+        if stat == self.rdr.OK:
+            print("RDR ok")
+            (stat, raw_uid) = self.rdr.anticoll()
+            if stat == self.rdr.OK:
+                # if raw_uid == PATH[0]:
+                #     PATH.pop()
+                #     print("Teehee")
+                #     return True
+                # else:
+                #     print("Toohoo")
+                #     return False
+                return (True, raw_uid)
             else:
-                # print("Waiting")
-                # pass
                 return (False, None)
+        else:
+            return (False, None)
 
                     

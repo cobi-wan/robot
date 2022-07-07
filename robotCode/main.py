@@ -1,12 +1,11 @@
-from time import sleep
+# from time import sleep
 from machine import Pin, PWM
-from umqtt.simple import MQTTClient
 from dcmotor import DCMotor
 from robot import Robot
 from ultrasonic import Ultrasonic
 from rfid import RFID
-
-
+import utime as time
+# import communication as com
 
 ########################################################################
                     ### FUNCTIONS ###
@@ -24,8 +23,12 @@ from rfid import RFID
 MIN_DUTY = 550
 MAX_DUTY = 1023
 
-#PWM FREQUENCY CONST (for brushless motors)
+#FREQUENCY CONST
 FREQUENCY = 50000
+
+PATH = []
+MAC_ADDRESS = None
+BOT_NUM = None
 
 
 ########################################################################
@@ -44,14 +47,11 @@ rightDirection = Pin(33, Pin.OUT)
 rightHall = Pin(34, Pin.IN)
 rightMotor = DCMotor(rightPWM, rightDirection, rightHall, MIN_DUTY, MAX_DUTY, speed=0)
 
-#ULTRASONIC OBJECT
-ultsonic = Ultrasonic(22, 36)
-
 #ROBOT OBJECT
 robot = Robot(leftMotor, rightMotor)
 
-#LED OBJECT FOR TESTING
-led = Pin(2,Pin.OUT)
+#BUTTON OBJECT
+buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
 
 
 
@@ -60,6 +60,16 @@ led = Pin(2,Pin.OUT)
 ########################################################################
 
 if __name__ == '__main__':
+    mqttClient = com.init_client()
+    RFID = RFID()
+    print("Running")
+    while True:
+        mqttClient.check_msg()
+        (seen, id) = RFID.checkTag()
+        if seen:
+            print(id)
+                
+        
 
 
     # UART TEST CODE
