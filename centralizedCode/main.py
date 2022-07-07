@@ -90,19 +90,23 @@ def startUp():
         # Iterate through each row in the file. Each row has a node location and a list of nodes it is connected to 
         # Each connection must be to a node that is already created 
         for row in csvreader: 
-            nodes.append(node(int(row[1]), int(row[2])))
-            for i in row[3:]:
+            nodes.append(node(int(row[1]), int(row[2]), row[3]))
+            for i in row[4:]:
                 if i != '':
                     edges.append(edge(nodes[int(i)], nodes[int(row[0])]))
 
     g = graph(nodes, edges)
 
-    b1 = partRunner(nodes[1].x, nodes[1].y, 0)
-    # b2 = partRunner(nodes[1].x, nodes[1].y, np.pi/2)
-    # b3 = partRunner(nodes[1].x, nodes[1].y, np.pi)
-    bList = np.array([b1])
+    botFile = "botBooting.csv"
+    botList = []
+    with open(botFile, 'r') as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader)
 
-    return bList, g
+        for row in csvreader:
+            botList.append(partRunner(int(row[0]), int(row[1]), int(row[2]), int(row[3]), str(row[4]).encode()))
+
+    return botList, g
 
 if __name__ == "__main__":
 
@@ -119,7 +123,7 @@ if __name__ == "__main__":
         file = "ImageFiles/BlankMap.png"
     
     # Create environment and draw items given in setup
-    destinations = [2, 1]
+    destinations = [2, 3, 4, 5, 6, 21, 20, 23, 1]
     # destinations = {0: [23, 1, 5, 10]}
     # stop = None
     env = environment(file, bList, g, destinations)
@@ -132,6 +136,8 @@ if __name__ == "__main__":
     mqtt = connect(env)
     mqtt.loop_start()
     ts = time.monotonic_ns()
+    # for i in env.network.nodes:
+    #     print(i.tag)
 
 
     p = Process(target=updateMap, args=(env, ))
