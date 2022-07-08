@@ -4,24 +4,6 @@ from machine import UART
 from umqtt.simple import MQTTClient
 
 
-def init_client():
-  client = MQTTClient("bot_one", "192.168.20.68",keepalive=30)
-  print("connecting to server...")
-  client.connect()
-  client.publish("intialize", "server connection initialized...", qos=0)
-  return client
-
-def callback(topic, msg):
-    if topic == b'bot_one':
-        pass
-    msg = str(msg)
-    print((topic,msg))
-
-def subscribe(client, topic):
-    print('subscribing')
-    client.set_callback(callback)
-    client.subscribe(topic)
-
 class Robot():
     def __init__(self, leftMotor, rightMotor):
 
@@ -30,7 +12,7 @@ class Robot():
         self.uart.init(115200, bits=8, parity=None, stop=1)
 
         # List of nodes to visit added by MQTT server
-        self.nodeList = []
+        self.nodeList = {}
 
         # Left and right motor objects
         self.leftMotor = leftMotor
@@ -41,7 +23,10 @@ class Robot():
         self.speed = 0
 
         # MQTT client
-        #self.client = init_client()
+        self.client = None
+
+        # ESP32 Mac Address
+        self.mac = None
 
     def left(self, speed):
         self.leftMotor.high(speed-10)
@@ -74,9 +59,21 @@ class Robot():
     def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
-        direction = str[0]
-        speed = str[1:]
-        return direction, speed
+        commandType = str[0]
+        if commandType == 'n':
+            command = str[-1]
+            currentNode = commandType+command
+            if currentNode != commandType+command:
+                previousNode = currentNode
+                self.nodeList[previousNode] = False
+            if currentNode not in self.nodeList:
+                self.nodeList[currentNode] = True
+            if self.nodeList[currentNode] == False:
+                self.nodeList[currentNode] = True
+                self.client.publish("Bot:"+self.mac, command, qos=0)        
+        elif 48 <= ord(commandType) <= 57:
+            command = str[1:]
+        return commandType, command
 
     def motorCtrl(self, direction, speed):
         self.speed = speed

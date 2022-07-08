@@ -5,13 +5,38 @@ from robot import Robot
 from ultrasonic import Ultrasonic
 from rfid import RFID
 import utime as time
-# import communication as com
+from umqtt.robust import MQTTClient
+import ubinascii
+import network
+from boot import sta_if
 
 ########################################################################
                     ### FUNCTIONS ###
 ########################################################################
 
+def subscribe(client, topic):
+    print('subscribing')
+    client.set_callback(callback)
+    client.subscribe(topic)
 
+def init_client():
+    MAC_ADDRESS = sta_if.config('mac')
+    MAC_ADDRESS = ubinascii.hexlify(MAC_ADDRESS).decode()
+    client = MQTTClient("Bot", "192.168.20.68", keepalive=30)
+    client.connect()
+    print("connecting to server...")
+    subscribe(client, "Bot:"+str(MAC_ADDRESS))
+    client.publish("Robot/verify", str(MAC_ADDRESS), qos=0)
+    return client
+
+def callback(topic, msg):
+    print(topic, " ", msg)
+    if topic == b'Bot:'+str(MAC_ADDRESS):
+        BOT_NUM = msg.decode()
+    else: 
+        txt = msg.decode()
+        PATH.append((txt[2:], txt[0]))
+        print(PATH)
 
 
 
@@ -49,25 +74,25 @@ rightMotor = DCMotor(rightPWM, rightDirection, rightHall, MIN_DUTY, MAX_DUTY, sp
 
 #ROBOT OBJECT
 robot = Robot(leftMotor, rightMotor)
+robot.client = init_client()
+mac = sta_if.config('mac')
+robot.mac = ubinascii.hexlify(mac).decode()
 
 #BUTTON OBJECT
 buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
-
-
 
 ########################################################################
                   ### MAIN LOOP ###       
 ########################################################################
 
 if __name__ == '__main__':
-    mqttClient = com.init_client()
-    RFID = RFID()
-    print("Running")
-    while True:
-        mqttClient.check_msg()
-        (seen, id) = RFID.checkTag()
-        if seen:
-            print(id)
+    # RFID = RFID()
+    # print("Running")
+    # while True:
+    #     robot.client.check_msg()
+    #     (seen, id) = RFID.checkTag()
+    #     if seen:
+    #         print(id)
                 
         
 
@@ -80,20 +105,3 @@ if __name__ == '__main__':
             direction, speed = robot.checkUart()
             print(direction,speed)
             robot.motorCtrl(direction, speed)
-
-
-
-    # subscribe(robot.client, b'botOne')
-
-
-    # RFID TEST CODE
-
-
-    # print("Hello world!")
-    # while True:
-    #     robot.client.check_msg()
-    #     tag = RFID.Rfid_tag()
-    #     if tag[0]:
-    #         x = tag[1]
-    #         print("X")
-    #         robot.client.publish("botOne", tag[1], qos=0)
