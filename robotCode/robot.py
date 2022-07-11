@@ -28,6 +28,10 @@ class Robot():
         # ESP32 Mac Address
         self.mac = None
 
+        # NodeV Visit Flags Dictionary
+        self.visited = {"n1" : False, "n2" : False, "n3" : False, "n4" : False, "n5" : False,}
+        self.visitedQ = []
+
     def left(self, speed):
         self.leftMotor.high(speed-10)
         self.rightMotor.high(speed)
@@ -60,20 +64,23 @@ class Robot():
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
         commandType = str[0]
+
+        # if this is a node uart string
         if commandType == 'n':
             command = str[-1]
-            currentNode = commandType+command
-            if currentNode != commandType+command:
-                previousNode = currentNode
-                self.nodeList[previousNode] = False
-            if currentNode not in self.nodeList:
-                self.nodeList[currentNode] = True
-            if self.nodeList[currentNode] == False:
-                self.nodeList[currentNode] = True
-                self.client.publish("Bot:"+self.mac, command, qos=0)        
+            visited = commandType+command
+            self.visitedQ.append(visited)
+            if self.visited[visited] == False:
+                self.visited[visited] = True
+                self.client.publish("Bot:"+self.mac, command, qos=0)
+            if visited != self.visitedQ[0]:
+                self.visited[self.visitedQ[0]] = False
+                self.visitedQ.pop(0)
+       
+       # if this is a motor command
         elif 48 <= ord(commandType) <= 57:
             command = str[1:]
-        return commandType, command
+            return commandType, command
 
     def motorCtrl(self, direction, speed):
         self.speed = speed
