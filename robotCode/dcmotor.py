@@ -9,12 +9,12 @@ class DCMotor:
 
     def high(self, speed):
         self.speed = speed
-        self.pwm.duty(self.duty_cycle(self.speed))
+        self.pwm.duty(self.duty_cycle(speed))
         self.direction(1)
 
     def low(self, speed):
         self.speed = speed
-        self.pwm.duty(self.duty_cycle(self.speed))
+        self.pwm.duty(self.duty_cycle(speed))
         self.direction.value(0)
 
     def off(self):
@@ -26,5 +26,5 @@ class DCMotor:
         if speed <= 0 or speed > 100:
             duty_cycle = 0
         else:
-            duty_cycle = int(self.min_duty + (self.max_duty - self.min_duty)*((self.speed - 1)/(100 - 1)))
+            duty_cycle = int(self.min_duty + (self.max_duty - self.min_duty)*((speed - 1)/(100 - 1)))
         return duty_cycle

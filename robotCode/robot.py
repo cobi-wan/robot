@@ -31,18 +31,18 @@ class Robot():
         # NodeV Visit Flags Dictionary
         self.visited = {"n1" : False, "n2" : False, "n3" : False, "n4" : False, "n5" : False,}
         self.visitedQ = []
-
-    def left(self, speed):
-        self.leftMotor.high(speed-10)
-        self.rightMotor.high(speed)
-
-    def right(self, speed):
-        self.leftMotor.high(speed)
-        self.rightMotor.high(speed-10)
         
     def forward(self, speed):
         self.leftMotor.high(speed)
-        self.rightMotor.high(speed)
+        self.rightMotor.low(speed)
+
+    def left(self, speed):
+        self.leftMotor.high(speed-10)
+        self.rightMotor.low(speed+10)
+
+    def right(self, speed):
+        self.leftMotor.high(speed+10)
+        self.rightMotor.low(speed-10)
 
     def reverse(self, speed):
         self.leftMotor.low(speed)
@@ -63,32 +63,35 @@ class Robot():
     def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
-        commandType = str[0]
+
+        # if this is a motor command
+        if 60 <= int(str) <= 110:
+            cx = int(str)
+            return cx
+        
 
         # if this is a node uart string
-        if commandType == 'n':
-            command = str[-1]
-            visited = commandType+command
+        if str[0] == 'n':
+            nodeNumber = str[-1]
+            visited = str[0] + str[1:]
             self.visitedQ.append(visited)
             if self.visited[visited] == False:
                 self.visited[visited] = True
-                self.client.publish("Bot:"+self.mac, command, qos=0)
+                self.client.publish("Bot:"+self.mac, nodeNumber, qos=0)
             if visited != self.visitedQ[0]:
                 self.visited[self.visitedQ[0]] = False
                 self.visitedQ.pop(0)
-       
-       # if this is a motor command
-        elif 48 <= ord(commandType) <= 57:
-            command = str[1:]
-            return commandType, command
 
     def motorCtrl(self, direction, speed):
-        self.speed = speed
-        self.direction = direction
-
-        if self.direction == 0:
-            self.left(self.speed)
-        elif self.direction == 1:
-            self.right(self.speed)
-        elif self.direction == 2:
-            self.forward(self.speed)
+        print('direction:', direction)
+        if  direction == 0:
+            self.left(int(speed))
+            print('left')
+        elif direction == 1:
+            self.right(int(speed))   
+            print('right')
+        elif direction == 2:
+            self.forward(int(speed))
+            print('forward')
+        else:
+            self.stop()

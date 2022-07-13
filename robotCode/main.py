@@ -86,22 +86,11 @@ buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
 ########################################################################
 
 if __name__ == '__main__':
-    # RFID = RFID()
-    # print("Running")
-    # while True:
-    #     robot.client.check_msg()
-    #     (seen, id) = RFID.checkTag()
-    #     if seen:
-    #         print(id)
-                
-        
-
-
-    # UART TEST CODE
-
+    center = 80
     while True:
-        
         if robot.uart.any() > 0:
-            direction, speed = robot.checkUart()
-            print(direction,speed)
-            robot.motorCtrl(direction, speed)
+            cx = robot.checkUart()
+            if type(cx) == "<class 'int'>":
+                x = 10-cx
+            print(x)
+            
