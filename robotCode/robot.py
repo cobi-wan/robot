@@ -32,17 +32,32 @@ class Robot():
         self.visited = {"n1" : False, "n2" : False, "n3" : False, "n4" : False, "n5" : False,}
         self.visitedQ = []
         
-    def forward(self, speed):
-        self.leftMotor.high(speed)
-        self.rightMotor.low(speed)
+    def forward(self, lSpeed, rSpeed, dev):
+        absDev = abs(dev)
+        
+        if dev == 0:
+            print('leftSpeed:',lSpeed)
+            print('rightSpeed:',rSpeed)
+            self.leftMotor.high(lSpeed)
+            self.rightMotor.low(rSpeed)
+        if dev < 0:
+            lSpeed = lSpeed - absDev
+            print('leftSpeed:',lSpeed)
+            self.leftMotor.high(lSpeed)
+            self.rightMotor.low(rSpeed)
+        if dev > 0:
+            rSpeed = rSpeed - absDev
+            print('rightSpeed:',rSpeed)
+            self.leftMotor.high(lSpeed)
+            self.rightMotor.low(rSpeed)
 
     def left(self, speed):
-        self.leftMotor.high(speed-10)
-        self.rightMotor.low(speed+10)
+        self.leftMotor.high(speed)
+        self.rightMotor.high(speed)
 
     def right(self, speed):
-        self.leftMotor.high(speed+10)
-        self.rightMotor.low(speed-10)
+        self.leftMotor.low(speed)
+        self.rightMotor.low(speed)
 
     def reverse(self, speed):
         self.leftMotor.low(speed)
@@ -63,7 +78,6 @@ class Robot():
     def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
-
         # if this is a motor command
         if 60 <= int(str) <= 110:
             cx = int(str)
@@ -82,16 +96,12 @@ class Robot():
                 self.visited[self.visitedQ[0]] = False
                 self.visitedQ.pop(0)
 
-    def motorCtrl(self, direction, speed):
-        print('direction:', direction)
-        if  direction == 0:
-            self.left(int(speed))
-            print('left')
-        elif direction == 1:
-            self.right(int(speed))   
-            print('right')
-        elif direction == 2:
-            self.forward(int(speed))
-            print('forward')
-        else:
-            self.stop()
+    def motorCtrl(self, cx):
+        if cx is None:
+            return
+        center = 80
+        dev = center - cx
+        print(dev)
+        self.forward(50, 50, dev)
+        
+        

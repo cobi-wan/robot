@@ -90,7 +90,5 @@ if __name__ == '__main__':
     while True:
         if robot.uart.any() > 0:
             cx = robot.checkUart()
-            if type(cx) == "<class 'int'>":
-                x = 10-cx
-            print(x)
+            robot.motorCtrl(cx)
             
