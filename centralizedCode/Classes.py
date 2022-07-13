@@ -104,6 +104,7 @@ class environment:
             # for j in destinations[i]:
             self.addStop(i)
             # self.destination_list[self.botList[i]] = destinations[i]
+
         
     def robot2World(self, cords, botNum): 
         t = self.botList[botNum].tCord

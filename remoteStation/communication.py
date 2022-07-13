@@ -1,5 +1,5 @@
 from umqtt.robust import MQTTClient
-from main import MAC_ADDRESS, BOT_NUM, PATH
+from main import MAC_ADDRESS
 from boot import sta_if
 import ubinascii
 import network
@@ -16,7 +16,7 @@ def init_client():
     client.connect()
     print("connecting to server...")
     subscribe(client, "Bot:"+str(MAC_ADDRESS))
-    client.publish("Robot/verify", str(MAC_ADDRESS), qos=0)
+    client.publish("Button/verify", str(MAC_ADDRESS), qos=0)
     return client, MAC_ADDRESS
 
 def callback(topic, msg):

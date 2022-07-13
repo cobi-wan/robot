@@ -5,7 +5,7 @@ from robot import Robot
 from ultrasonic import Ultrasonic
 from rfid import RFID
 import utime as time
-# import communication as com
+import communication as com
 
 ########################################################################
                     ### FUNCTIONS ###
@@ -60,7 +60,7 @@ BOT_NUM = None
 # rightMotor = DCMotor(rightPin1, rightPin2, rightPWM, MIN_DUTY, MAX_DUTY, speed=0)
 
 #ROBOT OBJECT/CLIENT INITIALIZATION
-# robot = Robot(leftMotor, rightMotor)# , client=init_client())
+robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)# , client=init_client())
 
 rightDir = Pin(17, Pin.OUT)
 rightPWM = PWM(Pin(16), FREQUENCY)
@@ -75,7 +75,7 @@ buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
 
 if __name__ == '__main__':
     mqttClient = com.init_client()
-    RFID = RFID()
+    # RFID = RFID()
     print("Running")
     while True:
         mqttClient.check_msg()

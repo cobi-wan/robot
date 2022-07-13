@@ -9,6 +9,7 @@ import time
 import numpy as np
 import platform
 import csv
+
 from Classes import partRunner
 from Classes import cart
 from Classes import environment
@@ -17,9 +18,10 @@ from Classes import node
 from Classes import graph
 from pathPlanning import mapping
 from communication import connect
+from communication import send_update
+
 from flask import Flask, render_template, request, Response
 from multiprocessing import Process
-from communication import send_update
 
 app = Flask(__name__)
 
@@ -44,9 +46,9 @@ def getFrames(environ):
 def updateMap(environ):
     size = 200
     send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
-    videoFeed = cv.VideoCapture(0)
     try: 
         ts = time.monotonic_ns()
+        videoFeed = cv.VideoCapture(0)
         while True:
             if time.monotonic_ns() >= ts + environ.timeStep:
                 ts = time.monotonic_ns()
@@ -136,6 +138,7 @@ if __name__ == "__main__":
     mqtt = connect(env)
     mqtt.loop_start()
     ts = time.monotonic_ns()
+
     # for i in env.network.nodes:
     #     print(i.tag)
 

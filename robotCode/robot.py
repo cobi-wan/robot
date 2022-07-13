@@ -23,7 +23,7 @@ def subscribe(client, topic):
     client.subscribe(topic)
 
 class Robot():
-    def __init__(self, leftMotor, rightMotor):
+    def __init__(self, leftMotor, rightMotor, mac):
 
         # Initialize the UART on pins 16(RX) and 17(TX)
         self.uart = UART(2, 115200)
@@ -35,6 +35,8 @@ class Robot():
         # Left and right motor objects
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
+        MAC_ADDRESS = sta_if.config('mac')
+        self.MAC_ADDRESS = ubinascii.hexlify(MAC_ADDRESS).decode()
 
         # MQTT client
         
