@@ -15,7 +15,7 @@ def init_client():
     client = MQTTClient("Bot", "192.168.20.68", keepalive=30)
     client.connect()
     print("connecting to server...")
-    subscribe(client, "Bot:"+str(MAC_ADDRESS))
+    subscribe(client, "Button:"+str(MAC_ADDRESS))
     client.publish("Button/verify", str(MAC_ADDRESS), qos=0)
     return client, MAC_ADDRESS
 

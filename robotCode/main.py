@@ -78,7 +78,7 @@ robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)# , client=init_client())
 rightDir = Pin(17, Pin.OUT)
 rightPWM = PWM(Pin(16), FREQUENCY)
 #ROBOT OBJECT
-robot = Robot(leftMotor, rightMotor)
+robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)
 robot.client = init_client()
 mac = sta_if.config('mac')
 robot.mac = ubinascii.hexlify(mac).decode()

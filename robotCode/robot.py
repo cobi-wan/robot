@@ -2,6 +2,8 @@ from time import sleep
 import machine
 from machine import UART
 from umqtt.simple import MQTTClient
+import ubinascii
+from boot import sta_if
 
 
 class Robot():
@@ -36,22 +38,41 @@ class Robot():
         
     def forward(self, lSpeed, rSpeed, dev):
         absDev = abs(dev)
-        
-        if dev == 0:
-            print('leftSpeed:',lSpeed)
-            print('rightSpeed:',rSpeed)
-            self.leftMotor.high(lSpeed)
-            self.rightMotor.low(rSpeed)
+        forward_Scale = 1
+        tilt_Scale = 1
         if dev < 0:
-            lSpeed = lSpeed - absDev
-            print('leftSpeed:',lSpeed)
-            self.leftMotor.high(lSpeed)
-            self.rightMotor.low(rSpeed)
-        if dev > 0:
-            rSpeed = rSpeed - absDev
-            print('rightSpeed:',rSpeed)
-            self.leftMotor.high(lSpeed)
-            self.rightMotor.low(rSpeed)
+            lTilt = -1 * dev * tilt_Scale
+            rTilt = 0
+        elif dev > 0:
+            rTilt = dev * tilt_Scale
+            lTilt = 0
+        else: 
+            rTilt = 0
+            lTilt = 0
+        lScale = lTilt + forward_Scale * absDev
+        rScale = rTilt + forward_Scale * absDev
+        leftSpeed = lSpeed - lScale
+        rightSpeed = rSpeed - rScale
+
+
+        print("Motor Values: ", leftSpeed, ", ", rightSpeed, "Scales: ", lScale, " , ", rScale)
+        self.leftMotor.high(leftSpeed)
+        self.rightMotor.low(rightSpeed)
+        # if dev == 0:
+        #     print('leftSpeed:',lSpeed)
+        #     print('rightSpeed:',rSpeed)
+        #     self.leftMotor.high(lSpeed)
+        #     self.rightMotor.low(rSpeed)
+        # if dev < 0:
+        #     lSpeed = lSpeed - absDev
+        #     print('leftSpeed:',lSpeed)
+        #     self.leftMotor.high(lSpeed)
+        #     self.rightMotor.low(rSpeed)
+        # if dev > 0:
+        #     rSpeed = rSpeed - absDev
+        #     print('rightSpeed:',rSpeed)
+        #     self.leftMotor.high(lSpeed)
+        #     self.rightMotor.low(rSpeed)
 
     def left(self, speed):
         self.leftMotor.high(speed)
@@ -81,7 +102,7 @@ class Robot():
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
         # if this is a motor command
-        if 60 <= int(str) <= 110:
+        if 50 <= int(str) <= 110:
             cx = int(str)
             return cx
         
@@ -104,6 +125,6 @@ class Robot():
         center = 80
         dev = center - cx
         print(dev)
-        self.forward(50, 50, dev)
+        self.forward(80, 80, dev)
         
         
