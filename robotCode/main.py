@@ -1,4 +1,4 @@
-# from time import sleep
+from time import sleep
 from machine import Pin, PWM
 from dcmotor import DCMotor
 from robot import Robot
@@ -32,12 +32,16 @@ def init_client():
 def callback(topic, msg):
     print(topic, " ", msg)
     if topic == b'Bot:'+str(MAC_ADDRESS):
-        BOT_NUM = msg.decode()
+        botID = msg.decode()
+        print(botID)
     else: 
         txt = msg.decode()
-        PATH.append((txt[2:], txt[0]))
-        print(PATH)
-
+        path = (txt[2:], txt[0])
+        print(path)
+    dTopic = topic.decode()
+    dMsg = msg.decode()
+    
+    return dTopic, dMsg
 
 
 ########################################################################
@@ -73,10 +77,10 @@ rightHall = Pin(34, Pin.IN)
 rightMotor = DCMotor(rightPWM, rightDirection, rightHall, MIN_DUTY, MAX_DUTY, speed=0)
 
 #ROBOT OBJECT/CLIENT INITIALIZATION
-robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)# , client=init_client())
-
+robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)
 rightDir = Pin(17, Pin.OUT)
 rightPWM = PWM(Pin(16), FREQUENCY)
+
 #ROBOT OBJECT
 robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)
 robot.client = init_client()
@@ -91,9 +95,11 @@ buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
 ########################################################################
 
 if __name__ == '__main__':
+
     center = 80
     while True:
-        if robot.uart.any() > 0:
-            cx = robot.checkUart()
-            robot.motorCtrl(cx)
+        topic, msg = robot.client.check_msg()
+        # if robot.uart.any() > 0:
+        #     cx = robot.checkUart()
+        #     robot.motorCtrl(cx)
             
