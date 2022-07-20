@@ -1,4 +1,4 @@
-# from time import sleep
+from time import sleep
 from machine import Pin, PWM
 from dcmotor import DCMotor
 from robot import Robot
@@ -50,6 +50,12 @@ def callback(topic, msg):
     else: 
         BOT_NUM = 2
 
+        botID = msg.decode()
+        print(botID)
+    # dTopic = topic.decode()
+    # dMsg = msg.decode()
+    
+    # return dTopic, dMsg
 
 
 ########################################################################
