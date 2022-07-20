@@ -94,12 +94,26 @@ buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
                   ### MAIN LOOP ###       
 ########################################################################
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    center = 80
+#     # center = 80
+#     # while True:
+#     #     topic, msg = robot.client.check_msg()
+#     #     # if robot.uart.any() > 0:
+#     #     #     cx = robot.checkUart()
+#     #     #     robot.motorCtrl(cx)
+    
+
+#     motor = PWM(Pin(33), 200)
+#     motor.duty(2000000)
+
+led1 = Pin(1, Pin.OUT)
+led2 = Pin(22, Pin.OUT)
+led3 = Pin(23, Pin.OUT)
+
+if __name__ == "__main__":
+
     while True:
-        topic, msg = robot.client.check_msg()
-        # if robot.uart.any() > 0:
-        #     cx = robot.checkUart()
-        #     robot.motorCtrl(cx)
-            
+        led1.on()
+        led2.on()
+        led3.on()
