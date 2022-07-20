@@ -8,7 +8,9 @@ from boot import sta_if
 
 class Robot():
     def __init__(self, leftMotor, rightMotor, mac):
-
+        
+        self.fwd =0
+        self.turn =0
         # Initialize the UART on pins 16(RX) and 17(TX)
         self.uart = UART(2, 115200)
         self.uart.init(115200, bits=8, parity=None, stop=1)
@@ -36,28 +38,10 @@ class Robot():
         self.visited = {"n1" : False, "n2" : False, "n3" : False, "n4" : False, "n5" : False,}
         self.visitedQ = []
         
-    def forward(self, lSpeed, rSpeed, dev):
-        absDev = abs(dev)
-        forward_Scale = 1
-        tilt_Scale = 1
-        if dev < 0:
-            lTilt = -1 * dev * tilt_Scale
-            rTilt = 0
-        elif dev > 0:
-            rTilt = dev * tilt_Scale
-            lTilt = 0
-        else: 
-            rTilt = 0
-            lTilt = 0
-        lScale = lTilt + forward_Scale * absDev
-        rScale = rTilt + forward_Scale * absDev
-        leftSpeed = lSpeed - lScale
-        rightSpeed = rSpeed - rScale
-
-
-        print("Motor Values: ", leftSpeed, ", ", rightSpeed, "Scales: ", lScale, " , ", rScale)
-        self.leftMotor.high(leftSpeed)
-        self.rightMotor.low(rightSpeed)
+    def forward(self, lSpeed, rSpeed):
+        self.leftMotor.high(lSpeed)
+        self.rightMotor.high(rSpeed)
+        # print("Motor Speeds: ", lSpeed, rSpeed)
         # if dev == 0:
         #     print('leftSpeed:',lSpeed)
         #     print('rightSpeed:',rSpeed)
@@ -75,11 +59,11 @@ class Robot():
         #     self.rightMotor.low(rSpeed)
 
     def left(self, speed):
-        self.leftMotor.high(speed)
+        self.leftMotor.low(speed)
         self.rightMotor.high(speed)
 
     def right(self, speed):
-        self.leftMotor.low(speed)
+        self.leftMotor.high(speed)
         self.rightMotor.low(speed)
 
     def reverse(self, speed):
@@ -119,12 +103,12 @@ class Robot():
                 self.visited[self.visitedQ[0]] = False
                 self.visitedQ.pop(0)
 
-    def motorCtrl(self, cx):
-        if cx is None:
-            return
-        center = 80
-        dev = center - cx
-        print(dev)
-        self.forward(80, 80, dev)
+    # def motorCtrl(self, leftSpeed, rightSpeed):
+        # if cx is None:
+        #     return
+        # center = 80
+        # dev = center - cx
+        # print(dev)
+        # self.forward()
         
         

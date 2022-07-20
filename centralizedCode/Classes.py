@@ -67,6 +67,11 @@ class cart:
     def add(self, point):
         self.path.append(point)
 
+class button: 
+    def __init__(self, buttonNum=0, mac=None, nodeLoc=0):
+        self.MAC = mac
+        self.nodeLocation = nodeLoc
+        self.buttonIndex = buttonNum
 
 
 
@@ -89,7 +94,7 @@ class environment:
     calcRate = 5
     RFID_Dist2Node = 50
 
-    def __init__(self, img, bots, graph, destinations):
+    def __init__(self, img, bots, graph, buttons, destinations):
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
         self.UIwBots = self.UI.copy()
@@ -97,6 +102,7 @@ class environment:
         self.network = graph
         # self.activeNetwork = graph
         self.destination_list = {}
+        self.buttonList = buttons
         for i in self.botList:
             self.destination_list[i] = [0]
         for i in destinations:
