@@ -8,6 +8,10 @@ from boot import sta_if
 
 class Robot():
     def __init__(self, leftMotor, rightMotor, mac):
+        
+        # Vars for 'WASD' control
+        self.fwd =0
+        self.turn =0
 
         # Initialize the UART on pins 16(RX) and 17(TX)
         self.uart = UART(2, 115200)
@@ -36,50 +40,16 @@ class Robot():
         self.visited = {"n1" : False, "n2" : False, "n3" : False, "n4" : False, "n5" : False,}
         self.visitedQ = []
         
-    def forward(self, lSpeed, rSpeed, dev):
-        absDev = abs(dev)
-        forward_Scale = 1
-        tilt_Scale = 1
-        if dev < 0:
-            lTilt = -1 * dev * tilt_Scale
-            rTilt = 0
-        elif dev > 0:
-            rTilt = dev * tilt_Scale
-            lTilt = 0
-        else: 
-            rTilt = 0
-            lTilt = 0
-        lScale = lTilt + forward_Scale * absDev
-        rScale = rTilt + forward_Scale * absDev
-        leftSpeed = lSpeed - lScale
-        rightSpeed = rSpeed - rScale
-
-
-        print("Motor Values: ", leftSpeed, ", ", rightSpeed, "Scales: ", lScale, " , ", rScale)
-        self.leftMotor.high(leftSpeed)
-        self.rightMotor.low(rightSpeed)
-        # if dev == 0:
-        #     print('leftSpeed:',lSpeed)
-        #     print('rightSpeed:',rSpeed)
-        #     self.leftMotor.high(lSpeed)
-        #     self.rightMotor.low(rSpeed)
-        # if dev < 0:
-        #     lSpeed = lSpeed - absDev
-        #     print('leftSpeed:',lSpeed)
-        #     self.leftMotor.high(lSpeed)
-        #     self.rightMotor.low(rSpeed)
-        # if dev > 0:
-        #     rSpeed = rSpeed - absDev
-        #     print('rightSpeed:',rSpeed)
-        #     self.leftMotor.high(lSpeed)
-        #     self.rightMotor.low(rSpeed)
+    def forward(self, lSpeed, rSpeed):
+        self.leftMotor.high(lSpeed)
+        self.rightMotor.high(rSpeed)
 
     def left(self, speed):
-        self.leftMotor.high(speed)
+        self.leftMotor.low(speed)
         self.rightMotor.high(speed)
 
     def right(self, speed):
-        self.leftMotor.low(speed)
+        self.leftMotor.high(speed)
         self.rightMotor.low(speed)
 
     def reverse(self, speed):
@@ -101,13 +71,13 @@ class Robot():
     def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
-        # if this is a motor command
+
+        # Received a motor command
         if 50 <= int(str) <= 110:
             cx = int(str)
             return cx
-        
 
-        # if this is a node uart string
+        # Received a Node number
         if str[0] == 'n':
             nodeNumber = str[-1]
             visited = str[0] + str[1:]
@@ -118,13 +88,3 @@ class Robot():
             if visited != self.visitedQ[0]:
                 self.visited[self.visitedQ[0]] = False
                 self.visitedQ.pop(0)
-
-    def motorCtrl(self, cx):
-        if cx is None:
-            return
-        center = 80
-        dev = center - cx
-        print(dev)
-        self.forward(80, 80, dev)
-        
-        

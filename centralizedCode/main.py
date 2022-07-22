@@ -16,6 +16,7 @@ from Classes import environment
 from Classes import edge
 from Classes import node
 from Classes import graph
+from Classes import button
 from pathPlanning import mapping
 from communication import connect
 from communication import send_update
@@ -82,6 +83,10 @@ def updateMap(environ):
 
 # Reads in mapping file that specifies node locations and paths
 def startUp():
+
+    print("*******************")
+    print("System Initialization:")
+    print("*******************")
     fileName = "nodeLocations.csv"
     nodes = []
     edges = []
@@ -101,14 +106,24 @@ def startUp():
 
     botFile = "botBooting.csv"
     botList = []
+    buttonList = []
+
     with open(botFile, 'r') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader)
 
         for row in csvreader:
-            botList.append(partRunner(int(row[0]), int(row[1]), int(row[2]), int(row[3]), str(row[4]).encode()))
+            if int(row[0]) == 1:
+                print("Bot at MAC:", str(row[5]), "at:", str(row[2]), ", ", str(row[3]))
+                botList.append(partRunner(int(row[1]), int(row[2]), int(row[3]), int(row[4]), str(row[5]).encode()))
+            else:
+                print("Button at MAC:", row[5])
+                buttonList.append(button(int(row[1]), int(row[3]), str(row[2].encode())))
+    valid = input("Hit enter if the above information looks correct. Enter 0 to exit and edit conf files: ")
+    if valid != "":
+        exit()
 
-    return botList, g
+    return botList, g, buttonList
 
 if __name__ == "__main__":
 
@@ -116,7 +131,7 @@ if __name__ == "__main__":
     cv.destroyAllWindows()
 
     # Run startup procedure to read in nodes and create network 
-    bList, g = startUp()
+    bList, g, buttonList= startUp()
 
     # Load in blank image in given folder. Allow for Windows and Mac OS
     if platform.system() == 'Windows':
@@ -128,7 +143,7 @@ if __name__ == "__main__":
     destinations = [2, 3, 4, 5, 6, 21, 20, 23, 1]
     # destinations = {0: [23, 1, 5, 10]}
     # stop = None
-    env = environment(file, bList, g, destinations)
+    env = environment(file, bList, g, buttonList, destinations)
     env.updateBotMarker() 
     env.drawPaths()
     env.drawNodes()

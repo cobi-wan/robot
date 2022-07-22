@@ -1,8 +1,8 @@
 from umqtt.robust import MQTTClient
-from main import MAC_ADDRESS
 from boot import sta_if
 import ubinascii
 import network
+from main import NODE_NUM, MAC_ADDRESS, inRouteLED, IN_ROUTE
 
 def subscribe(client, topic):
     print('subscribing')
@@ -21,9 +21,15 @@ def init_client():
 
 def callback(topic, msg):
     print(topic, " ", msg)
-    if topic == b'Bot:'+str(MAC_ADDRESS):
-        BOT_NUM = msg.decode()
+    if topic == b'Button:'+str(MAC_ADDRESS):
+        if msg.isdigit():
+            print("Connected at node:", msg)
+            NODE_NUM = int(msg.decode())
+            print(msg.decode())
+    elif topic == b'Button:'+str(MAC_ADDRESS)+"Req":
+        if msg == b'Coming sweety':
+            inRouteLED.on() 
+        else:
+            inRouteLED.off()
     else: 
-        txt = msg.decode()
-        PATH.append((txt[2:], txt[0]))
-        print(PATH)
+        pass

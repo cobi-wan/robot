@@ -3,6 +3,9 @@ from base64 import decode
 import paho.mqtt.client as mqtt
 
 
+
+
+
 #### OVERALL CONNECTION FUNCTIONS ####
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code :"+str(rc))
@@ -29,7 +32,10 @@ def send_update(msg, botNum, client):
     client.publish("Remote/"+str(botNum), payload=msg, qos=1)
 
 
-#### STATION CONNECTION FUNCTIONS ####
+
+
+
+#### COMPUTER STATION CONNECTION FUNCTIONS ####
 def stationInit_on_message(client, userdata, msg):
     if msg.payload.isdigit() and int(msg.payload) < userdata.network.nodeNum:
         client.publish("Station/"+msg.payload.decode(), payload="Valid", qos=1)
@@ -39,11 +45,30 @@ def stationInit_on_message(client, userdata, msg):
 def stationReq_on_message(client, userdata, msg):
     if msg.payload.isdigit():
         inRoute = userdata.addStop(int(msg.payload))
-        userdata.addStop(1) # Write this function in classes before adding 2 robots
         if inRoute:
+            userdata.addStop(1) # Write this function in classes before adding 2 robots
             client.publish("Remote/"+msg.payload.decode(), payload="In route", qos=1)
     else: 
         print("Erroneous message sent to BotReq:"+str(msg.payload))
+
+
+
+
+
+#### BUTTON STATION CONNECTION FUNCTIONS ####
+def buttonInit_on_message(client, userdata, msg):
+    for i in userdata.buttonList:
+        if i.MAC == msg.payload:
+            client.publish("Button:"+i.MAC, payload=str(i.nodeLocation), qos=1)
+        else: 
+            client.publish("Button:"+msg.payload, payload="No", qos=1)
+
+def buttonReq_on_message(client, userdata, msg):
+    pass
+    # if msg.payload
+
+
+
 
 
 #### BOT CONNECTION FUNCTIONS #### 
