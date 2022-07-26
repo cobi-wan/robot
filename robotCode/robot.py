@@ -9,6 +9,9 @@ from boot import sta_if
 class Robot():
     def __init__(self, leftMotor, rightMotor, mac):
         
+        # State variable for start-up
+        self.halt = True
+        
         # Vars for 'WASD' control
         self.fwd =0
         self.turn =0
