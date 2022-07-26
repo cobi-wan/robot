@@ -3,3 +3,13 @@ API_KEY = 'Whatever'
 SSID = 'HirshPrecision'
 
 Password = 'H1rshHasVision!'
+
+FREQUENCY = 200
+PWM_CENTER_LEFT = 307
+PWM_CENTER_RIGHT = 307
+MODE = 2
+
+LEFT_DIRECTION = 1
+RIGHT_DIRECTION = -1
+
+MAX_SPEED = 12

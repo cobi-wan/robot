@@ -1,5 +1,6 @@
 from config import SSID
-from config import Password
+from config import Password, PWM_CENTER_LEFT, PWM_CENTER_RIGHT, FREQUENCY
+from machine import Pin, PWM
 # import ubinascii
 # import network
 
@@ -19,6 +20,14 @@ def wifi_connect():
 def no_debug():
   import esp
   esp.osdebug(None)
+
+def stopPWM():
+  leftPWM = PWM(Pin(25), FREQUENCY)
+  rightPWM = PWM(Pin(33), FREQUENCY)
+  leftPWM.duty(PWM_CENTER_LEFT)
+  rightPWM.duty(PWM_CENTER_RIGHT)
+  return leftPWM, rightPWM
   
 no_debug()
-sta_if = wifi_connect()
+leftPWM, rightPWM = stopPWM()
+# sta_if = wifi_connect()

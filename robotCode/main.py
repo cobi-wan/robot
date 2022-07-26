@@ -8,7 +8,9 @@ import utime as time
 from umqtt.robust import MQTTClient
 import ubinascii
 import network
-from boot import sta_if
+from boot import leftPWM, rightPWM # sta_if
+from config import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, MODE, LEFT_DIRECTION, RIGHT_DIRECTION, MAX_SPEED
+
 
 ########################################################################
                     ### FUNCTIONS ###
@@ -62,39 +64,26 @@ def callback(topic, msg):
                     ### CONSTANTS ###
 ########################################################################
 #FREQUENCY CONST
-FREQUENCY = 200
-
 PATH = []
 MAC_ADDRESS = None
 BOT_NUM = None
 
-MAX_SPEED = 15
-PWM_CENTER = 307
-
-TESTING = 3
-BOT_NUM = 0
-
-
 ########################################################################
                     ### OBJECTS ###
 ########################################################################
-LEFT_DIRECTION = 1
-RIGHT_DIRECTION = -1
 
 #LEFT MOTOR OBJECTS
-leftPWM = PWM(Pin(25), FREQUENCY)
 leftMotor = DCMotor(leftPWM, LEFT_DIRECTION, speed=0)
 
 #RIGHT MOTOR OBJECTS
-rightPWM = PWM(Pin(33), FREQUENCY)
 rightMotor = DCMotor(rightPWM, RIGHT_DIRECTION, speed=0)
 
 #ROBOT OBJECT/CLIENT INITIALIZATION
 robot = Robot(leftMotor, rightMotor, MAC_ADDRESS)# , client=init_client())
 
-robot.client = init_client()
-mac = sta_if.config('mac')
-robot.mac = ubinascii.hexlify(mac).decode()
+# robot.client = init_client()
+# mac = sta_if.config('mac')
+# robot.mac = ubinascii.hexlify(mac).decode()
 
 #BUTTON OBJECT
 buttonPin = Pin(21, Pin.IN, Pin.PULL_UP)
@@ -126,7 +115,7 @@ def piControl(dev, lSpeed, rSpeed, integral):
     return leftSpeed, rightSpeed
     
 def pControl(dev, lSpeed, rSpeed):
-    kp = 0.2
+    kp = 0.1
     kpp = 0.1
     aDev = abs(dev)
     if dev < 0:
@@ -140,11 +129,11 @@ def pControl(dev, lSpeed, rSpeed):
         lScale = 0
     leftSpeed = lSpeed - lScale
     rightSpeed = rSpeed - rScale
-    print("Scale: ", lScale, rScale)
+    # print("Scale: ", lScale, rScale)
     return leftSpeed, rightSpeed
 
 if __name__ == '__main__':
-    if TESTING == 1 or TESTING == 2:
+    if MODE == 1 or MODE == 2:
         center = 80
         errorSum = 0
         while True: 
@@ -157,38 +146,46 @@ if __name__ == '__main__':
                     if abs(dev) < 5:
                         errorSum = 0
                     # left, right = piControl(dev, MAX_SPEED, MAX_SPEED, errorSum)
-                    if TESTING == 2:
+                    if MODE == 2:
                         left, right = pControl(dev, MAX_SPEED, MAX_SPEED)
-                    elif TESTING == 1:
+                    elif MODE == 1:
                         left, right = piControl(dev, MAX_SPEED, MAX_SPEED, errorSum)
                     if left < 0:
                         left = 0
                     if right < 0:
                         right = 0                        
-                    lPWM = PWM_CENTER + int(left)
-                    rPWM = PWM_CENTER - int(right)
-                    print(lPWM, rPWM)
-                    if lPWM > PWM_CENTER + MAX_SPEED:
-                        lPWM = PWM_CENTER + MAX_SPEED
-                    if rPWM > PWM_CENTER + MAX_SPEED:
-                        rPWM = PWM_CENTER + MAX_SPEED
-                    if lPWM < PWM_CENTER - MAX_SPEED:
-                        lPWM = PWM_CENTER - MAX_SPEED
-                    if rPWM < PWM_CENTER - MAX_SPEED:
-                        rPWM = PWM_CENTER - MAX_SPEED
-                    if abs((rPWM - PWM_CENTER) - (lPWM - PWM_CENTER)) > MAX_SPEED:
-                        if rPWM > PWM_CENTER:
-                            rPWM = PWM_CENTER
-                        elif lPWM < PWM_CENTER:
-                            lPWM = PWM_CENTER
-                        else: 
-                            lPWM = PWM_CENTER
-                            rPWM = PWM_CENTER
+                    lPWM = PWM_CENTER_LEFT + int(left)
+                    rPWM = PWM_CENTER_RIGHT - int(right)
+                    # print(lPWM, rPWM)
+                    if lPWM > PWM_CENTER_LEFT + MAX_SPEED:
+                        print("Error 1")
+                        lPWM = PWM_CENTER_LEFT + MAX_SPEED
+                    if rPWM > PWM_CENTER_RIGHT + MAX_SPEED:
+                        print("Error 2")
+                        rPWM = PWM_CENTER_RIGHT + MAX_SPEED
+                    if lPWM < PWM_CENTER_LEFT - MAX_SPEED:
+                        print("Error 3")
+                        lPWM = PWM_CENTER_LEFT - MAX_SPEED
+                    if rPWM < PWM_CENTER_RIGHT - MAX_SPEED:
+                        print("Error 4")
+                        rPWM = PWM_CENTER_RIGHT - MAX_SPEED
+                    if abs((rPWM - PWM_CENTER_RIGHT) - (lPWM - PWM_CENTER_LEFT)) > MAX_SPEED:
+                        if rPWM > PWM_CENTER_RIGHT:
+                            print("Error 5")
+                            rPWM = PWM_CENTER_RIGHT
+                        elif lPWM < PWM_CENTER_LEFT:
+                            print("Error 6")
+                            lPWM = PWM_CENTER_LEFT
+                        # else: 
+                        #     print("Error 7")
+                        #     lPWM = PWM_CENTER_LEFT
+                        #     rPWM = PWM_CENTER_RIGHT
+                    print(left, right, lPWM, rPWM)
                     leftPWM.duty(lPWM)
                     rightPWM.duty(rPWM)
                 else: 
-                    leftPWM.duty(PWM_CENTER)
-                    rightPWM.duty(PWM_CENTER)
+                    leftPWM.duty(PWM_CENTER_LEFT)
+                    rightPWM.duty(PWM_CENTER_RIGHT)
             #     ts = time.monotonic_ns()
             # while cx is None:
 
@@ -200,7 +197,7 @@ if __name__ == '__main__':
             #         robot.forward(0, 0)
             #     currLeft = 0
     # motor = PWM(Pin(32), 200)
-    elif TESTING == 3:
+    elif MODE == 3:
         #global fwd
         #global trn
         robot.fwd = 0
@@ -210,8 +207,8 @@ if __name__ == '__main__':
         subscribe(robot.client, "Control")
         while True: 
             robot.client.check_msg()
-            rightPWM.duty(PWM_CENTER + (robot.fwd - robot.trn))
-            leftPWM.duty(PWM_CENTER - (robot.fwd + robot.trn))
+            rightPWM.duty(PWM_CENTER_RIGHT + (robot.fwd - robot.trn))
+            leftPWM.duty(PWM_CENTER_LEFT - (robot.fwd + robot.trn))
             if time.ticks_diff(time.ticks_ms(), tS) > 5000:
                 print("Decreasing")
                 tS = time.ticks_ms()
@@ -223,13 +220,26 @@ if __name__ == '__main__':
                     robot.trn -= 1
                 elif robot.trn < 0:
                     robot.trn += 1
-    elif TESTING == 4:
+    elif MODE == 4:
         while True:
             robot.client.check_msg()
             print(BOT_NUM)
     else:
         speed = 0
+        FWD = 0
+        TRN = 0
         while True:
-            speed = input("Enter speed: ")
-            rightPWM.duty(int(speed))
-            leftPWM.duty(int(speed))
+            key = input("Enter speed: ")
+            if key == "w":
+                FWD += 3
+            if key == "s":
+                FWD -= 3
+            if key == "a":
+                TRN -= 1
+            if key == "d":
+                TRN += 1
+            lSpeed = (FWD + TRN)
+            rSpeed = (FWD - TRN)
+            print("L: ", lSpeed, "R: ", rSpeed)
+            rightPWM.duty(PWM_CENTER_RIGHT - rSpeed)
+            leftPWM.duty(PWM_CENTER_LEFT + lSpeed)

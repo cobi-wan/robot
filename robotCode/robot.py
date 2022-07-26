@@ -3,7 +3,7 @@ import machine
 from machine import UART
 from umqtt.simple import MQTTClient
 import ubinascii
-from boot import sta_if
+# from boot import sta_if
 
 
 class Robot():
@@ -21,8 +21,8 @@ class Robot():
         # Left and right motor objects
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
-        MAC_ADDRESS = sta_if.config('mac')
-        self.MAC_ADDRESS = ubinascii.hexlify(MAC_ADDRESS).decode()
+        # MAC_ADDRESS = sta_if.config('mac')
+        # self.MAC_ADDRESS = ubinascii.hexlify(MAC_ADDRESS).decode()
 
         # Direction and Speed vectors at any given time
         self.direction = 0
@@ -86,7 +86,7 @@ class Robot():
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
         # if this is a motor command
-        if 50 <= int(str) <= 110:
+        if 1 <= int(str) <= 159:
             cx = int(str)
             return cx
         
