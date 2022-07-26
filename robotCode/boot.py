@@ -1,11 +1,9 @@
-from config import SSID
-from config import Password, PWM_CENTER_LEFT, PWM_CENTER_RIGHT, FREQUENCY
-from machine import Pin, PWM
 # import ubinascii
-# import network
+import network
+from machine import Pin, PWM
+from config import SSID, Password, PWM_CENTER_LEFT, PWM_CENTER_RIGHT, FREQUENCY
 
 def wifi_connect():
-  import network
   sta_if = network.WLAN(network.STA_IF)
   # sta_if.disconnect()
   if not sta_if.isconnected():
@@ -30,4 +28,4 @@ def stopPWM():
   
 no_debug()
 leftPWM, rightPWM = stopPWM()
-# sta_if = wifi_connect()
+sta_if = wifi_connect()

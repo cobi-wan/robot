@@ -1,8 +1,9 @@
 from umqtt.robust import MQTTClient
-from main import MAC_ADDRESS, BOT_NUM, PATH
+from config import BOT_NUM, MAC_ADDRESS
 from boot import sta_if
 import ubinascii
-import network
+from config import robot
+
 
 def subscribe(client, topic):
     print('subscribing')
@@ -21,9 +22,30 @@ def init_client():
 
 def callback(topic, msg):
     print(topic, " ", msg)
+    msg = msg.decode()
+    print(b'Bot:'+str(MAC_ADDRESS))
     if topic == b'Bot:'+str(MAC_ADDRESS):
-        BOT_NUM = msg.decode()
+        if msg.isnumeric():
+            BOT_NUM = int(msg)
+            return
+    if msg == 'go':
+        print("Continuing")
+        robot.halt = False
+        return 
+    elif topic == b'Control':
+        print(msg)
+        if msg == b"Fwd": 
+            robot.fwd += 1
+        if msg == b"Bck":
+            robot.fwd -= 1
+        if msg == b"Lft":
+            robot.trn -= 1
+        if msg == b"Rgt":
+            robot.trn += 1
+        else: 
+            robot.fwd = 0
+            robot.trn = 0
+        print("FWD: ", robot.fwd, "Turn: ", robot.trn)
     else: 
-        txt = msg.decode()
-        PATH.append((txt[2:], txt[0]))
-        print(PATH)
+        botID = msg
+        # print(botID)

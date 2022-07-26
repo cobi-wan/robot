@@ -1,4 +1,5 @@
 import utime as time
+
 class DCMotor:
     def __init__(self, pwm, direction, speed=0):
         self.speed = speed
