@@ -5,7 +5,6 @@ import paho.mqtt.client as mqtt
 
 
 
-
 #### OVERALL CONNECTION FUNCTIONS ####
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code :"+str(rc))

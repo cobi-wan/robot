@@ -10,122 +10,78 @@ import numpy as np
 import platform
 import csv
 
-from Classes import partRunner
-from Classes import cart
-from Classes import environment
-from Classes import edge
-from Classes import node
-from Classes import graph
-from Classes import button
-from pathPlanning import mapping
-from communication import connect
-from communication import send_update
+from Classes.Graph.graph import graph
+from Classes.Graph.node import node
+from Classes.Graph.edge import edge
+from Classes.environment import environment
+from Classes.RobotClasses.partRunner import partRunner
+from Classes.RobotClasses.cart import cart
+from PathPlanning.pathPlanning import mapping
+from WifiCommunication.communication import connect, send_update
+from startUp import startUp
+from WebAndAPI.api import app, create_app
 
 from flask import Flask, render_template, request, Response
 from multiprocessing import Process
 
-app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# app = Flask(__name__)
 
-@app.route('/UI')
-def UI():
-    return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
-def getFrames(environ):
-    ts = time.monotonic_ns()
-    while True:
-        if time.monotonic_ns() >= ts + environ.timestep:
-            ts = time.monotonic_ns()
-            img = environ.UIwBots
-            _, img_encoded = cv.imencode('.jpg', img)
-            frame = img_encoded.tobytes()
-            yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+# @app.route('/UI')
+# def UI():
+#     return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
 
-def updateMap(environ):
-    size = 200
-    send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
-    try: 
-        ts = time.monotonic_ns()
-        videoFeed = cv.VideoCapture(0)
-        while True:
-            if time.monotonic_ns() >= ts + environ.timeStep:
-                ts = time.monotonic_ns()
-                mapping(environ)
+# @app.route('/api/v1/summon')
+# def summon():
+#     wc = request.args.get("wc")
+#     env.addStop(int(wc))
+#     return Response("{'a':'b'}", status=200, mimetype='application/json')
 
-                # Capture frame from robot live feed
 
-                ret, liveFeedFrame = videoFeed.read()
+# def updateMap(environ):
+#     size = 200
+#     send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
+#     try: 
+#         ts = time.monotonic_ns()
+#         videoFeed = cv.VideoCapture(0)
+#         while True:
+#             if time.monotonic_ns() >= ts + environ.timeStep:
+#                 ts = time.monotonic_ns()
+#                 mapping(environ)
+
+#                 # Capture frame from robot live feed
+
+#                 # ret, liveFeedFrame = videoFeed.read()
                 
-                # Capture fram from user interface and resize
+#                 # Capture fram from user interface and resize
 
-                UIFrame = environ.UIwBots
-                liveFeedFrame = cv.resize(UIFrame, (100,100))
+#                 UIFrame = environ.UIwBots
+#                 # liveFeedFrame = cv.resize(UIFrame, (100,100))
 
-                # Convert to grayscale and create mask
+#                 # Convert to grayscale and create mask
 
-                img2gray = cv.cvtColor(liveFeedFrame, cv.COLOR_BGR2GRAY)
-                ret, mask = cv.threshold(img2gray, 1, 255, cv.THRESH_BINARY)
+#                 # img2gray = cv.cvtColor(liveFeedFrame, cv.COLOR_BGR2GRAY)
+#                 # ret, mask = cv.threshold(img2gray, 1, 255, cv.THRESH_BINARY)
 
-                # I genuinely have no clue
+#                 # I genuinely have no clue
 
-                roi = UIFrame[-size-325:-325, -size-550:-550]
-                roi[np.where(mask)] = 0
+#                 # roi = UIFrame[-size-325:-325, -size-550:-550]
+#                 # roi[np.where(mask)] = 0
 
-                # Image encoding and bitstream
-                _, img_encoded = cv.imencode('.jpg', UIFrame)
-                UIFrame = img_encoded.tobytes()
-                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + UIFrame + b'\r\n')
-    except KeyboardInterrupt:
-        print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
+#                 # Image encoding and bitstream
+#                 _, img_encoded = cv.imencode('.jpg', UIFrame)
+#                 UIFrame = img_encoded.tobytes()
+#                 yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + UIFrame + b'\r\n')
+#     except KeyboardInterrupt:
+#         print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
-# Reads in mapping file that specifies node locations and paths
-def startUp():
-
-    print("*******************")
-    print("System Initialization:")
-    print("*******************")
-    fileName = "nodeLocations.csv"
-    nodes = []
-    edges = []
-    # Read in nodes and edges from filename
-    with open(fileName, 'r') as csvfile:
-        csvreader = csv.reader(csvfile)
-        next(csvreader) # Skip the first line. When saving the CSV it always has weird charaters at the first index. 
-        # Iterate through each row in the file. Each row has a node location and a list of nodes it is connected to 
-        # Each connection must be to a node that is already created 
-        for row in csvreader: 
-            nodes.append(node(int(row[1]), int(row[2]), row[3]))
-            for i in row[4:]:
-                if i != '':
-                    edges.append(edge(nodes[int(i)], nodes[int(row[0])]))
-
-    g = graph(nodes, edges)
-
-    botFile = "botBooting.csv"
-    botList = []
-    buttonList = []
-
-    with open(botFile, 'r') as csvfile:
-        csvreader = csv.reader(csvfile)
-        next(csvreader)
-
-        for row in csvreader:
-            if int(row[0]) == 1:
-                print("Bot at MAC:", str(row[5]), "at:", str(row[2]), ", ", str(row[3]))
-                botList.append(partRunner(int(row[1]), int(row[2]), int(row[3]), int(row[4]), str(row[5]).encode()))
-            else:
-                print("Button at MAC:", row[5])
-                buttonList.append(button(int(row[1]), int(row[3]), str(row[2].encode())))
-    valid = input("Hit enter if the above information looks correct. Enter 0 to exit and edit conf files: ")
-    if valid != "":
-        exit()
-
-    return botList, g, buttonList
 
 if __name__ == "__main__":
+    
 
     # Initial running stuff
     cv.destroyAllWindows()
@@ -158,7 +114,8 @@ if __name__ == "__main__":
     #     print(i.tag)
 
 
-    p = Process(target=updateMap, args=(env, ))
-    p.start()
+    # p = Process(target=updateMap, args=(env, ))
+    # p.start()
+    app = create_app(env, app)
     app.run(host='0.0.0.0', debug=True, use_reloader=False)
-    p.join()
+    # p.join()
