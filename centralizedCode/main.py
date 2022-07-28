@@ -34,6 +34,12 @@ def index():
 def UI():
     return Response(updateMap(env), mimetype='multipart/x-mixed-replace;boundary=frame')
 
+@app.route('api/v1/summon')
+def summon():
+    wc = request.args.get('wc')
+    env.addStop(int(wc))
+    return Response("{'a':'b'}", status=200, mimetype='application/json')
+
 def getFrames(environ):
     ts = time.monotonic_ns()
     while True:

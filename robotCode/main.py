@@ -1,61 +1,29 @@
 import utime as time
-import ubinascii
-from umqtt.robust import MQTTClient
 from time import sleep
-from config import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, LEFT_DIRECTION, RIGHT_DIRECTION, MAX_SPEED, SERVER_IP
-from config import robot, MODE, MAC_ADDRESS, BOT_NUM, PATH
-from boot import leftPWM, rightPWM, sta_if
-from robot import Robot
-from dcmotor import DCMotor
-from control import PWMMasking, pControl, piControl, turnAround
-# from communication import init_client, subscribe
+from Communication.mqtt import MQTT
+from boot import leftPWM, rightPWM
+from Control.controlconfig import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, LEFT_DIRECTION, RIGHT_DIRECTION, MAX_SPEED, BOT_NUM
+from Communication.comconfig import MODE
+from Classes.Robot.robot import Robot
+from Classes.Robot.Motors.dcmotor import DCMotor
+from Control.control import PWMMasking, pControl, piControl, turnAround
 
 
+########################################################################
+                    ### OBJECTS ###
+########################################################################
 
-def subscribe(client, topic):
-    print('subscribing')
-    client.set_callback(callback)
-    client.subscribe(topic)
+#LEFT MOTOR OBJECTS
+leftMotor = DCMotor(leftPWM, LEFT_DIRECTION, speed=0)
 
-def init_client():
-    MAC_ADDRESS = sta_if.config('mac')
-    MAC_ADDRESS = ubinascii.hexlify(MAC_ADDRESS).decode()
-    client = MQTTClient("Bot", SERVER_IP, keepalive=30)
-    client.connect()
-    print("connecting to server...")
-    subscribe(client, "Bot:"+str(MAC_ADDRESS))
-    client.publish("Robot/verify", str(MAC_ADDRESS), qos=0)
-    return client, MAC_ADDRESS
+#RIGHT MOTOR OBJECTS
+rightMotor = DCMotor(rightPWM, RIGHT_DIRECTION, speed=0)
 
-def callback(topic, msg):
-    print(topic, " ", msg)
-    msg = msg.decode()
-    if topic == b'Bot:'+str(MAC_ADDRESS):
-        if msg.isdigit():
-            BOT_NUM = int(msg)
-        if msg == 'go':
-            print("Continuing")
-            robot.halt = False
-    elif topic == b'Control':
-        print(msg)
-        if msg == b"Fwd": 
-            robot.fwd += 1
-        if msg == b"Bck":
-            robot.fwd -= 1
-        if msg == b"Lft":
-            robot.trn -= 1
-        if msg == b"Rgt":
-            robot.trn += 1
-        else: 
-            robot.fwd = 0
-            robot.trn = 0
-        print("FWD: ", robot.fwd, "Turn: ", robot.trn)
-    else: 
-        botID = msg
-        print("Not reached")
-    return
+#ROBOT OBJECT
+robot = Robot(leftMotor, rightMotor)
 
-
+#MQTT OBJECT
+mqtt = MQTT(robot)
 
 
 
@@ -67,7 +35,7 @@ def lineFollowing(mode):
     errorSum = 0
     center = 80
     while True: 
-        robot.client.check_msg()
+        mqtt.client.check_msg()
         # print("Checking message")
         if robot.uart.any() > 0:
             cx = robot.checkUart()
@@ -107,7 +75,7 @@ def WASD():
     robot.trn = 0
     tS = time.ticks_ms()
     print("Running Remote control")
-    subscribe(robot.client, "Control")
+    mqtt.subscribe(robot.client, "Control")
     while True: 
         robot.client.check_msg()
         rightPWM.duty(PWM_CENTER_RIGHT + (robot.fwd - robot.trn))
@@ -123,21 +91,6 @@ def WASD():
                 robot.trn -= 1
             elif robot.trn < 0:
                 robot.trn += 1
-
-########################################################################
-                    ### OBJECTS ###
-########################################################################
-
-#LEFT MOTOR OBJECTS
-leftMotor = DCMotor(leftPWM, LEFT_DIRECTION, speed=0)
-
-#RIGHT MOTOR OBJECTS
-rightMotor = DCMotor(rightPWM, RIGHT_DIRECTION, speed=0)
-
-#ROBOT OBJECT/CLIENT INITIALIZATION
-client, MAC_ADDRESS = init_client()
-
-robot = Robot(leftMotor, rightMotor, client, MAC_ADDRESS)
 
 ########################################################################
                   ### MAIN LOOP ###       

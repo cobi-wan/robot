@@ -1,5 +1,6 @@
-from config import PWM_CENTER_LEFT, PWM_CENTER_RIGHT
-import utime as time 
+from Control.controlconfig import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, FREQUENCY
+from machine import Pin, PWM
+import utime as time
 
 def piControl(dev, lSpeed, rSpeed, integral):
     kp = 0.9
@@ -77,3 +78,9 @@ def turnAround(robot):
     robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
     print("Turned")
     
+def stopPWM():
+    leftPWM = PWM(Pin(25), FREQUENCY)
+    rightPWM = PWM(Pin(33), FREQUENCY)
+    leftPWM.duty(PWM_CENTER_LEFT)
+    rightPWM.duty(PWM_CENTER_RIGHT)
+    return leftPWM, rightPWM

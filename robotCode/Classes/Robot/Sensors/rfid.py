@@ -1,6 +1,6 @@
 class RFID:
     def __init__(self):
-        from mfrc522 import MFRC522
+        from Classes.Sensors.mfrc522 import MFRC522
         from machine import SPI, Pin
 
         self.spi = SPI(2, baudrate=2500000, polarity=0, phase=0)
