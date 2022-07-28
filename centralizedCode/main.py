@@ -37,7 +37,7 @@ if __name__ == "__main__":
     if platform.system() == 'Windows':
         file = "ImageFiles\BlankMap.png"
     else: 
-        file = "ImageFiles/BlankMap.png"
+        file = "centralizedCode/ImageFiles/BlankMap.png"
     
     # Create environment and draw items given in setup
     destinations = [2, 3, 4, 5, 6, 21, 20, 23, 1]

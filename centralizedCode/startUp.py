@@ -13,7 +13,7 @@ def startUp():
     print("*******************")
     if platform.system() == 'Windows':
         file = 'DataFiles/StartUpInformation.json'
-    else:
+    else: 
         file = 'centralizedCode/DataFiles/StartUpInformation.json'
     fileName = file
     nodes = []

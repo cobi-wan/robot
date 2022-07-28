@@ -9,11 +9,14 @@ def create_app(environ, ap):
     ap.config['Environ'] = environ 
     return ap
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
+    if request.method == 'POST':
+        if request.form.get('summon bot') == 'VALUE1':
+            app.config['Environ'].addStop(1)
     return render_template('index.html')
 
-@app.route('/UI')
+@app.route('/UI', methods=['GET','POST'])
 def UI():
     return Response(updateMap(app.config['Environ']), mimetype='multipart/x-mixed-replace;boundary=frame')
 
@@ -29,7 +32,6 @@ def updateMap(environ):
     # send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
     try: 
         ts = time.monotonic_ns()
-        videoFeed = cv.VideoCapture(0)
         while True:
             if time.monotonic_ns() >= ts + environ.timeStep:
                 ts = time.monotonic_ns()
