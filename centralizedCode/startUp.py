@@ -1,5 +1,6 @@
 import csv 
 import json
+import platform
 from Classes.Graph.graph import graph
 from Classes.Graph.node import node
 from Classes.Graph.edge import edge
@@ -10,7 +11,11 @@ def startUp():
     print("*******************")
     print("System Initialization:")
     print("*******************")
-    fileName = 'DataFiles/StartUpInformation.json'
+    if platform.system() == 'Windows':
+        file = 'DataFiles/StartUpInformation.json'
+    else: 
+        file = 'centralizedCode/DataFiles/StartUpInformation.json'
+    fileName = file
     nodes = []
     edges = []
     botList = []
