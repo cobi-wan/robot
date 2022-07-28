@@ -4,9 +4,6 @@ import time
 from cv2 import imencode
 import numpy as np
 import sys
-from communication import send_update
-from communication import connect
-import paho.mqtt.client as mqtt
 
 # Calculate the speed the robot should be moving
 def calcSpeed(xDist, yDist, max, min, RFID_Dist):

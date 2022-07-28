@@ -1,0 +1,28 @@
+class partRunner:    
+    def __init__(self, bNum, x, y, t, MAC):
+        # Bot Number 
+        self.botIndex = bNum
+        self.MAC = MAC
+        self.activated = False
+
+        # Self coordinates. Updated in main loop. 
+        self.xCord = x
+        self.yCord = y
+        self.tCord = t
+
+        # Path updating variables
+        self.currGoal = None
+        self.arrived = False
+        self.path = []
+        self.dist_to_dest = 0
+        self.dist_to_end = 0
+
+        # Dimensions and speed values
+        self.length = 14 # Dimensions of bot in inches
+        self.width = 11
+        self.maxSpeed = 1000 # Speed in inches per second. To be calibrated later
+        self.minSpeed = 100
+        
+
+    def add(self, point):
+        self.path.append(point)

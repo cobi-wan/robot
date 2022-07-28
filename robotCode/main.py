@@ -59,7 +59,7 @@ def lineFollowing(mode):
                     rPWM = PWM_CENTER_RIGHT + RIGHT_DIRECTION * int(right)
                     lPWM, rPWM = PWMMasking(lPWM, rPWM, PWM_CENTER_LEFT, PWM_CENTER_RIGHT, MAX_SPEED)
                     
-                    # print(lPWM, rPWM)
+                    print(lPWM, rPWM)
                     leftPWM.duty(lPWM)
                     rightPWM.duty(rPWM)
                 elif cx[0] == 'n': # If QR code received, 180 turn and then continue?
