@@ -20,6 +20,7 @@ def UI():
 @app.route('/api/v1/summon')
 def summon():
     wc = request.args.get("wc")
+    app.config['Environ'].addStop(wc)
     return Response("{'a':'b'}", status=200, mimetype='application/json')
 
 

@@ -14,8 +14,8 @@ class partRunner:
         self.currGoal = None
         self.arrived = False
         self.path = []
-        self.dist_to_dest = 0
-        self.dist_to_end = 0
+        self.dist_to_dest = 0 # Distance until next stop
+        self.dist_to_end = 0 # Distance until done with tasks
 
         # Dimensions and speed values
         self.length = 14 # Dimensions of bot in inches

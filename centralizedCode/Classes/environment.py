@@ -26,11 +26,11 @@ class environment:
         self.destination_list = {}
         self.buttonList = buttons
         for i in self.botList:
-            self.destination_list[i] = [0]
-        for i in destinations:
+            self.destination_list[i] = [1]
+        # for i in destinations:
             # destinations[i].insert(0, 0) # Ensure the bot always starts at node 0
             # for j in destinations[i]:
-            self.addStop(i)
+            # self.addStop(i)
             # self.destination_list[self.botList[i]] = destinations[i]
 
         
@@ -75,7 +75,10 @@ class environment:
 
     def drawNodes(self):
         for i in self.network.nodes:
-            cv.drawMarker(self.UI, (int(i.x*self.mapScale), int(i.y*self.mapScale)), (255, 0, 0), MARKER_SQUARE, 6)
+            if i.ws is not None:
+                cv.drawMarker(self.UI, (int(i.x*self.mapScale), int(i.y*self.mapScale)), (0, 0, 255), MARKER_SQUARE, 6)
+            else:
+                cv.drawMarker(self.UI, (int(i.x*self.mapScale), int(i.y*self.mapScale)), (255, 0, 0), MARKER_SQUARE, 6)
             cv.putText(self.UI, str(i.label), (int(i.x*self.mapScale) + 10, int(i.y*self.mapScale) + 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
 
     def drawPaths(self):
@@ -83,15 +86,25 @@ class environment:
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (230, 230, 230), 3)
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (0, 0, 0), 1)
 
-    def addStop(self, nodeNum):
-        # self.get_closest_bot()
-        self.destination_list[self.botList[0]].append(nodeNum)
+    def addStop(self, wc):
+        print(self.destination_list)
+        self.destination_list[self.botList[2]].append(wc)
+        # closestBot = self.get_closest_bot_Dist2End()
+        # self.destination_list[closestBot].append(wc)
         return True 
 
-    def get_closest_bot(self):
+    def get_closest_bot_Dist2End(self):
         max_dist = sys.maxsize
         for i in self.botList:
+            print("Bot: ", i.botIndex, "Distance to end: ", i.dist_to_end, "Distance to destination: ", i.dist_to_dest)
             if i.dist_to_end < max_dist:
                 closest_bot = i
                 max_dist = i.dist_to_end
+        print(closest_bot.botIndex)
         return closest_bot
+
+    def node2wc(self, node):
+        pass
+
+    def wc2node(self, wc):
+        pass

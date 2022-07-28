@@ -78,15 +78,14 @@ def botError_on_message(client, userdata, msg):
     print(str(msg.payload)) # Add protocol for processing error messages
 
 def botInit_on_message(client, userdata, msg):
-    print("Bot identification request from: ", msg.payload)
+    print("Bot identification request from: ", msg.payload.decode())
     for i in userdata.botList:
-        # print(msg.payload, " -> ", i.MAC)
-        if msg.payload == i.MAC:
+        if msg.payload.decode() == i.MAC:
             client.publish("Bot:"+str(msg.payload.decode()), payload=str(i.botIndex), qos=1)
             i.activated = True
             client.message_callback_add(str(msg.payload)+"Error", botError_on_message)
             client.message_callback_add(str(msg.payload)+"Updates", botUpdate_on_message)
-            print("yup thats a bot")
+            print("Bot connected at: ", i.MAC, "x:", i.xCord, "y:", i.yCord)
 
 # def botPublish(client, userdata, msg):
 

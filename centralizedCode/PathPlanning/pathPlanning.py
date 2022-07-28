@@ -3,24 +3,13 @@ import cv2 as cv
 import time
 from cv2 import imencode
 import numpy as np
-import sys
-
-# Calculate the speed the robot should be moving
-def calcSpeed(xDist, yDist, max, min, RFID_Dist):
-        dist = np.sqrt(xDist**2 + yDist**2)
-        xComp = xDist/dist
-        yComp = yDist/dist
-        if dist > RFID_Dist:
-            return [xComp*max, yComp*max]
-        else: 
-            return [xComp*min, yComp*min]
-            
+import sys       
 
 # Runs Dijsktras from n1 to all other nodes on the network g
-def path(g, n1):
+def getShortestPaths(g, n1):
     unvisited = g.nodes.copy() # Set all nodes to unvisited
     shortestPath = {}
-    previous = {}
+    previousNodes = {}
     maxVal = sys.maxsize
     for i in unvisited: # Set the shortestPath to all nodes to the max system size
         shortestPath[i] = maxVal
@@ -42,9 +31,9 @@ def path(g, n1):
             temp = shortestPath[currentMin] + i[1]
             if temp < shortestPath[i[0]]:
                 shortestPath[i[0]] = temp
-                previous[i[0]] = currentMin
+                previousNodes[i[0]] = currentMin
         unvisited.remove(currentMin)
-    return previous, shortestPath
+    return previousNodes, shortestPath
 
 
 # Evaluate the result of Dijkstras and return the node ordered path
@@ -74,12 +63,24 @@ def runDijkstras(environ, calledNodes):
         environ.botList[botNum].arrived = True
     
     # Calcualte the shortest path from the current node to all others
-    previous, shortestPath = path(environ.network, environ.network.nodes[curr])
+    previousNodes, shortestPaths = getShortestPaths(environ.network, environ.network.nodes[curr])
+
     # Calculate the path from the current node to the destination. If you want the time taken return the length variable below
-    path1, length = getResult(previous, shortestPath, environ.network.nodes[curr], environ.network.nodes[dest], environ)
+    path = []
+    if len(previousNodes) != len(env.network.nodes) - 2:
+        raise Exception("Invalid path length")
+    currentNode = environ.network.nodes[dest]
+    while currentNode != environ.network.nodes[curr]:
+        path.append(currentNode)
+        currentNode = previousNodes[currentNode]
+    path.append(environ.network.nodes[curr])
+    # return reversed(path), shortest[target]
+    # , length = getResult(previous, shortestPaths, environ.network.nodes[curr], environ.network.nodes[dest], environ)
+
     # Add nodes needed to reach path to the robots path
-    for i in path1:
+    for i in reversed(path):
         environ.botList[botNum].add(environ.network.nodes[i.label])
+    return shortestPaths(environ.network.nodes[dest])
 
 
 # Calculates current bot location
@@ -115,6 +116,15 @@ def calcBotPos(environ):
             if i.path == []:
                 i.arrived = True
 
+# Calculate the speed the robot should be moving
+def calcSpeed(xDist, yDist, max, min, RFID_Dist):
+        dist = np.sqrt(xDist**2 + yDist**2)
+        xComp = xDist/dist
+        yComp = yDist/dist
+        if dist > RFID_Dist:
+            return [xComp*max, yComp*max]
+        else: 
+            return [xComp*min, yComp*min]
 
 def mapping(environ):
  
