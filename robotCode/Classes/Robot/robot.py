@@ -1,14 +1,13 @@
 from time import sleep
-# import machine
 from machine import UART
-from umqtt.robust import MQTTClient
 import ubinascii
-# from boot import sta_if
+from boot import MAC_ADDRESS
 
 
 class Robot():
-    def __init__(self, leftMotor, rightMotor, client, mac):
+    def __init__(self, leftMotor, rightMotor):
         
+        self.botnum = None
         # State variable for start-up
         self.halt = False
         
@@ -32,8 +31,7 @@ class Robot():
         self.speed = 0
 
         # MQTT client
-        self.client = client
-        self.MAC_ADDRESS = mac
+        self.mac = MAC_ADDRESS
 
         # NodeV Visit Flags Dictionary
         self.visited = {"n1" : False, "n2" : False, "n3" : False, "n4" : False, "n5" : False,}
@@ -63,27 +61,24 @@ class Robot():
         self.nodeList.append(node)
 
     def removeStop(self, node):
-        # RFID tag nonsense
         self.nodeList.pop(node)
-        # msg sendback nonsense
 
     def checkUart(self):
         b = self.uart.readline()
         str = b.decode('utf-8').rstrip()
-        # if this is a motor command
-        return str
-        # if 1 <= int(str) <= 159:
-        #     cx = int(str)
-        #     return cx
+        
+        if str[0] == 'n':
+            nodeNumber = str[-1]
+            visited = str[0] + str[1:]
+            self.visitedQ.append(visited)
+            if self.visited[visited] == False:
+                self.visited[visited] = True
+                self.client.publish("Bot:"+self.mac, nodeNumber, qos=0)
+            if visited != self.visitedQ[0]:
+                self.visited[self.visitedQ[0]] = False
+                self.visitedQ.pop(0)
 
-        # Received a Node number
-        # if str[0] == 'n':
-        #     nodeNumber = str[-1]
-        #     visited = str[0] + str[1:]
-        #     self.visitedQ.append(visited)
-        #     if self.visited[visited] == False:
-        #         self.visited[visited] = True
-        #         self.client.publish("Bot:"+self.mac, nodeNumber, qos=0)
-        #     if visited != self.visitedQ[0]:
-        #         self.visited[self.visitedQ[0]] = False
-        #         self.visitedQ.pop(0)
+        return str
+
+
+        
