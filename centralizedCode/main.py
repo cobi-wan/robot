@@ -2,7 +2,6 @@ from cProfile import run
 from concurrent.futures import process
 from logging import exception
 from re import M
-from turtle import update
 import cv2 as cv
 from cv2 import MARKER_SQUARE
 import time
