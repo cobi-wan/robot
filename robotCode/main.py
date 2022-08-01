@@ -34,26 +34,30 @@ mqtt = MQTT(robot)
 def lineFollowing(mode):
     errorSum = 0
     center = 320
+    # tS = time.ticks_ms()
     while True: 
-        print("Time: ", time.ticks_diff(time.ticks_ms(), startTime))
+        #print("Time: ", time.ticks_diff(time.ticks_ms(), startTime))
         mqtt.client.check_msg()
         # print("Message Checked")
         # print("Checking message")
         if robot.uart.any() > 0:
             # print("Checking UARTS")
+            # print(time.ticks_diff(time.ticks_ms(), tS))
             cx = robot.checkUart()
+            # tS = time.ticks_ms()
             # print("UART Checked")
             if cx is not None:
                 if cx.isdigit() and not robot.halt:
-                    # print(cx)
                     cx = int(cx)
                     dev = center - cx
-                    errorSum += dev
-                    if abs(dev) < 5: # Reset integral 
-                        errorSum = 0 
+                    dev = dev * 0.25
+                    # print(dev)
                     if mode == 1:
                         left, right = pControl(dev, MAX_SPEED, MAX_SPEED)
                     elif mode == 2:
+                        errorSum += dev
+                        if abs(dev) < 5: # Reset integral 
+                            errorSum = 0 
                         left, right = piControl(dev, MAX_SPEED, MAX_SPEED, errorSum)
                     # print("Control Functions Run")
                     if left < 0:
@@ -66,6 +70,7 @@ def lineFollowing(mode):
                     # print("PWM Masking Complete")
                     
                     # print(lPWM, rPWM)
+                    print(lPWM - 307, 307 - rPWM)
                     leftPWM.duty(lPWM)
                     rightPWM.duty(rPWM)
                     # print("PWM Signals written")

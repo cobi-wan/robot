@@ -71,7 +71,7 @@ class environment:
                 if i.arrived == True:
                     cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + " Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
                 else: 
-                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + ', '.join(str(i) for i in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + str(i.currGoal) + ', '.join(str(j) for j in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
     def drawNodes(self):
         for i in self.network.nodes:
@@ -91,9 +91,10 @@ class environment:
         for i in self.botList:
             if i.activated:
                 self.destination_list[i].append(int(wc))
+                return (i.botIndex, int(wc))
         # closestBot = self.get_closest_bot_Dist2End()
         # self.destination_list[closestBot].append(wc)
-        return True 
+        return (None, None)
 
     def get_closest_bot_Dist2End(self):
         max_dist = sys.maxsize
