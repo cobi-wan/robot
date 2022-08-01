@@ -12,8 +12,8 @@ def create_app(environ, ap):
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'POST':
-        if request.form.get('summon bot') == 'VALUE1':
-            app.config['Environ'].addStop(3)
+        if request.form.get('summon bot') == 'summon':
+            app.config['Environ'].addStop(1)
     return render_template('index.html')
 
 @app.route('/UI', methods=['GET','POST'])
