@@ -12,7 +12,7 @@ class partRunner:
 
         # Path updating variables
         self.currGoal = None
-        self.arrived = True
+        self.arrived = False
         self.path = []
         self.dist_to_dest = 0 # Distance until next stop
         self.dist_to_end = 0 # Distance until done with tasks

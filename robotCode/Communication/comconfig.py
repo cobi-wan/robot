@@ -1,4 +1,4 @@
-SERVER_IP = "192.168.20.68"
+SERVER_IP = "192.168.20.144"
 
 MODE = 1 # Proportional Control
 # MODE = 2 # Proportional, Integral Control

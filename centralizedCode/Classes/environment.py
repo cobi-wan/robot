@@ -64,7 +64,7 @@ class environment:
         for i in self.botList:
             if i.activated:
                 pts = self.robotPoints(i.botIndex)
-                cv.drawContours(self.UIwBots, [pts], 0, (255, 0, 0), 1)
+                cv.drawContours(self.UIwBots, [pts], 0, (0, 0, 0), 1)
                 front = self.robot2World((100, 0), i.botIndex)
                 cv.drawMarker(self.UIwBots, (int(front[0]*self.mapScale), int(front[1]*self.mapScale)), (0, 0, 255), MARKER_TRIANGLE_DOWN, 5)
                 cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 1)
@@ -87,8 +87,10 @@ class environment:
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (0, 0, 0), 1)
 
     def addStop(self, wc):
-        print(self.destination_list)
-        self.destination_list[self.botList[2]].append(wc)
+        # print(self.destination_list)
+        for i in self.botList:
+            if i.activated:
+                self.destination_list[i].append(int(wc))
         # closestBot = self.get_closest_bot_Dist2End()
         # self.destination_list[closestBot].append(wc)
         return True 
