@@ -7,10 +7,11 @@ class MQTT():
     def __init__(self, robot):
         self.robot = robot
         self.serverIP = SERVER_IP
-        self.client = MQTTClient("Bot", self.serverIP, keepalive=30)
+        self.client = MQTTClient("Bot", self.serverIP, keepalive=43200)
         self.client.connect()
         print('Connecting to server...')
         self.subscribe("Bot:"+str(MAC_ADDRESS))
+        self.subscribe("BotHelp")
         self.client.publish("Robot/verify", str(MAC_ADDRESS), qos=0)
 
     def subscribe(self, topic):
@@ -18,7 +19,7 @@ class MQTT():
         self.client.set_callback(self.callback)
         self.client.subscribe(topic)
 
-    def callback(self, topic, msg):
+    def callback(self, topic, msg, sm):
         print(topic, " ", msg)
         msg = msg.decode()
         if topic == b'Bot:'+str(MAC_ADDRESS):
@@ -27,6 +28,8 @@ class MQTT():
             if msg == 'go':
                 print("Continuing")
                 self.robot.halt = False
+            if msg == 'Server Restart':
+                pass
         elif topic == b'Control':
             print(msg)
             if msg == b"Fwd": 

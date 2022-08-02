@@ -69,7 +69,7 @@ class Robot():
         
         if str[0] == 'n':
             nodeNumber = str[-1]
-            visited = str[0] + str[1:]
+            visited = str[0] + str[1]
             self.visitedQ.append(visited)
             if self.visited[visited] == False:
                 self.visited[visited] = True
