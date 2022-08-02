@@ -1,4 +1,6 @@
+from Communication.tryUmqtt.simple import MQTTClient
 import utime as time
+import math
 from time import sleep
 from Communication.mqtt import MQTT
 from boot import leftPWM, rightPWM, startTime
@@ -33,25 +35,19 @@ mqtt = MQTT(robot)
 
 def lineFollowing(mode):
     errorSum = 0
-    center = 320
-    # tS = time.ticks_ms()
+    center = 240
     while True: 
-        #print("Time: ", time.ticks_diff(time.ticks_ms(), startTime))
+        # print("Checking Message")
         mqtt.client.check_msg()
         # print("Message Checked")
-        # print("Checking message")
         if robot.uart.any() > 0:
-            # print("Checking UARTS")
-            # print(time.ticks_diff(time.ticks_ms(), tS))
             cx = robot.checkUart()
-            # tS = time.ticks_ms()
-            # print("UART Checked")
             if cx is not None:
                 if cx.isdigit() and not robot.halt:
-                    cx = int(cx)
+                    # print(cx)
+                    cx = int(cx[0:3])
                     dev = center - cx
-                    dev = dev * 0.25
-                    # print(dev)
+                    dev = math.trunc(dev/3)
                     if mode == 1:
                         left, right = pControl(dev, MAX_SPEED, MAX_SPEED)
                     elif mode == 2:
@@ -70,13 +66,13 @@ def lineFollowing(mode):
                     # print("PWM Masking Complete")
                     
                     # print(lPWM, rPWM)
-                    print(lPWM - 307, 307 - rPWM)
+                    # print(lPWM - 307, 307 - rPWM)
                     leftPWM.duty(lPWM)
                     rightPWM.duty(rPWM)
                     # print("PWM Signals written")
                 elif cx[0] == 'n': # If QR code received, 180 turn and then continue?
                     print("Node Reached")
-                    turnAround(robot)
+                    turnAround(robot, mqtt)
             else: 
                 print("Cx is None")
                 leftPWM.duty(PWM_CENTER_LEFT)

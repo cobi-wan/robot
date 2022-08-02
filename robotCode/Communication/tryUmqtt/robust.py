@@ -1,7 +1,7 @@
 import utime
-from . import simple
+from Communication.tryUmqtt.simple import MQTTClient, MQTTException
 
-class MQTTClient(simple.MQTTClient):
+class MQTTClient(MQTTClient):
 
     DELAY = 2
     DEBUG = False

@@ -26,7 +26,7 @@ def piControl(dev, lSpeed, rSpeed, integral):
     
 def pControl(dev, lSpeed, rSpeed):
     kp = 0.2
-    kpp = 0.3
+    kpp = 0.1
     aDev = abs(dev)
     if dev < 0:
         lScale = kp * aDev
@@ -61,7 +61,7 @@ def PWMMasking(lPWM, rPWM, leftCenter, rightCenter, Max):
     #         rPWM = rightCenter
     return lPWM, rPWM
 
-def turnAround(robot):
+def turnAround(robot, client):
     robot.halt = True
     robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
     robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
@@ -73,10 +73,11 @@ def turnAround(robot):
     robot.leftMotor.pwm.duty(PWM_CENTER_LEFT+9)
     robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT+9)
 
-    time.sleep(1.39)
+    time.sleep(1.69) # 1.39
     robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
     robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
     print("Turned")
+    # client.client.publish("Bot:ec62609270e8", "go", qos=1)
     
 def stopPWM():
     leftPWM = PWM(Pin(25), FREQUENCY)
