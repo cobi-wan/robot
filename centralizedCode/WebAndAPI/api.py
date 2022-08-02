@@ -2,30 +2,45 @@ from flask import Flask, render_template, request, Response, Blueprint
 import time
 import cv2 as cv
 from PathPlanning.pathPlanning import mapping
+from WebAndAPI.request import Request
 
 app = Flask(__name__)
 
-def create_app(environ, ap):
-    ap.config['Environ'] = environ 
+def create_app(environ, ap, client):
+    ap.config['Environ'] = environ
+    ap.config['Client'] = client 
     return ap
 
 @app.route('/', methods=['GET','POST'])
 def index():
+    botList = app.config['Environ'].botList
+
     if request.method == 'POST':
         if request.form.get('summon bot') == 'summon':
-            app.config['Environ'].addStop(1)
+            for bot in botList:
+                if bot.activated:
+                    app.config['Client'].publish("Bot:"+str(bot.MAC),payload="go",qos=1)
     return render_template('index.html')
 
 @app.route('/UI', methods=['GET','POST'])
 def UI():
     return Response(updateMap(app.config['Environ']), mimetype='multipart/x-mixed-replace;boundary=frame')
 
-@app.route('/api/v1/summon')
-def summon():
+@app.route('/api/v1/summonBot')
+def summonBot():
     wc = request.args.get("wc")
+    if app.config['Environ'].activeRequests[wc] == False:
+        app.config['Environ'].activeRequests[wc] = True
+        newReq = Request()
+        newReq.requestingStation = wc
+    newReq.ETA = 0
     app.config['Environ'].addStop(wc)
     return Response("{'a':'b'}", status=200, mimetype='application/json')
 
+@app.route('/api/v1/sendBot', methods=['GET'])
+def sendBot():
+    workStations = ['Quality Lab', 'Deburring', 'Shipping']
+    return render_template('index.html', workStations=workStations)
 
 def updateMap(environ):
     size = 200

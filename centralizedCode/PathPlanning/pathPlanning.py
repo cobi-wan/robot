@@ -67,7 +67,7 @@ def runDijkstras(environ, calledNodes):
 
     # Calculate the path from the current node to the destination. If you want the time taken return the length variable below
     path = []
-    if len(previousNodes) != len(env.network.nodes) - 2:
+    if len(previousNodes) != len(environ.network.nodes) - 2:
         raise Exception("Invalid path length")
     currentNode = environ.network.nodes[dest]
     while currentNode != environ.network.nodes[curr]:

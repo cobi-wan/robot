@@ -55,5 +55,5 @@ if __name__ == "__main__":
     mqtt.loop_start()
     ts = time.monotonic_ns()
 
-    app = create_app(env, app)
+    app = create_app(env, app, mqtt)
     app.run(host='0.0.0.0', debug=True, use_reloader=False)

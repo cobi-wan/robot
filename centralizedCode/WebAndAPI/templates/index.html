@@ -8,8 +8,15 @@
                         <form method="post" action="/">
                             <input type="submit" value="summon" name="summon bot"/>
                         </form>
-                        <img src="{{ url_for('UI') }}" width="100%">
                     </h3>
+                    <h3>Work Stations
+                        <select name="work stations">
+                            {% for station in workStations %}
+                                <option value="{{station}}">{{station}}</option>
+                            {% endfor %}
+                        </select>
+                    </h3>
+                    <img src="{{ url_for('UI') }}" width="100%">
                 </div>
             </div>
         </div>

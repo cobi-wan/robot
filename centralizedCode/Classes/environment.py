@@ -22,6 +22,7 @@ class environment:
         self.UIwBots = self.UI.copy()
         self.botList = bots
         self.network = graph
+        self.activeRequests = {'1':False,'2':False,'3':False}
         # self.activeNetwork = graph
         self.destination_list = {}
         self.buttonList = buttons
