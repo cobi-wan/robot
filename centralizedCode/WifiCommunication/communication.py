@@ -13,9 +13,10 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     for i in userdata.botList:
         if msg.topic == "Bot "+str(i.botIndex):
+            print("here")
             for j in i.path:
                 print(j.tag)
-    # print(msg.topic+" "+str(msg.payload))
+    print(msg.topic+" "+str(msg.payload))
 
 def connect(environ):
     client = mqtt.Client("Server", userdata=environ)

@@ -35,6 +35,7 @@ def summonBot():
         newReq.requestingStation = wc
     newReq.ETA = 0
     app.config['Environ'].addStop(wc)
+    # app.config['Environ'].addStop(wcDest)
     return Response("{'a':'b'}", status=200, mimetype='application/json')
 
 @app.route('/api/v1/sendBot', methods=['GET'])
@@ -51,6 +52,9 @@ def updateMap(environ):
             if time.monotonic_ns() >= ts + environ.timeStep:
                 ts = time.monotonic_ns()
                 mapping(environ)
+                for i in environ.botList:
+                    if i.activated:
+                        print("Bot: " + str(i.botIndex) + " Destination List: " + ", ".join(str(k.label) for k in environ.destination_list[i]) + " Path: " + ", ".join(str(j.label) for j in i.path) )
 
                 # Capture frame from robot live feed
 

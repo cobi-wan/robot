@@ -37,16 +37,16 @@ def getShortestPaths(g, n1):
 
 
 # Evaluate the result of Dijkstras and return the node ordered path
-def getResult(previous, shortest, start, target, env):
-    path = []
-    if len(previous) != len(env.network.nodes) - 2:
-        raise Exception("Invalid path length")
-    node = target
-    while node != start:
-        path.append(node)
-        node = previous[node]
-    path.append(start)
-    return reversed(path), shortest[target]
+# def getResult(previous, shortest, start, target, env):
+#     path = []
+#     if len(previous) != len(env.network.nodes) - 2:
+#         raise Exception("Invalid path length")
+#     node = target
+#     while node != start:
+#         path.append(node)
+#         node = previous[node]
+#     path.append(start)
+#     return reversed(path), shortest[target]
 
 
 # Calculates path from given node for a current location and goal location and add to path 
@@ -56,16 +56,11 @@ def runDijkstras(environ, calledNodes):
     botNum = calledNodes[0]
     [curr, dest] = calledNodes[1]
     environ.botList[botNum].currGoal = environ.network.nodes[dest]
-    # Set status variables
-    if curr != dest:
-        environ.botList[botNum].arrived = False
-    else:
-        environ.botList[botNum].arrived = True
     
     # Calcualte the shortest path from the current node to all others
     previousNodes, shortestPaths = getShortestPaths(environ.network, environ.network.nodes[curr])
 
-    # Calculate the path from the current node to the destination. If you want the time taken return the length variable below
+    # Calculate the path from the current node to the destination
     path = []
     if len(previousNodes) != len(environ.network.nodes) - 2:
         raise Exception("Invalid path length")
@@ -74,13 +69,17 @@ def runDijkstras(environ, calledNodes):
         path.append(currentNode)
         currentNode = previousNodes[currentNode]
     path.append(environ.network.nodes[curr])
-    # return reversed(path), shortest[target]
-    # , length = getResult(previous, shortestPaths, environ.network.nodes[curr], environ.network.nodes[dest], environ)
 
     # Add nodes needed to reach path to the robots path
-    for i in reversed(path):
-        environ.botList[botNum].add(environ.network.nodes[i.label])
-    return shortestPaths(environ.network.nodes[dest])
+    # print("Bot: ", botNum, "Path:", environ.botList[botNum].path)
+    # print("Adding Nodes: ")
+    # for i in reversed(path):
+    #     print(i.label)
+    #     environ.botList[botNum].add(environ.network.nodes[i.label])
+    # print("Bot: ", botNum, "Path")
+    # for i in environ.botList[botNum].path:
+    #     print(i.label)
+    return reversed(path), shortestPaths[environ.network.nodes[dest]]
 
 
 # Calculates current bot location
@@ -97,7 +96,7 @@ def getCurrLocation(environ, botNum):
 def calcBotPos(environ):
     for i in environ.botList:
         if i.path == []:                        # If its at the goal dont move
-            continue
+            return
 
         if (i.xCord - i.path[0].x) != 0:        # Set the angle of movement
             i.tCord = np.arctan((i.yCord - i.path[0].y)/(i.xCord - i.path[0].x)) # - np.pi/2
@@ -113,8 +112,6 @@ def calcBotPos(environ):
             i.yCord += speeds[1]*environ.timeStep
         else:
             del(i.path[0]) 
-            if i.path == []:
-                i.arrived = True
 
 # Calculate the speed the robot should be moving
 def calcSpeed(xDist, yDist, max, min, RFID_Dist):
@@ -129,17 +126,19 @@ def calcSpeed(xDist, yDist, max, min, RFID_Dist):
 def mapping(environ):
  
     environ.updateBotMarker()                   # Update map
-    # cv.imshow("Map", environ.UIwBots)           # Show map
-    cv.waitKey(int(environ.timeStep*1000))      # Hold frame for one timestep
     calcBotPos(environ)                         # Update each bots location
 
     for i in environ.botList:
-        if i.path == [] and len(environ.destination_list[i]) != 1:
+        if i.path == [] and i.activated: # If the robot is activated and has reached its destination 
+            i.arrived = True
+            if environ.destination_list[i] != []: # If there is a new destination to be added 
+                i.arrived = False
+                currNode = getCurrLocation(environ, i.botIndex)
+                path, shortest = runDijkstras(environ, [i.botIndex, [currNode.label, environ.destination_list[i][0]]])
+                for j in path:
+                    i.add(environ.network.nodes[j.label])
+                del(environ.destination_list[i][0])
 
-            #send_update("Arrived", environ.destination_list[i][0], client)
-            del(environ.destination_list[i][0])
-            # Find where they are and calculate shortest route back to origin
-            currNode = getCurrLocation(environ, i.botIndex)
-            runDijkstras(environ, [i.botIndex, [currNode.label, environ.destination_list[i][0]]])
-
+            
+            
     return environ

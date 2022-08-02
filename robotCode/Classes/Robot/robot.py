@@ -73,7 +73,7 @@ class Robot():
             self.visitedQ.append(visited)
             if self.visited[visited] == False:
                 self.visited[visited] = True
-                self.client.publish("Bot:"+self.mac, nodeNumber, qos=0)
+                # self.client.publish("Bot:"+self.mac, nodeNumber, qos=0)
             if visited != self.visitedQ[0]:
                 self.visited[self.visitedQ[0]] = False
                 self.visitedQ.pop(0)

@@ -1,7 +1,7 @@
 import utime as time
 from time import sleep
 from Communication.mqtt import MQTT
-from boot import leftPWM, rightPWM
+from boot import leftPWM, rightPWM, startTime
 from Control.controlconfig import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, LEFT_DIRECTION, RIGHT_DIRECTION, MAX_SPEED, BOT_NUM
 from Communication.comconfig import MODE
 from Classes.Robot.robot import Robot
@@ -33,24 +33,33 @@ mqtt = MQTT(robot)
 
 def lineFollowing(mode):
     errorSum = 0
-    center = 80
+    center = 320
+    # tS = time.ticks_ms()
     while True: 
+        #print("Time: ", time.ticks_diff(time.ticks_ms(), startTime))
         mqtt.client.check_msg()
+        # print("Message Checked")
         # print("Checking message")
         if robot.uart.any() > 0:
+            # print("Checking UARTS")
+            # print(time.ticks_diff(time.ticks_ms(), tS))
             cx = robot.checkUart()
+            # tS = time.ticks_ms()
+            # print("UART Checked")
             if cx is not None:
                 if cx.isdigit() and not robot.halt:
-                    # print(cx)
                     cx = int(cx)
                     dev = center - cx
-                    errorSum += dev
-                    if abs(dev) < 5: # Reset integral 
-                        errorSum = 0 
+                    dev = dev * 0.25
+                    # print(dev)
                     if mode == 1:
                         left, right = pControl(dev, MAX_SPEED, MAX_SPEED)
                     elif mode == 2:
+                        errorSum += dev
+                        if abs(dev) < 5: # Reset integral 
+                            errorSum = 0 
                         left, right = piControl(dev, MAX_SPEED, MAX_SPEED, errorSum)
+                    # print("Control Functions Run")
                     if left < 0:
                         left = 0
                     if right < 0:
@@ -58,14 +67,18 @@ def lineFollowing(mode):
                     lPWM = PWM_CENTER_LEFT + LEFT_DIRECTION * int(left)
                     rPWM = PWM_CENTER_RIGHT + RIGHT_DIRECTION * int(right)
                     lPWM, rPWM = PWMMasking(lPWM, rPWM, PWM_CENTER_LEFT, PWM_CENTER_RIGHT, MAX_SPEED)
+                    # print("PWM Masking Complete")
                     
-                    print(lPWM, rPWM)
+                    # print(lPWM, rPWM)
+                    print(lPWM - 307, 307 - rPWM)
                     leftPWM.duty(lPWM)
                     rightPWM.duty(rPWM)
+                    # print("PWM Signals written")
                 elif cx[0] == 'n': # If QR code received, 180 turn and then continue?
                     print("Node Reached")
                     turnAround(robot)
             else: 
+                print("Cx is None")
                 leftPWM.duty(PWM_CENTER_LEFT)
                 rightPWM.duty(PWM_CENTER_RIGHT)
 

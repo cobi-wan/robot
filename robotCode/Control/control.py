@@ -3,7 +3,7 @@ from machine import Pin, PWM
 import utime as time
 
 def piControl(dev, lSpeed, rSpeed, integral):
-    kp = 0.9
+    kp = 0.3
     kpp = 0.3
     ki = 0.02
     aDev = abs(dev)
@@ -26,7 +26,7 @@ def piControl(dev, lSpeed, rSpeed, integral):
     
 def pControl(dev, lSpeed, rSpeed):
     kp = 0.2
-    kpp = 0.1
+    kpp = 0.3
     aDev = abs(dev)
     if dev < 0:
         lScale = kp * aDev

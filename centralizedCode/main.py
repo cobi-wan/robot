@@ -2,7 +2,6 @@ from cProfile import run
 from concurrent.futures import process
 from logging import exception
 from re import M
-from turtle import update
 import cv2 as cv
 from cv2 import MARKER_SQUARE
 import time
@@ -41,7 +40,8 @@ if __name__ == "__main__":
         file = "centralizedCode/ImageFiles/BlankMap.png"
     
     # Create environment and draw items given in setup
-    destinations = [2, 3, 4, 5, 6, 21, 20, 23, 1]
+    # destinations = [2, 3, 4, 5, 6, 21, 20, 23, 1]
+    destinations = []
     # destinations = {0: [23, 1, 5, 10]}
     # stop = None
     env = environment(file, bList, g, buttonList, destinations)
