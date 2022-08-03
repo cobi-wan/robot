@@ -21,12 +21,15 @@ def on_message(client, userdata, msg):
 
 def connect(environ):
     client = mqtt.Client("Server", userdata=environ)
+    client.message_callback_add("Robot/verify", botInit_on_message)
+    for i in environ.botList:
+        client.message_callback_add(str(i.MAC)+":Nodes", bot_on_nodes)
+
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("192.168.20.68", 1883)
+    client.connect("192.168.30.142", 1883)
 
     client.subscribe("Robot/verify")
-    client.message_callback_add("Robot/verify", botInit_on_message)
 
     for i in environ.botList:
         client.publish(str(i.MAC), payload="Server Start")
@@ -65,12 +68,12 @@ def botInit_on_message(client, userdata, msg):
     print("Bot identification request from: ", msg.payload.decode())
     for i in userdata.botList:
         if msg.payload.decode() == i.MAC:
+            # print("oh yea baby im about to publish")
             client.publish(str(msg.payload.decode()), payload=str(i.botIndex), qos=1)
+            # print("ohh fuck i published")
             i.activated = True
             client.subscribe(msg.payload.decode()+":Nodes")
-            client.message_callback_add(msg.payload.decode()+":Nodes", bot_on_nodes)
             print("Bot connected at: ", i.MAC, "x:", i.xCord, "y:", i.yCord)
-
-# def botPublish(client, userdata, msg):
-
-
+            return
+    print("Robot not in botList")
+    return

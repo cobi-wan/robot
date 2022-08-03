@@ -1,5 +1,4 @@
 from Communication.tryUmqtt.robust import MQTTClient
-import ubinascii
 from Communication.comconfig import SERVER_IP
 from boot import MAC_ADDRESS
 
@@ -7,7 +6,7 @@ class MQTT():
     def __init__(self, robot):
         self.robot = robot
         self.serverIP = SERVER_IP
-        self.client = MQTTClient("Bot", self.serverIP, keepalive=43200)
+        self.client = MQTTClient("Bot", self.serverIP, keepalive=10000)
         self.client.connect()
         print('Connecting to server...')
         self.client.set_callback(self.callback)

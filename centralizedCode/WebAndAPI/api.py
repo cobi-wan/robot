@@ -25,7 +25,7 @@ def index():
 
 @app.route('/UI', methods=['GET','POST'])
 def UI():
-    return Response(updateMap(app.config['Environ']), mimetype='multipart/x-mixed-replace;boundary=frame')
+    return Response(updateMap(app.config['Environ'], app.config['Client']), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 @app.route('/api/v1/summonBot')
 def summonBot():
@@ -44,7 +44,7 @@ def sendBot():
     workStations = ['Quality Lab', 'Deburring', 'Shipping']
     return render_template('index.html', workStations=workStations)
 
-def updateMap(environ):
+def updateMap(environ, mqtt):
     size = 200
     # send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
     try: 
@@ -52,7 +52,7 @@ def updateMap(environ):
         while True:
             if time.monotonic_ns() >= ts + environ.timeStep:
                 ts = time.monotonic_ns()
-                mapping(environ)
+                mapping(environ, mqtt)
                 # for i in environ.botList:
                 #     if i.activated:
                 #         pass

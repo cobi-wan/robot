@@ -20,8 +20,8 @@ class partRunner:
         # Dimensions and speed values
         self.length = 14 # Dimensions of bot in inches
         self.width = 11
-        self.maxSpeed = 1000 # Speed in inches per second. To be calibrated later
-        self.minSpeed = 100
+        self.maxSpeed = 30 # Speed in inches per second. To be calibrated later
+        self.minSpeed = 15
         
 
     def add(self, point):

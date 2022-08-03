@@ -1,7 +1,3 @@
-from urllib import response
-import cv2 as cv
-import time
-from cv2 import imencode
 import numpy as np
 import sys       
 
@@ -96,9 +92,8 @@ def getCurrLocation(environ, bot):
 # Run every time step in order to calculate how far and in what direction each robot moves 
 def calcBotPos(environ):
     for i in environ.botList:
-        # print(i)
         if i.path == []:                        # If its at the goal dont move
-            return
+            continue
 
         if (i.xCord - i.path[0].x) != 0:        # Set the angle of movement
             i.tCord = np.arctan((i.yCord - i.path[0].y)/(i.xCord - i.path[0].x)) # - np.pi/2
@@ -125,11 +120,14 @@ def calcSpeed(xDist, yDist, max, min, RFID_Dist):
         else: 
             return [xComp*min, yComp*min]
 
-def mapping(environ):
+def mapping(environ, mqtt):
 
     environ.updateBotMarker()                   # Update map
     calcBotPos(environ)                         # Update each bots location
+    
     for i in environ.botList:
+        # if i.activated:
+            # print(" ".join(str(k.label) for k in i.path))
         if i.path == [] and i.activated: # If the robot is activated and has reached its destination 
             i.arrived = True
             if environ.destination_list[i] != []: # If there is a new destination to be added 
@@ -138,5 +136,6 @@ def mapping(environ):
                 path, shortest = runDijkstras(environ, [i.botIndex, [currNode, environ.destination_list[i][0]]])
                 for j in path:
                     i.add(environ.network.nodes[j.label])
+                    mqtt.publish(i.MAC+":Path", environ.network.nodes[j.label].tag)
                 del(environ.destination_list[i][0])
     return environ
