@@ -96,6 +96,7 @@ def getCurrLocation(environ, bot):
 # Run every time step in order to calculate how far and in what direction each robot moves 
 def calcBotPos(environ):
     for i in environ.botList:
+        # print(i)
         if i.path == []:                        # If its at the goal dont move
             return
 
@@ -125,10 +126,9 @@ def calcSpeed(xDist, yDist, max, min, RFID_Dist):
             return [xComp*min, yComp*min]
 
 def mapping(environ):
- 
+
     environ.updateBotMarker()                   # Update map
     calcBotPos(environ)                         # Update each bots location
-
     for i in environ.botList:
         if i.path == [] and i.activated: # If the robot is activated and has reached its destination 
             i.arrived = True
