@@ -17,15 +17,15 @@
     "MACaddress":"0cb815c13690"},
 
     {"BotType":"PartRunner",  "Bot#":5,
-    "xLocation":5760, "yLocation":3240, "tLocation":0, 
+    "xLocation":5760, "yLocation":3240, "tLocation":0,
     "MACaddress":"ec6260931e70"},
 
     {"BotType":"PartRunner",  "Bot#":6,
-    "xLocation":5760, "yLocation":3240, "tLocation":0, 
+    "xLocation":5760, "yLocation":3240, "tLocation":0,
     "MACaddress":"ec62609270e8"},
 
     {"BotType":"PartRunner",  "Bot#":7,
-    "xLocation":5760, "yLocation":3240, "tLocation":0, 
+    "xLocation":5760, "yLocation":3240, "tLocation":0,
     "MACaddress":"4091519a3bac"}
 ],
 "Nodes":[

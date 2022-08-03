@@ -1,4 +1,5 @@
 from Communication.tryUmqtt.simple import MQTTClient
+from robotCode.Control.control import turnRight
 import utime as time
 import math
 from time import sleep
@@ -8,7 +9,7 @@ from Control.controlconfig import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, LEFT_DIRECT
 from Communication.comconfig import MODE
 from Classes.Robot.robot import Robot
 from Classes.Robot.Motors.dcmotor import DCMotor
-from Control.control import PWMMasking, pControl, piControl, turnAround
+from Control.control import PWMMasking, pControl, piControl, turnAround, turnRight, turnLeft
 
 
 ########################################################################
@@ -71,8 +72,15 @@ def lineFollowing(mode):
                     rightPWM.duty(rPWM)
                     # print("PWM Signals written")
                 elif cx[0] == 'n': # If QR code received, 180 turn and then continue?
-                    print("Node Reached")
-                    turnAround(robot, mqtt)
+                    if cx[1].isdigit():
+                        print("Node Reached")
+                        turnAround(robot, mqtt)
+                    else:
+                        print("Branch reached")
+                        if cx[1] == 'r':
+                            turnRight(robot, mqtt)
+                        elif cx[1] == 'l':
+                            turnLeft(robot, mqtt)
             else: 
                 print("Cx is None")
                 leftPWM.duty(PWM_CENTER_LEFT)

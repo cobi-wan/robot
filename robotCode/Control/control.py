@@ -22,6 +22,7 @@ def piControl(dev, lSpeed, rSpeed, integral):
         lScale = 1
     leftSpeed = lSpeed - lScale + ki * lIntegral
     rightSpeed = rSpeed - rScale + ki * rIntegral
+
     return leftSpeed, rightSpeed
     
 def pControl(dev, lSpeed, rSpeed):
@@ -39,7 +40,7 @@ def pControl(dev, lSpeed, rSpeed):
         lScale = 0
     leftSpeed = lSpeed - lScale
     rightSpeed = rSpeed - rScale
-    # print("Scale: ", lScale, rScale)
+
     return leftSpeed, rightSpeed
 
 def PWMMasking(lPWM, rPWM, leftCenter, rightCenter, Max):
@@ -51,14 +52,7 @@ def PWMMasking(lPWM, rPWM, leftCenter, rightCenter, Max):
         lPWM = leftCenter - Max
     if rPWM < rightCenter - Max:
         rPWM = rightCenter - Max
-    # if abs((rPWM - rightCenter) - (lPWM - leftCenter)) > Max:
-    #     if rPWM > rightCenter:
-    #         rPWM = rightCenter
-    #     elif lPWM < leftCenter:
-    #         lPWM = leftCenter
-    #     else: 
-    #         lPWM = leftCenter
-    #         rPWM = rightCenter
+        
     return lPWM, rPWM
 
 def turnAround(robot, client):
@@ -76,12 +70,63 @@ def turnAround(robot, client):
     time.sleep(1.69) # 1.39
     robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
     robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
-    print("Turned")
+    print("Turn Around")
     # client.client.publish("Bot:ec62609270e8", "go", qos=1)
+
+def turnRight(robot):
+    robot.halt = True
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
+
+    time.sleep(1)
     
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT+9)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT-9)
+
+    time.sleep(.5)
+
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
+
+    time.sleep(.5)
+
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT+9)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT+9)
+
+    time.sleep(.85) # 1.39
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
+    print("Right Turn")
+
+def turnLeft(robot):
+    robot.halt = True
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
+
+    time.sleep(1)
+    
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT+9)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT-9)
+
+    time.sleep(.5)
+
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
+
+    time.sleep(.5)
+    
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT-9)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT-9)
+
+    time.sleep(.85) # 1.39
+    robot.leftMotor.pwm.duty(PWM_CENTER_LEFT)
+    robot.rightMotor.pwm.duty(PWM_CENTER_RIGHT)
+    print("Left Turn")
+
 def stopPWM():
     leftPWM = PWM(Pin(25), FREQUENCY)
     rightPWM = PWM(Pin(33), FREQUENCY)
     leftPWM.duty(PWM_CENTER_LEFT)
     rightPWM.duty(PWM_CENTER_RIGHT)
+
     return leftPWM, rightPWM
