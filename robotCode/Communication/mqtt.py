@@ -28,8 +28,8 @@ class MQTT():
             if msg == 'go':
                 print("Continuing")
                 self.robot.halt = False
-            if msg == 'Server Restart':
-                pass
+            if msg == 'Server Start':
+                self.client.publish("Robot/verify", str(MAC_ADDRESS), qos=1)
         elif topic == b'Control':
             print(msg)
             if msg == b"Fwd": 

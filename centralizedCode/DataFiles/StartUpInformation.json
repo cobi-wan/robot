@@ -156,7 +156,7 @@
 
     {"Node#":25,
      "xLocation":10000, "yLocation":3140, 
-     "WorkStation":true,  "QRCodeID":"n25", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n25", "WorkstationNumber":1005,
      "connections":[24]},
 
     {"Node#":26,

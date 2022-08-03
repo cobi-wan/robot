@@ -26,6 +26,8 @@ def connect(environ):
     client.message_callback_add("Robot/verify", botInit_on_message)
     client.message_callback_add("Station/verify", stationInit_on_message)
     client.connect("192.168.20.68", 1883)
+    for i in environ.botList:
+        client.publish("Bot:"+str(i.MAC), payload="Server Start")
     return client
 
 def send_update(msg, botNum, client):

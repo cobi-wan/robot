@@ -26,7 +26,7 @@ class environment:
         self.destination_list = {}
         self.buttonList = buttons
         for i in self.botList:
-            self.destination_list[i] = [1]
+            self.destination_list[i] = []
         # for i in destinations:
             # destinations[i].insert(0, 0) # Ensure the bot always starts at node 0
             # for j in destinations[i]:
@@ -34,22 +34,21 @@ class environment:
             # self.destination_list[self.botList[i]] = destinations[i]
 
         
-    def robot2World(self, cords, botNum): 
-        t = self.botList[botNum].tCord
-        x = self.botList[botNum].xCord + cords[0]*np.cos(t) - cords[1]*np.sin(t)
-        y = self.botList[botNum].yCord + cords[0]*np.sin(t) - cords[1]*np.cos(t)
+    def robot2World(self, cords, bot): 
+        t = bot.tCord
+        x = bot.xCord + cords[0]*np.cos(t) - cords[1]*np.sin(t)
+        y = bot.yCord + cords[0]*np.sin(t) - cords[1]*np.cos(t)
 
         return [x, y]
 
-    def robotPoints(self, botNum):
-        bot = self.botList[botNum]
+    def robotPoints(self, bot):
         L = bot.length * 2.54 * 2 # Parameters to be adjusted for robot size and camera resolution
         W = bot.width * 2.54 * 2
 
-        w1 = self.robot2World((L/2, -W/2), botNum)
-        w2 = self.robot2World((L/2, W/2), botNum)
-        w3 = self.robot2World((-L/2, W/2), botNum)
-        w4 = self.robot2World((-L/2, -W/2), botNum)
+        w1 = self.robot2World((L/2, -W/2), bot)
+        w2 = self.robot2World((L/2, W/2), bot)
+        w3 = self.robot2World((-L/2, W/2), bot)
+        w4 = self.robot2World((-L/2, -W/2), bot)
     
         p1 = (int(w1[0]*self.mapScale), int(w1[1]*self.mapScale))
         p2 = (int(w2[0]*self.mapScale), int(w2[1]*self.mapScale))
@@ -63,15 +62,15 @@ class environment:
         self.UIwBots = self.UI.copy()
         for i in self.botList:
             if i.activated:
-                pts = self.robotPoints(i.botIndex)
+                pts = self.robotPoints(i)
                 cv.drawContours(self.UIwBots, [pts], 0, (0, 0, 0), 1)
-                front = self.robot2World((100, 0), i.botIndex)
+                front = self.robot2World((100, 0), i)
                 cv.drawMarker(self.UIwBots, (int(front[0]*self.mapScale), int(front[1]*self.mapScale)), (0, 0, 255), MARKER_TRIANGLE_DOWN, 5)
                 cv.putText(self.UIwBots, str(i.botIndex), (int(i.xCord*self.mapScale), int(i.yCord*self.mapScale)), cv.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 1)
                 if i.arrived == True:
-                    cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + " Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+                    cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + ": Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
                 else: 
-                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + " in progress. Next nodes: " + str(i.currGoal) + ', '.join(str(j) for j in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + ": in progress. Next nodes: " + str(i.currGoal) + ', '.join(str(j) for j in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
     def drawNodes(self):
         for i in self.network.nodes:
@@ -90,7 +89,7 @@ class environment:
         # print(self.destination_list)
         for i in self.botList:
             if i.activated:
-                self.destination_list[i].append(int(wc))
+                self.destination_list[i].append(self.wc2node(int(wc)))
                 return (i.botIndex, int(wc))
         # closestBot = self.get_closest_bot_Dist2End()
         # self.destination_list[closestBot].append(wc)
@@ -110,4 +109,8 @@ class environment:
         pass
 
     def wc2node(self, wc):
-        pass
+        for i in self.network.nodes:
+            if i.ws == wc:
+                print("Node:", i.label)
+                return i
+        return None

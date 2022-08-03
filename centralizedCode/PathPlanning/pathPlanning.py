@@ -55,20 +55,21 @@ def runDijkstras(environ, calledNodes):
     # Setup variables
     botNum = calledNodes[0]
     [curr, dest] = calledNodes[1]
-    environ.botList[botNum].currGoal = environ.network.nodes[dest]
+    print("Bot:", botNum, "From", curr.label, "To", dest.label)
+    environ.botList[botNum].currGoal = dest # environ.network.nodes[dest]
     
     # Calcualte the shortest path from the current node to all others
-    previousNodes, shortestPaths = getShortestPaths(environ.network, environ.network.nodes[curr])
+    previousNodes, shortestPaths = getShortestPaths(environ.network, curr)
 
     # Calculate the path from the current node to the destination
     path = []
     if len(previousNodes) != len(environ.network.nodes) - 2:
         raise Exception("Invalid path length")
-    currentNode = environ.network.nodes[dest]
-    while currentNode != environ.network.nodes[curr]:
+    currentNode = dest # environ.network.nodes[dest]
+    while currentNode != curr:
         path.append(currentNode)
         currentNode = previousNodes[currentNode]
-    path.append(environ.network.nodes[curr])
+    path.append(curr)
 
     # Add nodes needed to reach path to the robots path
     # print("Bot: ", botNum, "Path:", environ.botList[botNum].path)
@@ -79,14 +80,14 @@ def runDijkstras(environ, calledNodes):
     # print("Bot: ", botNum, "Path")
     # for i in environ.botList[botNum].path:
     #     print(i.label)
-    return reversed(path), shortestPaths[environ.network.nodes[dest]]
+    return reversed(path), shortestPaths[dest] #environ.network.nodes[dest]]
 
 
 # Calculates current bot location
 # Guesses node 0 if not at a node
-def getCurrLocation(environ, botNum):
+def getCurrLocation(environ, bot):
     for i in environ.network.nodes:
-        if abs(environ.botList[botNum].xCord - i.x) < environ.accuracy and abs(environ.botList[botNum].yCord - i.y) < environ.accuracy:
+        if abs(bot.xCord - i.x) < environ.accuracy and abs(bot.yCord - i.y) < environ.accuracy:
             return i
     print("Help me Im lost")
     return environ.network.nodes[0]
@@ -133,8 +134,9 @@ def mapping(environ):
             i.arrived = True
             if environ.destination_list[i] != []: # If there is a new destination to be added 
                 i.arrived = False
-                currNode = getCurrLocation(environ, i.botIndex)
-                path, shortest = runDijkstras(environ, [i.botIndex, [currNode.label, environ.destination_list[i][0]]])
+                currNode = getCurrLocation(environ, i)
+                print("Current location:", currNode.label)
+                path, shortest = runDijkstras(environ, [i.botIndex, [currNode, environ.destination_list[i][0]]])
                 for j in path:
                     i.add(environ.network.nodes[j.label])
                 del(environ.destination_list[i][0])

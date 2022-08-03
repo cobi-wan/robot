@@ -13,7 +13,8 @@ def create_app(environ, ap):
 def index():
     if request.method == 'POST':
         if request.form.get('summon bot') == 'summon':
-            (bNum, node) = app.config['Environ'].addStop(3)
+            print("Button pressed")
+            (bNum, node) = app.config['Environ'].addStop(1005)
             # print("Bot: ", bNum, "Going to stop: ", node)
     return render_template('index.html')
 
@@ -41,7 +42,8 @@ def updateMap(environ):
                 mapping(environ)
                 for i in environ.botList:
                     if i.activated:
-                        print("Bot: " + str(i.botIndex) + " Destination List: " + ", ".join(str(k.label) for k in environ.destination_list[i]) + " Path: " + ", ".join(str(j.label) for j in i.path) )
+                        pass
+                        # print("Bot: " + str(i.botIndex) + " Destination List: " + ", ".join(str(k) for k in environ.destination_list[i]) + " Path: " + ", ".join(str(j.label) for j in i.path) )
 
                 # Capture frame from robot live feed
 
