@@ -10,44 +10,59 @@ class MQTT():
         self.client = MQTTClient("Bot", self.serverIP, keepalive=43200)
         self.client.connect()
         print('Connecting to server...')
-        self.subscribe("Bot:"+str(MAC_ADDRESS))
-        self.subscribe("BotHelp")
-        self.client.publish("Robot/verify", str(MAC_ADDRESS), qos=0)
-
-    def subscribe(self, topic):
-        print('Subscribing to ',topic)
         self.client.set_callback(self.callback)
-        self.client.subscribe(topic)
+        self.client.subscribe(str(MAC_ADDRESS))
+        self.client.subscribe(str(MAC_ADDRESS)+":Halt")
+        self.client.subscribe(str(MAC_ADDRESS)+":Path")
+        self.client.subscribe("Fleet:Halt")
+        self.client.publish("Robot/verify", str(MAC_ADDRESS), qos=1)
+        print("Published")
+        self.waitForVerify()
 
     def callback(self, topic, msg, sm):
         print(topic, " ", msg)
+        topic = topic.decode()
         msg = msg.decode()
-        if topic == b'Bot:'+str(MAC_ADDRESS):
-            if msg.isdigit():
-                self.robot.botnum = int(msg)
-            if msg == 'go':
-                print("Continuing")
-                self.robot.halt = False
-            if msg == 'Server Start':
-                self.client.publish("Robot/verify", str(MAC_ADDRESS), qos=1)
-        elif topic == b'Control':
-            print(msg)
-            if msg == b"Fwd": 
-                self.robot.fwd += 1
-            if msg == b"Bck":
-                self.robot.fwd -= 1
-            if msg == b"Lft":
-                self.robot.trn -= 1
-            if msg == b"Rgt":
-                self.robot.trn += 1
-            else: 
-                self.robot.fwd = 0
-                self.robot.trn = 0
-            print("FWD: ", self.robot.fwd, "Turn: ", self.robot.trn)
+        if topic == str(MAC_ADDRESS)+":Halt":
+            self.halt(msg)
+        elif topic == str(MAC_ADDRESS)+":Path":
+            self.addPath(msg)
+        elif topic == "Fleet:Halt":
+            self.halt(msg)
+        elif topic == str(MAC_ADDRESS):
+            self.selfTopic(msg)
         else: 
-            botID = msg
-            print("Not reached")
+            print("IDK how it got here")
+            print("Invalid subscription happening")
         return
+
+    def waitForVerify(self):
+        while self.robot.botnum is not None:
+            self.client.wait_msg()
+
+    def halt(self, msg):
+        if msg == "Halt":
+            self.robot.halt = True
+        elif msg == "Continue":
+            self.robot.halt = False
+        elif msg == "Toggle":
+            self.robot.halt = not self.robot.halt
+        else:
+            print("Invalid halt message sent")
+    
+    def selfTopic(self, msg):
+        if msg.isdigit():
+            self.robot.botnum = int(msg)
+            print("Verified as Bot:", msg)
+        if msg == "Server Start":
+            self.robot.botnum = None
+            self.client.publish("Robot/verify", str(MAC_ADDRESS), qos=1)
+            self.waitForVerify()
+
+    def addPath(self, msg):
+        pass
+    
+    
 
 
 

@@ -1,10 +1,10 @@
 from Communication.tryUmqtt.simple import MQTTClient
-from robotCode.Control.control import turnRight
+from Control.control import turnRight
 import utime as time
 import math
 from time import sleep
 from Communication.mqtt import MQTT
-from boot import leftPWM, rightPWM, startTime
+from boot import MAC_ADDRESS, leftPWM, rightPWM, startTime
 from Control.controlconfig import PWM_CENTER_LEFT, PWM_CENTER_RIGHT, LEFT_DIRECTION, RIGHT_DIRECTION, MAX_SPEED, BOT_NUM
 from Communication.comconfig import MODE
 from Classes.Robot.robot import Robot
@@ -74,6 +74,7 @@ def lineFollowing(mode):
                 elif cx[0] == 'n': # If QR code received, 180 turn and then continue?
                     if cx[1].isdigit():
                         print("Node Reached")
+                        mqtt.client.publish(str(MAC_ADDRESS)+":Nodes", str(cx[1]), qos=1)
                         turnAround(robot, mqtt)
                     else:
                         print("Branch reached")

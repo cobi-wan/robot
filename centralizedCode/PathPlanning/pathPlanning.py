@@ -135,12 +135,8 @@ def mapping(environ):
             if environ.destination_list[i] != []: # If there is a new destination to be added 
                 i.arrived = False
                 currNode = getCurrLocation(environ, i)
-                print("Current location:", currNode.label)
                 path, shortest = runDijkstras(environ, [i.botIndex, [currNode, environ.destination_list[i][0]]])
                 for j in path:
                     i.add(environ.network.nodes[j.label])
                 del(environ.destination_list[i][0])
-
-            
-            
     return environ

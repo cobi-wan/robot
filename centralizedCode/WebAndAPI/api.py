@@ -13,16 +13,14 @@ def create_app(environ, ap, client):
 
 @app.route('/', methods=['GET','POST'])
 def index():
-    botList = app.config['Environ'].botList
-
     if request.method == 'POST':
-        if request.form.get('summon bot') == 'summon':
-            print("Button pressed")
-            (bNum, node) = app.config['Environ'].addStop(1005)
-            # print("Bot: ", bNum, "Going to stop: ", node)
-            for bot in botList:
-                if bot.activated:
-                    app.config['Client'].publish("Bot:"+str(bot.MAC),payload="go",qos=1)
+        if request.form.get('summon to node1') == 'node1':
+            (bNum, node) = app.config['Environ'].addStop(9998)
+        elif request.form.get('summon to node2') == 'node2':
+            (bNum, node) = app.config['Environ'].addStop(9999)
+            # for bot in app.config['Environ'].botList:
+            #     if bot.activated:
+            #         app.config['Client'].publish(str(bot.MAC)+":Halt",payload="Continue",qos=1)
     return render_template('index.html')
 
 @app.route('/UI', methods=['GET','POST'])
@@ -55,9 +53,9 @@ def updateMap(environ):
             if time.monotonic_ns() >= ts + environ.timeStep:
                 ts = time.monotonic_ns()
                 mapping(environ)
-                for i in environ.botList:
-                    if i.activated:
-                        pass
+                # for i in environ.botList:
+                #     if i.activated:
+                #         pass
                         # print("Bot: " + str(i.botIndex) + " Destination List: " + ", ".join(str(k) for k in environ.destination_list[i]) + " Path: " + ", ".join(str(j.label) for j in i.path) )
 
                 # Capture frame from robot live feed

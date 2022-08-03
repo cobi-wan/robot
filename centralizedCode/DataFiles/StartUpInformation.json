@@ -36,12 +36,12 @@
 
     {"Node#":1, 
      "xLocation":5760, "yLocation":3240, 
-     "WorkStation":false, "QRCodeID":"n1", "WorkstationNumber":null,
+     "WorkStation":true, "QRCodeID":"n1", "WorkstationNumber":9998,
      "connections":[]},
 
     {"Node#":2,
      "xLocation":7000, "yLocation":3240, 
-     "WorkStation":false, "QRCodeID":"n2", "WorkstationNumber":null,
+     "WorkStation":true, "QRCodeID":"n2", "WorkstationNumber":9999,
      "connections":[1]},
 
     {"Node#":3,
@@ -96,7 +96,7 @@
 
     {"Node#":13,
      "xLocation":3800, "yLocation":5600, 
-     "WorkStation":true,  "QRCodeID":"n13", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n13", "WorkstationNumber":2025, "Group":"CNC Mill",
      "connections":[12]},
 
     {"Node#":14,
@@ -106,7 +106,7 @@
 
     {"Node#":15,
      "xLocation":5100, "yLocation":5600, 
-     "WorkStation":true,  "QRCodeID":"n15", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n15", "WorkstationNumber":2026, "Group":"CNC Mill",
      "connections":[14]},
 
     {"Node#":16,
@@ -116,7 +116,7 @@
 
     {"Node#":17,
      "xLocation":6400, "yLocation":5600, 
-     "WorkStation":true,  "QRCodeID":"n17", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n17", "WorkstationNumber":2035, "Group":"CNC Mill",
      "connections":[16]},
 
     {"Node#":18,
@@ -126,7 +126,7 @@
 
     {"Node#":19,
      "xLocation":7700, "yLocation":5600, 
-     "WorkStation":true,  "QRCodeID":"n19", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n19", "WorkstationNumber":2040, "Group":"CNC Mill",
      "connections":[18]},
 
     {"Node#":20,
@@ -136,7 +136,7 @@
 
     {"Node#":21,
      "xLocation":8000, "yLocation":3140, 
-     "WorkStation":true,  "QRCodeID":"n21", "WorkstationNumber":2003,
+     "WorkStation":true,  "QRCodeID":"n21", "WorkstationNumber":1075, "Group":"CNC Lathe",
      "connections":[20]},
 
     {"Node#":22,
@@ -146,17 +146,17 @@
 
     {"Node#":23,
      "xLocation":9000, "yLocation":3140, 
-     "WorkStation":true,  "QRCodeID":"n23", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n23", "WorkstationNumber":1085, "Group":"CNC Lathe",
      "connections":[22]},
 
     {"Node#":24,
      "xLocation":10000, "yLocation":3240, 
-     "WorkStation":false, "QRCodeID":"n24",
+     "WorkStation":false, "QRCodeID":"n24", "WorkstationNumber":null,
      "connections":[3,22]},
 
     {"Node#":25,
      "xLocation":10000, "yLocation":3140, 
-     "WorkStation":true,  "QRCodeID":"n25", "WorkstationNumber":1005,
+     "WorkStation":true,  "QRCodeID":"n25", "WorkstationNumber":1090, "Group":"CNC Lathe",
      "connections":[24]},
 
     {"Node#":26,
@@ -166,7 +166,7 @@
 
     {"Node#":27,
      "xLocation":2400, "yLocation":4750, 
-     "WorkStation":true,  "QRCodeID":"n27", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n27", "WorkstationNumber":2090, "Group":"Fastems",
      "connections":[26]},
 
     {"Node#":28,
@@ -176,7 +176,7 @@
 
     {"Node#":29,
      "xLocation":2400, "yLocation":4000, 
-     "WorkStation":true,  "QRCodeID":"n29", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n29", "WorkstationNumber":2100, "Group":"Fastems",
      "connections":[28]}
 ]
 }

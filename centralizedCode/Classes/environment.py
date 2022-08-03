@@ -20,12 +20,20 @@ class environment:
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
         self.UIwBots = self.UI.copy()
+
         self.botList = bots
+        self.botDict = {}
+        for i in self.botList:
+            self.botDict[i.MAC] = i.botIndex
+
         self.network = graph
+        self.nodeDict = {}
+        for i in self.network.nodes:
+            self.nodeDict[i.ws] = i.label
+
         self.activeRequests = {'1':False,'2':False,'3':False}
-        # self.activeNetwork = graph
+
         self.destination_list = {}
-        self.buttonList = buttons
         for i in self.botList:
             self.destination_list[i] = []
         # for i in destinations:
@@ -107,11 +115,13 @@ class environment:
         return closest_bot
 
     def node2wc(self, node):
-        pass
+        for i in self.network.nodes:
+            if i.label == node:
+                return i.ws
+        return None
 
     def wc2node(self, wc):
         for i in self.network.nodes:
             if i.ws == wc:
-                print("Node:", i.label)
                 return i
         return None
