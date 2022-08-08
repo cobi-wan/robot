@@ -11,6 +11,8 @@ def create_app(environ, ap, client):
     ap.config['Client'] = client 
     return ap
 
+workCenterRequests = {1075:None, 1085:None, 9998:None, 9999:None}
+
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'POST':
@@ -29,13 +31,15 @@ def UI():
 
 @app.route('/api/v1/summonBot')
 def summonBot():
-    wc = request.args.get("wc")
-    if app.config['Environ'].activeRequests[wc] == False:
-        app.config['Environ'].activeRequests[wc] = True
+    query_parameters = request.args
+    workCenter = query_parameters.get("wc")
+    if app.config['Environ'].activeRequests[workCenter] == False:
+        app.config['Environ'].activeRequests[workCenter] = True
         newReq = Request()
-        newReq.requestingStation = wc
+        workCenterRequests
+        newReq.requestingStation = workCenter
     newReq.ETA = 0
-    app.config['Environ'].addStop(wc)
+    app.config['Environ'].addStop(workCenter)
     # app.config['Environ'].addStop(wcDest)
     return Response("{'a':'b'}", status=200, mimetype='application/json')
 
@@ -44,6 +48,16 @@ def sendBot():
     workStations = ['Quality Lab', 'Deburring', 'Shipping']
     return render_template('index.html', workStations=workStations)
 
+@app.route('api/v1/HandleRequest')
+def handleRequest():
+    pass
+
+@app.route('/api/v1/BotInfo', methods=['GET'])
+def requestUpdate():
+    query_parameters = request.args
+    requestID = query_parameters.get('requestID')
+    pass
+    
 def updateMap(environ, mqtt):
     size = 200
     # send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
