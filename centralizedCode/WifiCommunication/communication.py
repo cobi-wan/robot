@@ -27,7 +27,7 @@ def connect(environ):
 
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("192.168.30.142", 1883)
+    client.connect("192.168.20.68", 1883)
 
     client.subscribe("Robot/verify")
 
