@@ -11,8 +11,6 @@ def create_app(environ, ap, client):
     ap.config['Client'] = client 
     return ap
 
-workCenterRequests = {1075:None, 1085:None, 9998:None, 9999:None}
-
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'POST':
@@ -36,7 +34,6 @@ def summonBot():
     if app.config['Environ'].activeRequests[workCenter] == False:
         app.config['Environ'].activeRequests[workCenter] = True
         newReq = Request()
-        workCenterRequests
         newReq.requestingStation = workCenter
     newReq.ETA = 0
     app.config['Environ'].addStop(workCenter)
