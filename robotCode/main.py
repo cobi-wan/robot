@@ -74,6 +74,7 @@ def lineFollowing(mode):
                 elif cx[0] == 'n': # If QR code received, 180 turn and then continue?
                     if cx[1].isdigit():
                         print("Node Reached")
+                        robot.lastNode = str(cx[0:1])
                         mqtt.client.publish(str(MAC_ADDRESS)+":Nodes", str(cx[1]), qos=1)
                         turnAround(robot, mqtt)
                     else:

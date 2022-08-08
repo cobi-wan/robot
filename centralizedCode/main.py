@@ -24,6 +24,15 @@ from flask import Flask, render_template, request, Response
 from multiprocessing import Process
 
 
+def mainLoop(environ):
+    ts = time.monotonic_ns()
+    while True: 
+        if time.monotonic_ns() >= ts + environ.timeStep:
+            mapping(environ)
+            for i in environ.botList:
+                if i.activated:
+                    print(i.path)
+
 if __name__ == "__main__":
     
 
@@ -31,7 +40,7 @@ if __name__ == "__main__":
     cv.destroyAllWindows()
 
     # Run startup procedure to read in nodes and create network 
-    bList, g, buttonList = startUp()
+    bList, g = startUp()
 
     # Load in blank image in given folder. Allow for Windows and Mac OS
     if platform.system() == 'Windows':
@@ -44,7 +53,7 @@ if __name__ == "__main__":
     destinations = []
     # destinations = {0: [23, 1, 5, 10]}
     # stop = None
-    env = environment(file, bList, g, buttonList, destinations)
+    env = environment(file, bList, g)
     env.updateBotMarker() 
     env.drawPaths()
     env.drawNodes()
@@ -53,7 +62,9 @@ if __name__ == "__main__":
     print("*******************")
     mqtt = connect(env)
     mqtt.loop_start()
-    ts = time.monotonic_ns()
-
+    
     app = create_app(env, app, mqtt)
     app.run(host='0.0.0.0', debug=True, use_reloader=False)
+    
+
+    

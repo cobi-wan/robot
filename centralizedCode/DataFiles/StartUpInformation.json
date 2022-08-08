@@ -1,30 +1,30 @@
 {
 "Bots":[
-    {"BotType":"PartRunner", "Bot#":1,
+    {"BotType":"PartRunner", "Bot#":0,
     "xLocation":5760, "yLocation":3240, "tLocation":0, 
     "MACaddress":"0cb815c2639c"}, 
     
-    {"BotType":"PartRunner",  "Bot#":2,
+    {"BotType":"PartRunner",  "Bot#":1,
     "xLocation":5760, "yLocation":3240, "tLocation":0, 
     "MACaddress":"0cb815c15024"},
 
-    {"BotType":"PartRunner",  "Bot#":3,
+    {"BotType":"PartRunner",  "Bot#":2,
     "xLocation":5760, "yLocation":3240, "tLocation":0, 
     "MACaddress":"0cb815c45f38"},
 
-    {"BotType":"PartRunner",  "Bot#":4,
+    {"BotType":"PartRunner",  "Bot#":3,
     "xLocation":5760, "yLocation":3240, "tLocation":0, 
     "MACaddress":"0cb815c13690"},
 
-    {"BotType":"PartRunner",  "Bot#":5,
+    {"BotType":"PartRunner",  "Bot#":4,
     "xLocation":5760, "yLocation":3240, "tLocation":0,
     "MACaddress":"ec6260931e70"},
 
-    {"BotType":"PartRunner",  "Bot#":6,
+    {"BotType":"PartRunner",  "Bot#":5,
     "xLocation":5760, "yLocation":3240, "tLocation":0,
     "MACaddress":"ec62609270e8"},
 
-    {"BotType":"PartRunner",  "Bot#":7,
+    {"BotType":"PartRunner",  "Bot#":6,
     "xLocation":5760, "yLocation":3240, "tLocation":0,
     "MACaddress":"4091519a3bac"}
 ],
@@ -81,12 +81,12 @@
 
     {"Node#":10,
      "xLocation":2500, "yLocation":500, 
-     "WorkStation":true,  "QRCodeID":"n10", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n10", "WorkstationNumber":1050, "Group":"Lathes",
      "connections":[9]},
 
     {"Node#":11,
      "xLocation":5760, "yLocation":500, 
-     "WorkStation":true,  "QRCodeID":"n11", "WorkstationNumber":1000,
+     "WorkStation":true,  "QRCodeID":"n11", "WorkstationNumber":1060, "Group":"Lathes",
      "connections":[1,10]},
 
     {"Node#":12,

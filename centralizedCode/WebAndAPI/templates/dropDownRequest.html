@@ -1,0 +1,34 @@
+<html>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8  offset-lg-2">
+                    <h3 class="mt-5">Robot Server Live Stream</h3>
+                    <h3>From 
+                        <select name="station" method="GET" action="/">
+                            <option value="{{stations[0]}}" selected>{{stations[0]}}</option>
+                            {% for pickup in stations %}
+                                <option value="{{pickup}}">{{pickup}}</option>
+                            {% endfor %}
+                        </select>
+                        <form method="POST" action="/">
+                            <input type="submit" value="Request" name="{{pickup}}"/>
+                        </form>
+                    </h3>
+                    <h3>To 
+                        <select name="station" method="GET" action="/">
+                            <option value="{{stations[0]}}" selected>{{stations[0]}}</option>
+                            {% for destination in stations %}
+                                <option value="{{destination}}">{{destination}}</option>
+                            {% endfor %}
+                        </select>
+                        <form method="POST" action="/">
+                            <input type="submit" value="Send to destination" name="summon to node2"/>
+                        </form>
+                    </h3>
+                    <img src="{{ url_for('UI') }}" width="100%">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

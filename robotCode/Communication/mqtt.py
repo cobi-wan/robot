@@ -7,6 +7,7 @@ class MQTT():
         self.robot = robot
         self.serverIP = SERVER_IP
         self.client = MQTTClient("Bot", self.serverIP, keepalive=10000)
+        self.client.set_last_will("Bots:Connection", str(MAC_ADDRESS), qos=1)
         self.client.connect()
         print('Connecting to server...')
         self.client.set_callback(self.callback)
@@ -59,7 +60,11 @@ class MQTT():
             self.waitForVerify()
 
     def addPath(self, msg):
-        pass
+        if msg == self.robot.lastNode:
+            return
+        else: 
+            self.robot.halt = False 
+            
     
     
 
