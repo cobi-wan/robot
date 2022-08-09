@@ -1,0 +1,117 @@
+Date : 2022-08-08 13:24:57
+Directory : /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot
+Total : 64 files,  2517 codes, 449 comments, 663 blanks, all 3629 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         54 |      2,204 |        449 |        602 |      3,255 |
+| JSON     |          2 |        148 |          0 |         35 |        183 |
+| HTML     |          4 |         89 |          0 |          0 |         89 |
+| Markdown |          4 |         76 |          0 |         26 |        102 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                          | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                             |         64 |      2,517 |        449 |        663 |      3,629 |
+| centralizedCode                                                                                                               |         26 |        927 |        163 |        238 |      1,328 |
+| centralizedCode/.VSCodeCounter                                                                                                |          5 |         77 |          0 |         26 |        103 |
+| centralizedCode/.VSCodeCounter/2022-08-08_13-24-07                                                                            |          5 |         77 |          0 |         26 |        103 |
+| centralizedCode/Classes                                                                                                       |          6 |        230 |         37 |         45 |        312 |
+| centralizedCode/Classes/Graph                                                                                                 |          3 |         53 |          0 |          8 |         61 |
+| centralizedCode/Classes/RobotClasses                                                                                          |          2 |         47 |          8 |         12 |         67 |
+| centralizedCode/DataFiles                                                                                                     |          1 |        147 |          0 |         35 |        182 |
+| centralizedCode/PathPlanning                                                                                                  |          1 |         91 |         62 |         21 |        174 |
+| centralizedCode/TestingFiles                                                                                                  |          3 |         82 |          7 |         28 |        117 |
+| centralizedCode/WebAndAPI                                                                                                     |          6 |        156 |         22 |         34 |        212 |
+| centralizedCode/WebAndAPI/templates                                                                                           |          4 |         89 |          0 |          0 |         89 |
+| centralizedCode/WifiCommunication                                                                                             |          1 |         46 |         24 |         25 |         95 |
+| helperCode                                                                                                                    |          8 |        123 |          8 |         38 |        169 |
+| opencv                                                                                                                        |         10 |        444 |        145 |        153 |        742 |
+| remoteStation                                                                                                                 |          6 |        167 |         16 |         32 |        215 |
+| remoteStation/buttonStation                                                                                                   |          4 |         82 |          3 |         15 |        100 |
+| remoteStation/computerStation                                                                                                 |          2 |         85 |         13 |         17 |        115 |
+| robotCode                                                                                                                     |         14 |        856 |        117 |        202 |      1,175 |
+| robotCode/Classes                                                                                                             |          6 |        340 |         36 |        104 |        480 |
+| robotCode/Classes/Network                                                                                                     |          2 |         17 |          0 |          6 |         23 |
+| robotCode/Classes/Robot                                                                                                       |          4 |        323 |         36 |         98 |        457 |
+| robotCode/Classes/Robot/Motors                                                                                                |          1 |         17 |          0 |          6 |         23 |
+| robotCode/Classes/Robot/Sensors                                                                                               |          2 |        253 |         27 |         69 |        349 |
+| robotCode/Communication                                                                                                       |          4 |        291 |         58 |         47 |        396 |
+| robotCode/Communication/tryUmqtt                                                                                              |          2 |        225 |         13 |         28 |        266 |
+| robotCode/Control                                                                                                             |          2 |        109 |          2 |         29 |        140 |
++-------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                      | language | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/.VSCodeCounter/2022-08-08_13-24-07/details.md      | Markdown |         30 |          0 |          6 |         36 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/.VSCodeCounter/2022-08-08_13-24-07/diff-details.md | Markdown |          9 |          0 |          6 |         15 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/.VSCodeCounter/2022-08-08_13-24-07/diff.md         | Markdown |         12 |          0 |          7 |         19 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/.VSCodeCounter/2022-08-08_13-24-07/results.json    | JSON     |          1 |          0 |          0 |          1 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/.VSCodeCounter/2022-08-08_13-24-07/results.md      | Markdown |         25 |          0 |          7 |         32 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/Graph/edge.py                              | Python   |         15 |          0 |          3 |         18 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/Graph/graph.py                             | Python   |         28 |          0 |          4 |         32 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/Graph/node.py                              | Python   |         10 |          0 |          1 |         11 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/RobotClasses/cart.py                       | Python   |         19 |          4 |          5 |         28 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/RobotClasses/partRunner.py                 | Python   |         28 |          4 |          7 |         39 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/environment.py                             | Python   |        130 |         29 |         25 |        184 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/DataFiles/StartUpInformation.json                  | JSON     |        147 |          0 |         35 |        182 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/PathPlanning/pathPlanning.py                       | Python   |         91 |         62 |         21 |        174 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/TestingFiles/A_star.py                             | Python   |         19 |          0 |          8 |         27 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/TestingFiles/OverlayTesting.py                     | Python   |         39 |          3 |         12 |         54 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/TestingFiles/Testing.py                            | Python   |         24 |          4 |          8 |         36 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/api.py                                   | Python   |         56 |         22 |         33 |        111 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/request.py                               | Python   |         11 |          0 |          1 |         12 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/dropDownRequest.html           | HTML     |         34 |          0 |          0 |         34 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/index.html                     | HTML     |         17 |          0 |          0 |         17 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/requestForm.html               | HTML     |         24 |          0 |          0 |         24 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/requestResult.html             | HTML     |         14 |          0 |          0 |         14 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WifiCommunication/communication.py                 | Python   |         46 |         24 |         25 |         95 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/main.py                                            | Python   |         49 |          7 |         14 |         70 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/startUp.py                                         | Python   |         36 |          1 |          5 |         42 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/testing.py                                         | Python   |         13 |          3 |          5 |         21 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/RobotSendOnArrival.py                                   | Python   |         15 |          0 |          3 |         18 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/boot.py                                                 | Python   |         18 |          3 |          4 |         25 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/config.py                                               | Python   |          3 |          0 |          3 |          6 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/motorTest.py                                            | Python   |         13 |          0 |          3 |         16 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/mqttSubscriberTest.py                                   | Python   |         35 |          0 |          6 |         41 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/printESPMAC.py                                          | Python   |          6 |          1 |          1 |          8 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/remoteControl.py                                        | Python   |         32 |          4 |         16 |         52 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/helperCode/test.py                                                 | Python   |          1 |          0 |          2 |          3 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/2frame.py                                                   | Python   |         51 |          8 |         14 |         73 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/Motion_det2frame.py                                         | Python   |        118 |         30 |         26 |        174 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/coordinates.py                                              | Python   |         26 |         15 |         14 |         55 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/edge_det.py                                                 | Python   |         18 |         14 |         14 |         46 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/image_diff.py                                               | Python   |         37 |         15 |         11 |         63 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/imgovrvideo.py                                              | Python   |         18 |          5 |          8 |         31 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/motion_det.py                                               | Python   |         44 |         31 |         21 |         96 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/objecttracker.py                                            | Python   |         56 |         18 |         16 |         90 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/pi.py                                                       | Python   |         55 |          4 |         20 |         79 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/opencv/qr.py                                                       | Python   |         21 |          5 |          9 |         35 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/remoteStation/buttonStation/boot.py                                | Python   |         18 |          3 |          4 |         25 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/remoteStation/buttonStation/communication.py                       | Python   |         32 |          0 |          3 |         35 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/remoteStation/buttonStation/config.py                              | Python   |          3 |          0 |          3 |          6 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/remoteStation/buttonStation/main.py                                | Python   |         29 |          0 |          5 |         34 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/remoteStation/computerStation/communication.py                     | Python   |         42 |          1 |          6 |         49 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/remoteStation/computerStation/main.py                              | Python   |         43 |         12 |         11 |         66 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Classes/Network/wifi.py                                  | Python   |         15 |          0 |          6 |         21 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Classes/Network/wificonfig.py                            | Python   |          2 |          0 |          0 |          2 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Classes/Robot/Motors/dcmotor.py                          | Python   |         17 |          0 |          6 |         23 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Classes/Robot/Sensors/mfrc522.py                         | Python   |        235 |         10 |         64 |        309 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Classes/Robot/Sensors/rfid.py                            | Python   |         18 |         17 |          5 |         40 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Classes/Robot/robot.py                                   | Python   |         53 |          9 |         23 |         85 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Communication/comconfig.py                               | Python   |          6 |          5 |          1 |         12 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Communication/mqtt.py                                    | Python   |         60 |         40 |         18 |        118 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Communication/tryUmqtt/robust.py                         | Python   |         47 |          2 |         10 |         59 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Communication/tryUmqtt/simple.py                         | Python   |        178 |         11 |         18 |        207 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Control/control.py                                       | Python   |        101 |          2 |         29 |        132 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/Control/controlconfig.py                                 | Python   |          8 |          0 |          0 |          8 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/boot.py                                                  | Python   |         11 |          0 |          3 |         14 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/robotCode/main.py                                                  | Python   |        105 |         21 |         19 |        145 |
+| Total                                                                                                                         |          |      2,517 |        449 |        663 |      3,629 |
++-------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

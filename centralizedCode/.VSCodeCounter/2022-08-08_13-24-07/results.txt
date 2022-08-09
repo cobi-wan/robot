@@ -1,0 +1,56 @@
+Date : 2022-08-08 13:24:07
+Directory : /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode
+Total : 21 files,  850 codes, 163 comments, 212 blanks, all 1225 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         16 |        614 |        163 |        177 |        954 |
+| JSON     |          1 |        147 |          0 |         35 |        182 |
+| HTML     |          4 |         89 |          0 |          0 |         89 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                   |         21 |        850 |        163 |        212 |      1,225 |
+| Classes                                                                                                             |          6 |        230 |         37 |         45 |        312 |
+| Classes/Graph                                                                                                       |          3 |         53 |          0 |          8 |         61 |
+| Classes/RobotClasses                                                                                                |          2 |         47 |          8 |         12 |         67 |
+| DataFiles                                                                                                           |          1 |        147 |          0 |         35 |        182 |
+| PathPlanning                                                                                                        |          1 |         91 |         62 |         21 |        174 |
+| TestingFiles                                                                                                        |          3 |         82 |          7 |         28 |        117 |
+| WebAndAPI                                                                                                           |          6 |        156 |         22 |         34 |        212 |
+| WebAndAPI/templates                                                                                                 |          4 |         89 |          0 |          0 |         89 |
+| WifiCommunication                                                                                                   |          1 |         46 |         24 |         25 |         95 |
++---------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                            | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/Graph/edge.py                    | Python   |         15 |          0 |          3 |         18 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/Graph/graph.py                   | Python   |         28 |          0 |          4 |         32 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/Graph/node.py                    | Python   |         10 |          0 |          1 |         11 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/RobotClasses/cart.py             | Python   |         19 |          4 |          5 |         28 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/RobotClasses/partRunner.py       | Python   |         28 |          4 |          7 |         39 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/Classes/environment.py                   | Python   |        130 |         29 |         25 |        184 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/DataFiles/StartUpInformation.json        | JSON     |        147 |          0 |         35 |        182 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/PathPlanning/pathPlanning.py             | Python   |         91 |         62 |         21 |        174 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/TestingFiles/A_star.py                   | Python   |         19 |          0 |          8 |         27 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/TestingFiles/OverlayTesting.py           | Python   |         39 |          3 |         12 |         54 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/TestingFiles/Testing.py                  | Python   |         24 |          4 |          8 |         36 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/api.py                         | Python   |         56 |         22 |         33 |        111 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/request.py                     | Python   |         11 |          0 |          1 |         12 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/dropDownRequest.html | HTML     |         34 |          0 |          0 |         34 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/index.html           | HTML     |         17 |          0 |          0 |         17 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/requestForm.html     | HTML     |         24 |          0 |          0 |         24 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WebAndAPI/templates/requestResult.html   | HTML     |         14 |          0 |          0 |         14 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/WifiCommunication/communication.py       | Python   |         46 |         24 |         25 |         95 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/main.py                                  | Python   |         49 |          7 |         14 |         70 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/startUp.py                               | Python   |         36 |          1 |          5 |         42 |
+| /Users/cobywhitmore/Desktop/Code/Work/Hirsh/HirshBot/robot/centralizedCode/testing.py                               | Python   |         13 |          3 |          5 |         21 |
+| Total                                                                                                               |          |        850 |        163 |        212 |      1,225 |
++---------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

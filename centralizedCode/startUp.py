@@ -19,7 +19,6 @@ def startUp():
     nodes = []
     edges = []
     botList = []
-    buttonList = []
     
     # Read in nodes and edges from filename
     f = open(fileName)
@@ -34,10 +33,10 @@ def startUp():
 
     for i in data['Bots']:
         if i['BotType'] == 'PartRunner':
-            print("Bot at MAC:", i['MACaddress'], "at:", i['xLocation'], ", ", i['yLocation'])
-            botList.append(partRunner(i['Bot#'], i['xLocation'], i['yLocation'], i['tLocation'], i['MACaddress']))
+            print("Bot at MAC:", i['MACaddress'], "at:", i['xLocation'], ",", i['yLocation'])
+            botList.append(partRunner(i['Bot#'], nodes[1], i['MACaddress']))
 
     f.close()
     g = graph(nodes, edges)
 
-    return botList, g, buttonList
+    return botList, g

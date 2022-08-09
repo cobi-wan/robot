@@ -3,6 +3,8 @@ from cv2 import MARKER_SQUARE
 from cv2 import MARKER_TRIANGLE_DOWN
 import numpy as np
 import sys
+from WebAndAPI.request import Request
+from PathPlanning.pathPlanning import updatePath
 
 class environment:
     mapScale = 0.1 
@@ -16,26 +18,35 @@ class environment:
     calcRate = 5
     RFID_Dist2Node = 50
 
-    def __init__(self, img, bots, graph, buttons, destinations):
+    def __init__(self, img, bots, graph):
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
         self.UIwBots = self.UI.copy()
 
         self.botList = bots
         self.botDict = {}
+        self.activeBots = {}
         for i in self.botList:
-            self.botDict[i.MAC] = i.botIndex
+            self.botDict[i.MAC] = i
 
         self.network = graph
+        self.homeNode = graph.nodes[1]
         self.nodeDict = {}
+        self.reachableWorkstations = []
+        print("Workstations: ")
         for i in self.network.nodes:
-            self.nodeDict[i.ws] = i.label
+            if i.ws is not None: 
+                print("Workstation ID:", i.ws, "at Node:", i.label)
+                self.nodeDict[i.ws] = i 
+                self.reachableWorkstations.append(i.ws)
+        # print(" ".join(str(i)+" "+str(self.nodeDict[i].tag) for i in self.nodeDict))
 
-        self.activeRequests = {'1':False,'2':False,'3':False}
-
-        self.destination_list = {}
-        for i in self.botList:
-            self.destination_list[i] = []
+        self.requestQueue = []
+        self.activeRequests = []
+        self.completedRequests = []
+        # self.destination_list = {}
+        # for i in self.botList:
+        #     self.destination_list[i] = []
         # for i in destinations:
             # destinations[i].insert(0, 0) # Ensure the bot always starts at node 0
             # for j in destinations[i]:
@@ -79,7 +90,8 @@ class environment:
                 if i.arrived == True:
                     cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + ": Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
                 else: 
-                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + ": in progress. Next nodes: " + str(i.currGoal) + ', '.join(str(j) for j in self.destination_list[i]), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
+                    cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + ": in progress. Next nodes: " + str(i.currentGoal), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))# + ', '.join(str(j) for j in self.destination_list[i]))
+                cv.putText(self.UIwBots, "Bot: "+str(i.botIndex)+" path:"+", ".join(str(j[0].label) for j in i.path), (200, 25*i.botIndex + 500), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
     def drawNodes(self):
         for i in self.network.nodes:
@@ -93,16 +105,6 @@ class environment:
         for i in self.network.edges:
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (230, 230, 230), 3)
             cv.line(self.UI, (int(i.n1x*self.mapScale), int(i.n1y*self.mapScale)), (int(i.n2x*self.mapScale), int(i.n2y*self.mapScale)), (0, 0, 0), 1)
-
-    def addStop(self, wc):
-        # print(self.destination_list)
-        for i in self.botList:
-            if i.activated:
-                self.destination_list[i].append(self.wc2node(int(wc)))
-                return (i.botIndex, int(wc))
-        # closestBot = self.get_closest_bot_Dist2End()
-        # self.destination_list[closestBot].append(wc)
-        return (None, None)
 
     def get_closest_bot_Dist2End(self):
         max_dist = sys.maxsize
@@ -125,3 +127,57 @@ class environment:
             if i.ws == wc:
                 return i
         return None
+
+    def createRequest(self, pickup, dropoff):
+        pickup = self.nodeDict[pickup]
+        print("Pickup from:", pickup.label)
+        if dropoff is not None:
+            dropoff = self.nodeDict[dropoff]
+            print("Dropoff at:", dropoff.label)
+            dropoffReq = Request(dropoff)
+        else:
+            dropoffReq = None
+        pickupReq = Request(pickup, dropoffReq)
+        if not len(self.activeBots): 
+            print("No Bots active")
+            self.requestQueue.append(pickupReq)
+            if dropoff is not None:
+                self.requestQueue.append(dropoffReq)
+        else: 
+            self.addStop(pickupReq)
+            if dropoff is not None: 
+                self.addStop(dropoffReq)
+        
+        # # if self.requestList.get()
+        # for request in self.requestList:
+        #     if pickup == request.destination and request.active:
+        #         reqActive = True
+        # if reqActive:    
+        #     print("Nope")
+        #     return "Station already has an active request. Cannot create another request"
+        # else:
+        #     pickupReq = Request(pickup)
+        #     self.addStop(pickup, pickupReq)
+        #     if dropoff is not None: 
+        #         dropReq = Request(dropoff, pickupReq)
+        #         self.addStop(dropoff, dropReq)
+
+        #     self.requestList.append(pickupReq)
+        #     self.requestList.append(dropReq)
+
+        #     print("Yup")
+        #     return "Request verified, robot in route"
+
+    def addStop(self, pickupReq):
+        # Choose which bot to send
+        soonestEnd = sys.maxsize
+        for bot in self.activeBots: 
+            if self.activeBots[bot].dist_to_end < soonestEnd: 
+                chosenBot = self.activeBots[bot]
+        # Append given request to that bot 
+        chosenBot.requestList.append(pickupReq)
+        if pickupReq.next is not None:
+            chosenBot.requestList.append(pickupReq.next)
+
+        # Update chosen bots dist_to_end variable and add requests to its path 
+        updatePath(self, chosenBot, pickupReq)

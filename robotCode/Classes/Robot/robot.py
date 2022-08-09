@@ -10,6 +10,7 @@ class Robot():
         self.botnum = None
         # State variable for start-up
         self.halt = False
+        self.lastNode = None
         
         # Vars for 'WASD' control
         self.fwd =0
