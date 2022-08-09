@@ -37,14 +37,14 @@ mqtt = MQTT(robot)
 def lineFollowing(mode):
     errorSum = 0
     center = 240
-    while True: 
+    while True:
         # print("Checking Message")
         mqtt.client.check_msg()
         # print("Message Checked")
         if robot.uart.any() > 0:
             cx = robot.checkUart()
             if cx is not None:
-                if cx.isdigit() and not robot.halt:
+                if cx.isdigit(): # and not robot.halt:
                     # print(cx)
                     cx = int(cx[0:3])
                     dev = center - cx

@@ -26,19 +26,31 @@ def index():
 @app.route('/createRequest', methods=['GET', 'POST'])
 def createRequest():
     stations = app.config['Environ'].reachableWorkstations
-    
     return render_template("requestForm.html", stations=stations)
 
 
 # Result from the create request form. Should show UI and have a button that allows user to "Continue" 
 # when bot arrives
-@app.route('/result', methods=['GET', 'POST'])
+@app.route('/api/v1/submitRequest', methods=['GET', 'POST'])
 def result():
+    pickupReq = None
+    dropoffReq = None
     if request.method == 'POST':
         pickupWS = int(request.form.get("pickupStation"))
         dropoffWS = int(request.form.get("dropoffStation"))
-        msg = app.config['Environ'].createRequest(pickupWS, dropoffWS)
-    return render_template('requestResult.html', result=msg)
+        print(pickupReq,dropoffReq,pickupWS,dropoffWS)
+        (pickupReq, dropoffReq) = app.config['Environ'].createRequest(pickupWS, dropoffWS)
+    # return jsonify(msg) # When changing to paperless integration return a submittal message
+    if pickupReq is None:
+        arrived = False
+        print("Here")
+    else: 
+        arrived = pickupReq.active
+    return render_template('requestResult.html')
+
+@app.route('/api/v1/sendFromPickupToDestination', methods=['GET', 'POST'])
+def sendFromPickupToDestination():
+    return {'A','b'}
 
 
 # URL with UI shown in a box

@@ -46,13 +46,10 @@ if __name__ == "__main__":
     if platform.system() == 'Windows':
         file = "ImageFiles\BlankMap.png"
     else: 
-        file = "CentralizedCode/ImageFiles/BlankMap.png"
+        file = "ImageFiles/BlankMap.png"
     
     # Create environment and draw items given in setup
-    # destinations = [2, 3, 4, 5, 6, 21, 20, 23, 1]
-    destinations = []
-    # destinations = {0: [23, 1, 5, 10]}ç
-    # stop = None
+
     env = environment(file, bList, g)
     env.updateBotMarker() 
     env.drawPaths()
