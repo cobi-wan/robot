@@ -38,7 +38,6 @@ def result():
     if request.method == 'POST':
         pickupWS = int(request.form.get("pickupStation"))
         dropoffWS = int(request.form.get("dropoffStation"))
-        print(pickupReq,dropoffReq,pickupWS,dropoffWS)
         (pickupReq, dropoffReq) = app.config['Environ'].createRequest(pickupWS, dropoffWS)
     # return jsonify(msg) # When changing to paperless integration return a submittal message
     if pickupReq is None:
@@ -56,7 +55,7 @@ def sendFromPickupToDestination():
 # URL with UI shown in a box
 @app.route('/UI', methods=['GET','POST'])
 def UI():
-    return Response(updateMap(app.config['Environ'], app.config['Client']), mimetype='multipart/x-mixed-replace;boundary=frame')
+        return Response(sendUI(app.config['Environ']), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 
 # Old api method that allowed user to add a stop. 
@@ -81,22 +80,26 @@ def requestUpdate():
     requestID = query_parameters.get('requestID')
     pass
     
-def updateMap(environ, mqtt):
-    # size = 200
-    # send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
-    try: 
-        ts = time.monotonic_ns()
-        while True:
-            if time.monotonic_ns() >= ts + environ.timeStep:
-                ts = time.monotonic_ns()
-                mapping(environ)
+
+def sendUI(environ):
+    while True:
+        yield environ.retFrame
+# def updateMap(environ):
+#     # size = 200
+#     # send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
+#     try: 
+#         ts = time.monotonic_ns()
+#         while True:
+#             if time.monotonic_ns() >= ts + environ.timeStep:
+#                 ts = time.monotonic_ns()
+#                 mapping(environ)
                 
-                UIFrame = environ.UIwBots
-                _, img_encoded = cv.imencode('.jpg', UIFrame)
-                UIFrame = img_encoded.tobytes()
-                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + UIFrame + b'\r\n')
-    except KeyboardInterrupt:
-        print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
+#                 UIFrame = environ.UIwBots
+#                 _, img_encoded = cv.imencode('.jpg', UIFrame)
+#                 UIFrame = img_encoded.tobytes()
+#                 yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + UIFrame + b'\r\n')
+#     except KeyboardInterrupt:
+#         print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
 
 

@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import cv2 as cv
 
 # Runs Dijsktras from n1 to all other nodes on the network g
 def getShortestPaths(g, n1):
@@ -120,7 +121,13 @@ def mapping(environ):
 
     environ.updateBotMarker()                   # Update map
     calcBotPos(environ)                         # Update each bots location
-
+    
+    
+    UIFrame = environ.UIwBots
+    _, img_encoded = cv.imencode('.jpg', UIFrame)
+    UIFrame = img_encoded.tobytes()
+    environ.retFrame = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + UIFrame + b'\r\n')
+    
     # for bot in environ.botList:
     #     # if i.activated:
     #         # print(" ".join(str(k.label) for k in i.path))

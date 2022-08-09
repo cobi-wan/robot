@@ -1,7 +1,3 @@
-from cProfile import run
-from concurrent.futures import process
-from logging import exception
-from re import M
 import cv2 as cv
 from cv2 import MARKER_SQUARE
 import time
@@ -22,16 +18,15 @@ from WebAndAPI.api import app, create_app
 
 from flask import Flask, render_template, request, Response
 from multiprocessing import Process
+from threading import Thread
 
 
-def mainLoop(environ):
+def mappingThread(environ):
     ts = time.monotonic_ns()
-    while True: 
+    while True:
         if time.monotonic_ns() >= ts + environ.timeStep:
+            ts = time.monotonic_ns()
             mapping(environ)
-            for i in environ.botList:
-                if i.activated:
-                    print(i.path)
 
 if __name__ == "__main__":
     
@@ -51,7 +46,7 @@ if __name__ == "__main__":
     # Create environment and draw items given in setup
 
     env = environment(file, bList, g)
-    env.updateBotMarker() 
+    env.updateBotMarker()
     env.drawPaths()
     env.drawNodes()
     print("*******************")
@@ -60,8 +55,8 @@ if __name__ == "__main__":
     mqtt = connect(env)
     mqtt.loop_start()
     
+    t = Thread(target=mappingThread, args=(env, ))
+    t.start()
+
     app = create_app(env, app, mqtt)
     app.run(host='0.0.0.0', debug=True, use_reloader=False)
-    
-
-    

@@ -22,6 +22,8 @@ class environment:
         self.UI = cv.imread(img)
         self.UI = cv.resize(self.UI, self.dimensions, interpolation = cv.INTER_LINEAR)
         self.UIwBots = self.UI.copy()
+        self.retFrame = None
+        self.updatingMap = False
 
         self.botList = bots
         self.botDict = {}
@@ -151,28 +153,10 @@ class environment:
                 self.requestQueue.append(dropoffReq)
         # Otherwise call addStop on pickup and then dropoff
         else: 
-            self.addStop(pickupReq)
-            if dropoff is not None: 
-                self.addStop(dropoffReq)
-        # # if self.requestList.get()
-        # for request in self.requestList:
-        #     if pickup == request.destination and request.active:
-        #         reqActive = True
-        # if reqActive:    
-        #     print("Nope")
-        #     return "Station already has an active request. Cannot create another request"
-        # else:
-        #     pickupReq = Request(pickup)
-        #     self.addStop(pickup, pickupReq)
-        #     if dropoff is not None: 
-        #         dropReq = Request(dropoff, pickupReq)
-        #         self.addStop(dropoff, dropReq)
+            self.addStop(pickupReq) # addStop handles both pickup and dropoff addition to robot path
+        return (pickupReq, dropoffReq)
 
-        #     self.requestList.append(pickupReq)
-        #     self.requestList.append(dropReq)
 
-        #     print("Yup")
-        #     return "Request verified, robot in route"
 
     def addStop(self, pickupReq):
         # Choose which bot to send
