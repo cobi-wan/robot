@@ -17,5 +17,3 @@ for i in path:
     print(i.label)
 print("Shortest")
 print(shortest)
-# for i in shortest:
-#     print(i)

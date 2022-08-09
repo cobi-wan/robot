@@ -1,6 +1,7 @@
 import time
 from base64 import decode
 import paho.mqtt.client as mqtt
+from WifiCommunication.communicationconf import MOSQUITTOBROKERIP
 
 
 
@@ -28,7 +29,7 @@ def connect(environ):
 
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("192.168.20.68", 1883)
+    client.connect(MOSQUITTOBROKERIP, 1883)
 
     client.subscribe("Robot/verify")
 
@@ -83,6 +84,7 @@ def botInit_on_message(client, userdata, msg):
             userdata.activeBots[str(msg.payload.decode())] = i
             client.subscribe(msg.payload.decode()+":Nodes")
             print("Bot connected at: ", i.MAC, "x:", i.xCord, "y:", i.yCord)
+            # if userdata.
             return
     print("Robot not in botList")
     return

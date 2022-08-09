@@ -91,8 +91,10 @@ class environment:
                     cv.putText(self.UIwBots, "Bot " + str(i.botIndex) + ": Arrived", (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
                 else: 
                     cv.putText(self.UIwBots, "Bot " + (str(i.botIndex)) + ": in progress. Next nodes: " + str(i.currentGoal), (800, 25*i.botIndex + 50), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))# + ', '.join(str(j) for j in self.destination_list[i]))
+                cv.putText(self.UIwBots, str(i.dist_to_end), (200, 25*i.botIndex + 550), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
                 cv.putText(self.UIwBots, "Bot: "+str(i.botIndex)+" path:"+", ".join(str(j[0].label) for j in i.path), (200, 25*i.botIndex + 500), cv.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0))
 
+                # 
     def drawNodes(self):
         for i in self.network.nodes:
             if i.ws is not None:
@@ -129,8 +131,10 @@ class environment:
         return None
 
     def createRequest(self, pickup, dropoff):
+        # Find pickup node
         pickup = self.nodeDict[pickup]
         print("Pickup from:", pickup.label)
+        # If there is a dropoff create it as a request and pass to the pickup request
         if dropoff is not None:
             dropoff = self.nodeDict[dropoff]
             print("Dropoff at:", dropoff.label)
@@ -138,34 +142,19 @@ class environment:
         else:
             dropoffReq = None
         pickupReq = Request(pickup, dropoffReq)
+
+        # If there are no active bots append the request to the unassigned queue
         if not len(self.activeBots): 
             print("No Bots active")
             self.requestQueue.append(pickupReq)
             if dropoff is not None:
                 self.requestQueue.append(dropoffReq)
+        # Otherwise call addStop on pickup and then dropoff
         else: 
-            self.addStop(pickupReq)
-            if dropoff is not None: 
-                self.addStop(dropoffReq)
-        # # if self.requestList.get()
-        # for request in self.requestList:
-        #     if pickup == request.destination and request.active:
-        #         reqActive = True
-        # if reqActive:    
-        #     print("Nope")
-        #     return "Station already has an active request. Cannot create another request"
-        # else:
-        #     pickupReq = Request(pickup)
-        #     self.addStop(pickup, pickupReq)
-        #     if dropoff is not None: 
-        #         dropReq = Request(dropoff, pickupReq)
-        #         self.addStop(dropoff, dropReq)
+            self.addStop(pickupReq) # addStop handles both pickup and dropoff addition to robot path
+        return (pickupReq, dropoffReq)
 
-        #     self.requestList.append(pickupReq)
-        #     self.requestList.append(dropReq)
 
-        #     print("Yup")
-        #     return "Request verified, robot in route"
 
     def addStop(self, pickupReq):
         # Choose which bot to send
@@ -173,10 +162,17 @@ class environment:
         for bot in self.activeBots: 
             if self.activeBots[bot].dist_to_end < soonestEnd: 
                 chosenBot = self.activeBots[bot]
+        print("Bot assigned to request: ", pickupReq.requestID, ": ", chosenBot.botIndex)
+                    
         # Append given request to that bot 
         chosenBot.requestList.append(pickupReq)
+        pickupLoc = pickupReq.destination
+        dropoffLoc = None
         if pickupReq.next is not None:
             chosenBot.requestList.append(pickupReq.next)
+            dropoffLoc = pickupReq.next.destination
+
 
         # Update chosen bots dist_to_end variable and add requests to its path 
-        updatePath(self, chosenBot, pickupReq)
+        updatePath(self, chosenBot, pickupLoc, dropoffLoc, pickupReq.requestID)
+        return chosenBot

@@ -3,10 +3,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8  offset-lg-2">
-                    <h3> {{result}} </h3>
-                    <form action = "/" method = "POST">
-                        <p><input type = "submit" value = "return to map" action = "/"/></p> 
-                    </form>
+                    <h3> Request status 
+                        {% if arrived %}
+                            <p>Bot has arrived. Load parts and press button to send to destination</p>
+                            <form action = "/api/v1/submitRequest">
+                                <p><input type = "submit" id = "SendButton" value = "continue" action = ""/></p> 
+                            </form>
+                        {% else %} 
+                            <p>Bot has not arrived yet. Please wait</p>
+                        {% endif %} 
+                    </h3>
+                    <img src="{{ url_for('UI') }}" width="100%">
                 </div>
             </div>
         </div>

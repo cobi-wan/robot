@@ -52,7 +52,7 @@ def runDijkstras(environ, calledNodes):
         path.append(currentNode)
         currentNode = previousNodes[currentNode]
     path.append(curr)
-
+    path = list(reversed(path))
     # Add nodes needed to reach path to the robots path
     # print("Bot: ", botNum, "Path:", environ.botList[botNum].path)
     # print("Adding Nodes: ")
@@ -62,7 +62,7 @@ def runDijkstras(environ, calledNodes):
     # print("Bot: ", botNum, "Path")
     # for i in environ.botList[botNum].path:
     #     print(i.label)
-    return reversed(path), shortestPaths[dest] #environ.network.nodes[dest]]
+    return path, shortestPaths[dest] #environ.network.nodes[dest]]
 
 
 # Calculates current bot location
@@ -100,19 +100,20 @@ def calcBotPos(environ):
             i.halted = True
             continue
         else: 
-            if (i.xCord - i.path[1][0].x) != 0:        # Set the angle of movement
-                i.tCord = np.arctan((i.yCord - i.path[1][0].y)/(i.xCord - i.path[1][0].x)) # - np.pi/2
-            elif (i.yCord - i.path[1][0].y) > 0:
+            if (i.xCord - i.path[0][0].x) != 0:        # Set the angle of movement
+                i.tCord = np.arctan((i.yCord - i.path[0][0].y)/(i.xCord - i.path[0][0].x)) # - np.pi/2
+            elif (i.yCord - i.path[0][0].y) > 0:
                 i.tCord = -np.pi/2 
             else:
                 i.tCord = np.pi/2
-            xDist = i.path[1][0].x - i.xCord
-            yDist = i.path[1][0].y - i.yCord
+            xDist = i.path[0][0].x - i.xCord
+            yDist = i.path[0][0].y - i.yCord
             if abs(xDist) > environ.accuracy or abs(yDist) > environ.accuracy: 
                 speeds = calcSpeed(xDist, yDist, i.maxSpeed, i.minSpeed, environ.RFID_Dist2Node)
                 i.xCord += speeds[0]*environ.timeStep
                 i.yCord += speeds[1]*environ.timeStep
             else:
+                i.lastNode = i.path[0][0]
                 del(i.path[0]) 
 
 def mapping(environ):
@@ -145,14 +146,17 @@ def mapping(environ):
     #             del(environ.destination_list[i][0])
     # return environ
 
-def updatePath(environ, bot, request):
-    lastNode = bot.path[len(bot.path) - 1][0]
-    path, length = runDijkstras(environ, [bot.botIndex, [lastNode, request.destination]])
-    for node in path:
-        bot.add(node, "Straight")
-        print(node.label)
+def updatePath(environ, bot, pickupNode, dropoffNode, associatedID):
+    lastNode = bot.endNode
+    path, length = runDijkstras(environ, [bot.botIndex, [lastNode, pickupNode]])
+    for node in path[:-1]:
+        bot.add(node, "Straight", associatedID)
+    bot.add(path[-1], "Halt", associatedID)
+    bot.endNode = path[-1]
     bot.dist_to_end += length 
-    # sendInstruction(envir on, bot) # Might make this simpler by calculating the instruction (L/R/S in add)
+    if dropoffNode is not None: 
+        updatePath(environ, bot, dropoffNode, None, associatedID)
+    # sendInstruction(environ, bot) 
         
 
 # def executeRequest(environ, mqtt, request, bot):
