@@ -36,7 +36,7 @@ mqtt = MQTT(robot)
 
 def lineFollowing(mode):
     errorSum = 0
-    center = 240
+    center = 180
     while True:
         # print("Checking Message")
         mqtt.client.check_msg()
@@ -45,9 +45,9 @@ def lineFollowing(mode):
             cx = robot.checkUart()
             if cx is not None:
                 if cx.isdigit(): # and not robot.halt:
-                    # print(cx)
                     cx = int(cx[0:3])
                     dev = center - cx
+                    print(dev)
                     dev = math.trunc(dev/3)
                     if mode == 1:
                         left, right = pControl(dev, MAX_SPEED, MAX_SPEED)
@@ -138,6 +138,11 @@ if __name__ == '__main__':
             if input("AHaha") == "":
                 print("Turning")
                 turnAround(robot)
+    elif MODE == 7:
+        while True:
+            if robot.uart.any() > 0:
+                cx = robot.checkUart()
+                print(cx)
     else: 
         pass
 

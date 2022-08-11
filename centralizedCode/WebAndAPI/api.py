@@ -84,43 +84,4 @@ def requestUpdate():
 def sendUI(environ):
     while True:
         yield environ.retFrame
-# def updateMap(environ):
-#     # size = 200
-#     # send_update("Arrived", environ.destination_list[environ.botList[0]][0], mqtt)
-#     try: 
-#         ts = time.monotonic_ns()
-#         while True:
-#             if time.monotonic_ns() >= ts + environ.timeStep:
-#                 ts = time.monotonic_ns()
-#                 mapping(environ)
-                
-#                 UIFrame = environ.UIwBots
-#                 _, img_encoded = cv.imencode('.jpg', UIFrame)
-#                 UIFrame = img_encoded.tobytes()
-#                 yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + UIFrame + b'\r\n')
-#     except KeyboardInterrupt:
-#         print("Ok i guess you didnt like runnning my code. Whatever. Im not upset")
 
-
-
-
-        # Capture frame from robot live feed
-
-                # ret, liveFeedFrame = videoFeed.read()
-                
-                # Capture fram from user interface and resize
-
-                
-                # liveFeedFrame = cv.resize(UIFrame, (100,100))
-
-                # Convert to grayscale and create mask
-
-                # img2gray = cv.cvtColor(liveFeedFrame, cv.COLOR_BGR2GRAY)
-                # ret, mask = cv.threshold(img2gray, 1, 255, cv.THRESH_BINARY)
-
-                # I genuinely have no clue
-
-                # roi = UIFrame[-size-325:-325, -size-550:-550]
-                # roi[np.where(mask)] = 0
-
-                # Image encoding and bitstream

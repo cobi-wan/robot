@@ -1,4 +1,4 @@
-SERVER_IP = "192.168.20.68"
+SERVER_IP = "192.168.30.167"
 
 MODE = 1 # Proportional Control
 # MODE = 2 # Proportional, Integral Control
@@ -6,3 +6,4 @@ MODE = 1 # Proportional Control
 # MODE = 4 # Run Solely MQTT processes
 # MODE = 5 # Motor Testing with Input
 # MODE = 6 # 180 Spin Testing
+# MODE = 7 # UART testing
