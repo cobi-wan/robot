@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, Response, Blueprint
 import time
 import cv2 as cv
-from PathPlanning.pathPlanning import mapping
-from WebAndAPI.request import Request
+from centralizedCode.PathPlanning.pathPlanning import mapping
+from centralizedCode.WebAndAPI.request import Request
 
 app = Flask(__name__)
 
