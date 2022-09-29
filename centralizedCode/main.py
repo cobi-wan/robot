@@ -20,7 +20,6 @@ from flask import Flask, render_template, request, Response
 from multiprocessing import Process
 from threading import Thread
 
-
 def mappingThread(environ):
     ts = time.monotonic_ns()
     while True:
