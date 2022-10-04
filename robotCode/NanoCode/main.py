@@ -1,5 +1,6 @@
-from robot.robot import Robot
+from robot import Robot
 from mqtt import MQTT
+import time
 from uart import uart_initialization
 from vision import camera_initialization, process_frame
 from control import calculate_motor_speeds, PWM_value
@@ -13,8 +14,9 @@ if __name__ == "__main__":
     video_feed, video_multiplier, frame_width = camera_initialization() # Initialize camera feed
     robot = Robot(serial_line, leftPWM, rightPWM, CONTROL_MODE, frame_width) # Initialize robot class
     mqtt = MQTT(robot) # Initialize communication class
+    time.sleep(0.5)
     
-
+    cx, cy = None, None
     while True:
         cx, cy = process_frame(video_feed)
         if cx is not None: 

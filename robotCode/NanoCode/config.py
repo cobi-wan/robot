@@ -10,8 +10,10 @@ else:
     display_contour_bounds = False
     display_crosshair = False
 
-## MQTT CONFIGURATION VARIABLES ## 
-SERVER_IP = "192.169.20.68"
+## MQTT CONFIGURATION VARIABLES ##
+# SERVER_IP = "192.168.20.68" # Desktop HL
+ 
+SERVER_IP = "192.168.20.89" # Ben's mac HL
 # 192.168.55.100 # Nano1 IP address
 
 ## CONTROL CONFIGURATION VARIABLES ## 

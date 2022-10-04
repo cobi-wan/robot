@@ -6,14 +6,15 @@ from config import SERVER_IP
 class MQTT():
     # Initialize
     def __init__(self, robot):
-        self.serverIP = mqttConfig.SERVER_IP
+        self.serverIP = SERVER_IP
         self.MAC = boot.MAC_ADDRESS
         self.robot = robot
+        self.connect()
 
     # Wait for server to confirm bot identity. When Server posts to str(self.MAC), unique topic is called with botnum
     def wait_for_verify(self):
         while self.robot.robot_number is None:
-            self.mqttClient.wait_msg()
+            pass
     
     # When connected to server print result code 
     def on_connect(self, client, userdata, flags, rc):
@@ -56,7 +57,7 @@ class MQTT():
     
     # Connect and add all subscriptions and callbacks
     def connect(self):
-        self.mqttClient = mqtt.client("Nano")
+        self.mqttClient = mqtt.Client("Nano")
         self.mqttClient.on_connect = self.on_connect
         self.mqttClient.on_message = self.on_message
         self.mqttClient.connect(self.serverIP, 1883)
@@ -77,6 +78,7 @@ class MQTT():
 
         # Publish and wait for server verification
         self.mqttClient.publish("Robot/Verify", str(self.MAC), qos=1)
+        self.mqttClient.loop_start()
         self.wait_for_verify()
 
 

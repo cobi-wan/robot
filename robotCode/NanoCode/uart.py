@@ -1,4 +1,5 @@
 import serial 
+import time
 
 def uart_initialization():
     serial_line = serial.Serial(

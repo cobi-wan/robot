@@ -1,4 +1,5 @@
 from config import CONTROL_MODE, MAX_SPEED, PWM_CENTER_LEFT, PWM_CENTER_RIGHT, LEFT_DIRECTION, RIGHT_DIRECTION, video_multiplier
+import math
 
 def calculate_motor_speeds(cx, cy, error, cLim, robot):
     if robot_config.CONTROL_MODE == 1:
@@ -66,4 +67,4 @@ class PWM_value():
         else: 
             self.clean()
         
-        self.scaled_value = floor(self.value * self.max_speed) * self.direction + self.center_value
+        self.scaled_value = math.floor(self.value * self.max_speed) * self.direction + self.center_value

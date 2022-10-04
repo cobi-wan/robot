@@ -64,9 +64,9 @@ def process_frame(video_stream):
 
         if display_contour_bounds:
             cv.drawContours(cropped_image, contours, -1, (0, 255, 0), 1)
-
     else: 
         print("Line not found")
+        cx, cy = None, None
         # Turn on line not found LED     
 
     if display_videofeed:

@@ -23,13 +23,16 @@ class Robot():
 
     # Command correction and send drive commands over UART
     def send_drive(self):
-        self.serial_line.write(str(self.left_motor.scaled_value)+":"+str(self.right_motor.scaled_value))
+        message = str(self.left_motor.scaled_value)+":"+str(self.right_motor.scaled_value)
+        self.serial_line.write(message.encode())
 
     # Change halt state
-    def halt(state):
+    def halt(self, state):
         if state:
             self._halt = True
-            self.send_drive(0, 0)
+            self.left_motor.prep_for_send(0, True)
+            self.right_motor.prep_for_send(0, True)
+            self.send_drive()
         else: 
             self._halt = False 
     
