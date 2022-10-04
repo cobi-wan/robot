@@ -1,8 +1,7 @@
-from winreg import EnableReflectionKey
 import paho.mqtt.client as mqtt
 import time 
-import mqttConfig
 import boot
+from config import SERVER_IP
 
 class MQTT():
     # Initialize
@@ -41,17 +40,19 @@ class MQTT():
     # When halt message is recieved, stop motor commands 
     def halt(self, client, userdata, msg):
         if msg.payload == "Halt":
-            self.robot.halt = True
+            self.robot.halt(True)
         elif msg.payload == "Continue":
-            self.robot.halt == False
+            self.robot.halt == (False)
         elif msg.payload == "Toggle":
-            self.robot.halt = not self.robot.halt
+            current_state = self.robot._halt
+            self.robot.halt(not current_state)
         else:
             print("Invalid message sent to halt from: "+msg.topic)
 
     # When node to be added to path is sent from the server, add it to the node list on the robot
+    # Should recieve nXX from MQTT and add stop XX to the path
     def addPath(self, client, userdata, msg):
-        self.robot.addStop(msg.payload[0], msg.payload[2:3])
+        self.robot.addStop(msg.payload[1:2])
     
     # Connect and add all subscriptions and callbacks
     def connect(self):
