@@ -1,6 +1,7 @@
 import time 
 import boot
 import serial
+import math
 from config import PWM_CENTER_LEFT, PWM_CENTER_RIGHT
 
 class Robot():
@@ -22,8 +23,14 @@ class Robot():
         self.MAC = boot.MAC_ADDRESS
 
     # Command correction and send drive commands over UART
+    def lengthen_string(self, string):
+        while len(string) < 3:
+            string = "0" + string
+        return string
+
     def send_drive(self):
-        message = str(self.left_motor.scaled_value)+":"+str(self.right_motor.scaled_value)
+        message = "l"+self.lengthen_string(str(self.left_motor.scaled_value))+":r"+self.lengthen_string(str(self.right_motor.scaled_value))
+        # message = str(self.left_motor.scaled_value)+":"+str(self.right_motor.scaled_value)
         self.serial_line.write(message.encode())
 
     # Change halt state
@@ -64,7 +71,7 @@ class Robot():
             self.send_drive()
         center = self.num_pixels / 2
         deviation = center - cx
-        deviation = math.trunc(dev/(3*video_multiplier)) # Check this value and adjust based on camera resolution 
+        deviation = math.trunc(deviation/(self.num_pixels)) # Check this value and adjust based on camera resolution 
         if self.mode == 1:
             # Proportional control
             left, right = self.proportional_control(deviation)
@@ -82,13 +89,13 @@ class Robot():
         if deviation < 0:
             left_scale = kp * absolute_dev
             right_scale = kp * kpp * absolute_dev
-        elif dev > 0:
+        elif deviation > 0:
             right_scale = kp * absolute_dev
             left_scale = kp * kpp * absolute_dev
         else: 
             right_scale = absolute_dev
             left_scale = absolute_dev 
-        return self.left_motor.max * left_scale, self.right_motor.max * right_scale
+        return self.left_motor._max * left_scale, self.right_motor._max * right_scale
 
     # Fix this
     def PI_control(self, deviation):
@@ -101,7 +108,7 @@ class Robot():
         if deviation < 0:
             left_scale = kp * absolute_dev
             right_scale = kp * kpp * absolute_dev
-        elif dev > 0:
+        elif deviation > 0:
             right_scale = kp * absolute_dev
             left_scale = kp * kpp * absolute_dev
         else: 

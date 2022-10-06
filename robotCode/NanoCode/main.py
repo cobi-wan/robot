@@ -3,7 +3,7 @@ from mqtt import MQTT
 import time
 from uart import uart_initialization
 from vision import camera_initialization, process_frame
-from control import calculate_motor_speeds, PWM_value
+from control import PWM_value
 import config
 
 if __name__ == "__main__":
