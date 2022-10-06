@@ -27,7 +27,7 @@ HEADLESS_MODE = True
     # Send commands in the form -t "Brainless" -m "n__"
     # Message sent to -t "Halt" in the form -m "Toggle", -m "Halt", -m "Continue" will enable halt commands as well 
 BRAINLESS_MODE = False 
-
+# ghp_f9oL1vtAv2ZrryNUtPUTe0xy5lyrDQ00DNER
 
 ###### CONTROL CONFIGURATION VARIABLES ###### 
 CONTROL_MODE = 1 # Proportional Control
