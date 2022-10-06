@@ -5,11 +5,12 @@ from config import SERVER_IP
 
 class MQTT():
     # Initialize
-    def __init__(self, robot):
+    def __init__(self, robot, mode):
         self.serverIP = SERVER_IP
         self.MAC = boot.MAC_ADDRESS
         self.robot = robot
-        self.connect()
+        self._brainless = mode
+        self.connect(self._brainless)
 
     # Wait for server to confirm bot identity. When Server posts to str(self.MAC), unique topic is called with botnum
     def wait_for_verify(self):
@@ -63,23 +64,29 @@ class MQTT():
         self.mqttClient.connect(self.serverIP, 1883)
         self.mqttClient.will_set("Bots:Connection", payload=str(str(self.MAC)), qos=1)
 
-        # Subscribe to appropriate channels and add callbacks
-        self.mqttClient.subscribe(str(self.MAC))
-        self.mqttClient.message_callback_add(str(self.MAC), self.unique_Topic)
+        if not mode: 
+            # Subscribe to appropriate channels and add callbacks
+            self.mqttClient.subscribe(str(self.MAC))
+            self.mqttClient.message_callback_add(str(self.MAC), self.unique_Topic)
 
-        self.mqttClient.subscribe(str(self.MAC)+":Halt")
-        self.mqttClient.message_callback_add(str(self.MAC)+":Halt", self.halt)
+            self.mqttClient.subscribe(str(self.MAC)+":Halt")
+            self.mqttClient.message_callback_add(str(self.MAC)+":Halt", self.halt)
 
-        self.mqttClient.subscribe(str(self.MAC)+":Path")
-        self.mqttClient.message_callback_add(str(self.MAC)+":Path", self.addPath)
+            self.mqttClient.subscribe(str(self.MAC)+":Path")
+            self.mqttClient.message_callback_add(str(self.MAC)+":Path", self.addPath)
 
-        self.mqttClient.subscribe("Fleet:Halt")
-        self.mqttClient.message_callback_add("Fleet:Halt", self.halt)
+            self.mqttClient.subscribe("Fleet:Halt")
+            self.mqttClient.message_callback_add("Fleet:Halt", self.halt)
 
-        # Publish and wait for server verification
-        self.mqttClient.publish("Robot/Verify", str(self.MAC), qos=1)
-        self.mqttClient.loop_start()
-        self.wait_for_verify()
+            # Publish and wait for server verification
+            self.mqttClient.publish("Robot/Verify", str(self.MAC), qos=1)
+            self.wait_for_verify()
+        else: 
+            self.mqttClient.subscribe("Brainless")
+            self.mqttClient.message_callback_add("Brainless", self.addPath)
+
+            self.mqttClient.subscribe("Halt")
+            self.mqttClient.message_callback_add(str(self.MAC)+":Halt", self.halt)
 
 
 
