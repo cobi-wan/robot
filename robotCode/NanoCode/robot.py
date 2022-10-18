@@ -31,6 +31,7 @@ class Robot():
     def send_drive(self):
         message = "l"+self.lengthen_string(str(self.left_motor.scaled_value))+":r"+self.lengthen_string(str(self.right_motor.scaled_value))
         # message = str(self.left_motor.scaled_value)+":"+str(self.right_motor.scaled_value)
+        print("l", self.left_motor.scaled_value - 307, "r", 307 - self.right_motor.scaled_value, "e", self.error)
         self.serial_line.write(message.encode())
 
     # Change halt state
@@ -65,55 +66,57 @@ class Robot():
 
     # Based on control mode, calculate the motor speeds and send to ESP 
     def calculate_motor_speeds(self, cx, cy):
-        if self._halt:
-            self.left_motor.prep_for_send(0, True)
-            self.right_motor.prep_for_send(0, True)
-            self.send_drive()
         center = self.num_pixels / 2
         deviation = center - cx
-        deviation = math.trunc(deviation/(self.num_pixels)) # Check this value and adjust based on camera resolution 
+        deviation = math.trunc(deviation/(self.num_pixels / 200)) # Check this value and adjust based on camera resolution 
+        # print(deviation, "Dev")
         if self.mode == 1:
             # Proportional control
             left, right = self.proportional_control(deviation)
         elif self.mode == 2: 
             # Proportional, integral control 
             left, right = self.PI_control(deviation)
+        # print(left, right)
         self.left_motor.prep_for_send(left, True)
         self.right_motor.prep_for_send(right, True)
         self.send_drive()
 
     def proportional_control(self, deviation):
-        kp = 1
-        kpp = 0.5
+        kp = 0.3
+        kpp = 2
         absolute_dev = abs(deviation)
         if deviation < 0:
-            left_scale = kp * absolute_dev
-            right_scale = kp * kpp * absolute_dev
+            left_scale = 100 - kp * absolute_dev
+            right_scale = 100 - kpp * absolute_dev
         elif deviation > 0:
-            right_scale = kp * absolute_dev
-            left_scale = kp * kpp * absolute_dev
+            right_scale = 100 - kp * absolute_dev
+            left_scale = 100 - kp * kpp * absolute_dev
         else: 
-            right_scale = absolute_dev
-            left_scale = absolute_dev 
-        return self.left_motor._max * left_scale, self.right_motor._max * right_scale
+            right_scale = 100
+            left_scale = 100
+        return left_scale, right_scale
 
     # Fix this
     def PI_control(self, deviation):
         kp = 1
-        kpp = 0.5
-        ki = 0.02
+        kpp = 0.1
+        ki = 0.002
         absolute_dev = abs(deviation)
-        left_integral = 0
-        right_integral = 0
-        if deviation < 0:
-            left_scale = kp * absolute_dev
-            right_scale = kp * kpp * absolute_dev
-        elif deviation > 0:
-            right_scale = kp * absolute_dev
-            left_scale = kp * kpp * absolute_dev
+        if absolute_dev < 5:# or math.copysign(1, deviation) != math.copysign(1, self.error):
+            self.error = 0
         else: 
-            right_scale = absolute_dev
-            left_scale = absolute_dev 
-        
-        return 0, 0
+            self.error += deviation
+
+        if deviation < 0:
+            left_scale = 100 - kp * absolute_dev - ki * self.error
+            right_scale = 100 - kpp * absolute_dev
+        elif deviation > 0:
+            right_scale = 100 - kp * absolute_dev + ki * self.error
+            left_scale = 100 - kpp * absolute_dev
+        else: 
+            right_scale = 100
+            left_scale = 100
+        return left_scale, right_scale
+
+       
 

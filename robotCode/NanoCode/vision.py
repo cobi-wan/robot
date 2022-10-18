@@ -8,11 +8,14 @@ def camera_initialization():
     flip = 0
     dispW = 340*video_multiplier
     dispH = 240*video_multiplier
+    SENSOR_ID = 0
+    FRAMERATE = 60
+    # gst-launch-1.0 nvarguscamerasrc sensor-id$SENSOR_ID ! "video/x-raw(memmory:NVMM),width=1920, height=1080, framerate=$FRAMERATE/1" ! nvvidconv ! nvoverlaysink
 
     # Play with this line to test framerates and resolutions. 
     # Check to see if width, height and dispW, dispH affect actual resolution. 
     # Test framerate with display and without display to see if video encoding for preview reduces framerate (likely)
-    camSet = 'nvarguscamerasrc ! video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=21/1 ! nvvidconv flip-method='+str(flip)+' ! video/x-raw, width='+str(dispW)+', height='+str(dispH)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink'
+    camSet = 'nvarguscamerasrc ! video/x-raw(memory:NVMM), width=1920, height=1080, format=NV12, framerate=60/1 ! nvvidconv flip-method='+str(flip)+' ! video/x-raw, width='+str(dispW)+', height='+str(dispH)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink'
     video_stream = cv.VideoCapture(camSet)
 
     time.sleep(0.5)
@@ -75,8 +78,3 @@ def process_frame(video_stream):
             return None, None
 
     return cx, cy
-
-
-
-
-

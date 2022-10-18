@@ -1,6 +1,6 @@
 ## VIDEO CONFIGURATION VARIABLES ## 
 video_multiplier = 1
-display_videofeed = True
+display_videofeed = False
 if display_videofeed:
     display_barcode_bounding_box = True
     display_contour_bounds = True
@@ -30,10 +30,10 @@ BRAINLESS_MODE = False
 # ghp_f9oL1vtAv2ZrryNUtPUTe0xy5lyrDQ00DNER
 
 ###### CONTROL CONFIGURATION VARIABLES ###### 
-CONTROL_MODE = 1 # Proportional Control
-# CONTROL_MODE = 2 # PI Control
+# CONTROL_MODE = 1 # Proportional Control
+CONTROL_MODE = 2 # PI Control
 PWM_CENTER_LEFT = 307
 PWM_CENTER_RIGHT = 307
-LEFT_DIRECTION = -1
-RIGHT_DIRECTION = 1
-MAX_SPEED = 13
+LEFT_DIRECTION = 1
+RIGHT_DIRECTION = -1
+MAX_SPEED = 11
