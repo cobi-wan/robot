@@ -1,6 +1,6 @@
 ## VIDEO CONFIGURATION VARIABLES ## 
 video_multiplier = 1
-display_videofeed = False
+display_videofeed = True
 if display_videofeed:
     display_barcode_bounding_box = True
     display_contour_bounds = True
@@ -9,6 +9,8 @@ else:
     display_barcode_bounding_box = False
     display_contour_bounds = False
     display_crosshair = False
+
+SHOW_STATS = True
 
 ###### COMMUNICATION CONFIGURATION VARIABLES ###### 
 SERVER_IP = "192.169.20.68" # HL Desktop address
@@ -27,7 +29,6 @@ HEADLESS_MODE = True
     # Send commands in the form -t "Brainless" -m "n__"
     # Message sent to -t "Halt" in the form -m "Toggle", -m "Halt", -m "Continue" will enable halt commands as well 
 BRAINLESS_MODE = False 
-# ghp_f9oL1vtAv2ZrryNUtPUTe0xy5lyrDQ00DNER
 
 ###### CONTROL CONFIGURATION VARIABLES ###### 
 # CONTROL_MODE = 1 # Proportional Control
@@ -37,3 +38,5 @@ PWM_CENTER_RIGHT = 307
 LEFT_DIRECTION = 1
 RIGHT_DIRECTION = -1
 MAX_SPEED = 11
+FRAME_RATE = 60
+
