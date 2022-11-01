@@ -31,7 +31,7 @@ class time_stats():
         self.avg_framerate = 1/self.avg_time
         self.min_framerate = 1/self.max_time
         self.current_framerate = 1/elapsed_time
-        # self.print(cx)
+        self.print(cx)
 
     def print(self, cx):
         if cx is None:
@@ -59,7 +59,7 @@ if __name__ == "__main__":
             robot.calculate_motor_speeds(cx, cy)
         else:
             robot.halt(True)
-            # Throw error light and reenable. Might require sending -t "Fleet:Halt" -m "Continue"
+            # Throw error light and re-enable. Might require sending -t "Fleet:Halt" -m "Continue"
         if not config.HEADLESS_MODE: 
             mqtt.mqttClient.check_msg()
 
