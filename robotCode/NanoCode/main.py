@@ -7,7 +7,7 @@ from control import PWM_value
 import config
 
 class time_stats():
-    def __init__(self):
+    def __init__(self): 
         self.start_time = time.time()
         self.avg_time = 0.03
         self.avg_framerate = 1/self.avg_time
@@ -49,10 +49,12 @@ if __name__ == "__main__":
         mqtt = MQTT(robot, config.BRAINLESS_MODE) 
     # ts = time.monotonic_ns()
     time.sleep(0.5)
-    t_stat = time_stats()
+    if config.SHOW_STATS:
+        t_stat = time_stats()
     while True:
         cx, cy = process_frame(video_feed)
-        t_stat.loop(cx)
+        if config.SHOW_STATS:
+            t_stat.loop(cx)
         if cx is not None: 
             # print(cx)
             robot.halt(False)

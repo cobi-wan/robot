@@ -2,14 +2,14 @@ import numpy as np
 import cv2 as cv
 import time
 from pyzbar.pyzbar import decode 
-from config import display_videofeed, display_barcode_bounding_box, display_contour_bounds, display_crosshair, video_multiplier
+from config import display_videofeed, display_barcode_bounding_box, display_contour_bounds, display_crosshair, video_multiplier, FRAME_RATE
 
 def camera_initialization():
     flip = 0
     dispW = 340*video_multiplier
     dispH = 240*video_multiplier
-    SENSOR_ID = 0
-    FRAMERATE = 60
+    SENSOR_ID = 1
+    # FRAMERATE = 30
     # gst-launch-1.0 nvarguscamerasrc sensor-id$SENSOR_ID ! "video/x-raw(memmory:NVMM),width=1920, height=1080, framerate=$FRAMERATE/1" ! nvvidconv ! nvoverlaysink
 
     # Play with this line to test framerates and resolutions. 
