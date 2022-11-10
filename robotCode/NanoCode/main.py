@@ -44,7 +44,12 @@ if __name__ == "__main__":
     serial_line = uart_initialization()
     leftPWM = PWM_value(config.MAX_SPEED, config.LEFT_DIRECTION)
     rightPWM = PWM_value(config.MAX_SPEED, config.RIGHT_DIRECTION)
-    video_feed, video_multiplier, frame_width = camera_initialization() # Initialize camera feed
+    if config.VIDEO_ON:
+        video_feed, video_multiplier, frame_width = camera_initialization() # Initialize camera feed
+    else:
+        cx = 0
+        cy = 0
+        frame_width=2000
     time.sleep(0.5)
     robot = Robot(serial_line, leftPWM, rightPWM, config.CONTROL_MODE, frame_width) # Initialize robot class
     if not config.HEADLESS_MODE:
@@ -54,7 +59,8 @@ if __name__ == "__main__":
     if config.SHOW_STATS:
         t_stat = time_stats()
     while True:
-        cx, cy = process_frame(video_feed)
+        if config.VIDEO_ON:
+            cx, cy = process_frame(video_feed)
         if config.SHOW_STATS:
             t_stat.loop(cx)
         if cx is not None: 

@@ -1,4 +1,5 @@
 ## VIDEO CONFIGURATION VARIABLES ## 
+VIDEO_ON = True
 video_multiplier = 1
 display_videofeed = True
 if display_videofeed:
@@ -10,7 +11,7 @@ else:
     display_contour_bounds = False
     display_crosshair = False
 
-SHOW_STATS = True
+SHOW_STATS = False
 
 ###### COMMUNICATION CONFIGURATION VARIABLES ###### 
 SERVER_IP = "192.169.20.68" # HL Desktop address
@@ -35,8 +36,8 @@ BRAINLESS_MODE = False
 CONTROL_MODE = 2 # PI Control
 PWM_CENTER_LEFT = 307
 PWM_CENTER_RIGHT = 307
-LEFT_DIRECTION = 1
-RIGHT_DIRECTION = -1
+LEFT_DIRECTION = -1
+RIGHT_DIRECTION = 1
 MAX_SPEED = 11
 FRAME_RATE = 60
 
